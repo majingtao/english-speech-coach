@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Dictation Practice</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", Arial, sans-serif; max-width: 960px; margin: 0 auto; padding: 16px; background: #f7f8fa; font-size: 16px; }
+    h2 { margin-bottom: 12px; font-size: 1.3em; }
+    a.back { font-size: 0.85em; color: #1976d2; text-decoration: none; margin-left: 12px; }
+    button { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95em; touch-action: manipulation; }
+
+    /* Settings */
+    .settings-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
+    .settings-bar label { font-size: 0.85em; white-space: nowrap; }
+    .settings-bar select { padding: 4px 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85em; max-width: 220px; }
+    #settingsToggle { background: #607d8b; color: #fff; font-size: 0.85em; padding: 6px 12px; }
+    #settingsPanel { display: none; }
+    #settingsPanel.open { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+
+    /* Add word */
+    .add-section { margin-bottom: 14px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
+    .add-section textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95em; resize: vertical; font-family: inherit; }
+    .add-section .hint { font-size: 0.78em; color: #999; margin-top: 4px; }
+    #addBtn { background: #4caf50; color: #fff; margin-top: 8px; }
+
+    /* Word list */
+    .word-list { list-style: none; }
+    .word-item { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; padding: 10px 12px; }
+    .word-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .word-en { font-weight: bold; font-size: 1.1em; color: #1565c0; }
+    .word-cn { font-size: 0.95em; color: #555; }
+    .word-loading { font-size: 0.82em; color: #999; font-style: italic; }
+    .play-btn { background: none; border: none; cursor: pointer; font-size: 1.15em; padding: 2px 6px; opacity: 0.7; }
+    .play-btn:hover { opacity: 1; }
+    .play-btn.playing { opacity: 1; color: #4caf50; }
+    .word-actions { margin-left: auto; display: flex; gap: 4px; }
+    .word-actions button { padding: 4px 10px; font-size: 0.8em; border-radius: 6px; }
+    .btn-edit { background: #2196f3; color: #fff; }
+    .btn-del { background: #f44336; color: #fff; }
+    .btn-save { background: #4caf50; color: #fff; }
+    .btn-cancel { background: #9e9e9e; color: #fff; }
+
+    /* Example sentence */
+    .word-example { font-size: 0.85em; color: #777; margin-top: 4px; line-height: 1.5; }
+
+    /* Dictation controls */
+    .dictation-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .dictation-row .mark-btn { padding: 4px 10px; font-size: 0.82em; border-radius: 6px; }
+    .mark-know { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+    .mark-know.active { background: #1565c0; color: #fff; }
+    .mark-spell { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .mark-spell.active { background: #2e7d32; color: #fff; }
+    .mark-no { background: #fce4ec; color: #c62828; border: 1px solid #ef9a9a; }
+
+    /* Reveal / Refresh buttons */
+    .btn-reveal { background: #ff9800; color: #fff; padding: 4px 10px; font-size: 0.85em; border-radius: 6px; }
+    .btn-reveal.revealed { background: #bdbdbd; }
+    .btn-refresh { background: #9e9e9e; color: #fff; padding: 4px 10px; font-size: 0.85em; border-radius: 6px; }
+    .play-example { font-size: 0.95em; vertical-align: middle; padding: 1px 4px; }
+
+    /* Forms line */
+    .word-forms { font-size: 0.85em; color: #1565c0; font-weight: 600; margin: 4px 0; padding: 3px 8px; background: #e3f2fd; border-radius: 4px; display: inline-block; }
+
+    /* Example blocks */
+    .example-block { margin: 4px 0; padding: 4px 0; font-size: 0.88em; line-height: 1.5; }
+    .example-zh { color: #888; font-size: 0.92em; }
+
+    /* Stats */
+    .word-stats { font-size: 0.78em; color: #888; margin-top: 4px; }
+    .word-stats .pass { color: #4caf50; }
+    .word-stats .fail { color: #f44336; }
+
+    /* Edit form inline */
+    .edit-form { margin-top: 6px; }
+    .edit-form input, .edit-form textarea { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em; margin-bottom: 4px; font-family: inherit; }
+    .edit-form textarea { resize: vertical; }
+
+    /* Empty state */
+    .empty { text-align: center; color: #aaa; padding: 40px; font-size: 0.95em; }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .word-header { gap: 6px; }
+      .word-actions button { padding: 6px 12px; font-size: 0.85em; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Dictation Practice <a class="back" href="index.html">&larr; Back</a></h2>
+
+  <!-- TTS Settings -->
+  <div class="settings-bar">
+    <label>LLM: <select id="llmSelect"><option>Loading...</option></select></label>
+    <label style="font-size:0.85em;"><input type="checkbox" id="llmProxyToggle" /> Proxy</label>
+    <button id="settingsToggle">&#9881; TTS</button>
+    <div id="settingsPanel">
+      <label>Engine: <select id="ttsEngine">
+        <option value="edge">Edge-TTS</option>
+        <option value="piper">Piper (Local)</option>
+        <option value="vibevoice">VibeVoice (Local)</option>
+        <option value="system">System</option>
+      </select></label>
+      <label>Voice: <select id="voiceSelect"><option value="">Loading...</option></select></label>
+    </div>
+  </div>
+
+  <!-- Add words -->
+  <div class="add-section">
+    <textarea id="wordInput" rows="2" placeholder="Enter English words (one per line for batch add)"></textarea>
+    <div class="hint">Batch add: one word per line. Chinese meanings and examples will be generated by LLM on first view.</div>
+    <button id="addBtn">+ Add</button>
+    <button id="importBtn" style="background:#1976d2;color:#fff;margin-top:8px;margin-left:8px;">Import Flyers 354</button>
+    <button id="clearBtn" style="background:#f44336;color:#fff;margin-top:8px;margin-left:4px;font-size:0.82em;padding:8px 14px;">Clear All</button>
+  </div>
+
+  <!-- Word list -->
+  <ul id="wordList" class="word-list"></ul>
+  <div id="emptyState" class="empty">No words yet. Add some above!</div>
+
+<script>
+// ===== Config =====
+const IS_PROXIED = location.port === "8443";
+const _origin = location.protocol + "//" + location.host;
+const _base = IS_PROXIED ? _origin : "http://" + location.hostname + ":8443";
+const TTS_URL = _base + "/tts";
+const TTS_VOICES_URL = _base + "/tts/voices";
+const LLM_MODELS_URL = _base + "/llm/models";
+const LLM_CHAT_URL = _base + "/llm/chat";
+
+// ===== LocalStorage keys =====
+const LS_WORDS = "dictation_words";       // [{en, cn, example, llmDone}]
+const LS_RECORDS = "dictation_records";   // [{en, time, knowCn, canSpell}]
+
+function loadWords() { try { return JSON.parse(localStorage.getItem(LS_WORDS)) || []; } catch { return []; } }
+function saveWords(words) { localStorage.setItem(LS_WORDS, JSON.stringify(words)); }
+function loadRecords() { try { return JSON.parse(localStorage.getItem(LS_RECORDS)) || []; } catch { return []; } }
+function saveRecords(records) { localStorage.setItem(LS_RECORDS, JSON.stringify(records)); }
+
+// ===== LLM Models =====
+let llmModels = [];
+const llmSelect = document.getElementById("llmSelect");
+const llmProxyToggle = document.getElementById("llmProxyToggle");
+
+async function loadLlmModels() {
+  try {
+    const res = await fetch(LLM_MODELS_URL);
+    if (res.ok) llmModels = await res.json();
+  } catch (e) { console.warn("Failed to load LLM models:", e); }
+  if (llmModels.length === 0) {
+    llmModels = [{ provider: "ollama", model: "qwen2.5:7b", label: "Qwen 2.5 7B (Local)" }];
+  }
+  llmSelect.innerHTML = "";
+  for (const m of llmModels) {
+    const opt = document.createElement("option");
+    opt.value = m.provider + ":" + m.model;
+    opt.textContent = m.label;
+    llmSelect.appendChild(opt);
+  }
+  if (llmModels.length > 0) llmProxyToggle.checked = !!llmModels[0].use_proxy;
+}
+
+function getSelectedLlm() {
+  const val = llmSelect.value || "";
+  const [provider, ...rest] = val.split(":");
+  const model = rest.join(":");
+  const llm = llmModels.find(m => m.provider === provider && m.model === model) || llmModels[0];
+  return { ...llm, use_proxy: llmProxyToggle.checked };
+}
+
+llmSelect.onchange = () => {
+  const val = llmSelect.value || "";
+  const [provider, ...rest] = val.split(":");
+  const model = rest.join(":");
+  const llm = llmModels.find(m => m.provider === provider && m.model === model);
+  if (llm) llmProxyToggle.checked = !!llm.use_proxy;
+};
+
+loadLlmModels();
+
+// ===== TTS =====
+const synth = window.speechSynthesis;
+let systemVoices = [];
+let edgeVoices = [];
+let vibeVoices = [];
+let _ttsAudioCtx = null;
+let _ttsSourceNode = null;
+let _ttsResolve = null;
+let _activeSpeakBtn = null;
+
+function _getTtsAudioCtx() {
+  if (!_ttsAudioCtx || _ttsAudioCtx.state === "closed")
+    _ttsAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ttsAudioCtx.state === "suspended") _ttsAudioCtx.resume();
+  return _ttsAudioCtx;
+}
+
+function loadSystemVoices() { systemVoices = synth.getVoices().filter(v => v.lang.startsWith("en")); }
+synth.onvoiceschanged = () => { loadSystemVoices(); if (ttsEngine.value === "system") updateVoiceDropdown(); };
+loadSystemVoices();
+
+async function loadEdgeVoices() {
+  try { const res = await fetch(TTS_VOICES_URL + "?engine=edge"); if (res.ok) edgeVoices = await res.json(); } catch {}
+  if (ttsEngine.value === "edge") updateVoiceDropdown();
+}
+loadEdgeVoices();
+
+async function loadVibeVoices() {
+  try { const res = await fetch(TTS_VOICES_URL + "?engine=vibevoice"); if (res.ok) vibeVoices = await res.json(); } catch {}
+  if (ttsEngine.value === "vibevoice") updateVoiceDropdown();
+}
+loadVibeVoices();
+
+const ttsEngine = document.getElementById("ttsEngine");
+const voiceSelect = document.getElementById("voiceSelect");
+
+function updateVoiceDropdown() {
+  const engine = ttsEngine.value;
+  voiceSelect.innerHTML = "";
+  if (engine === "edge") {
+    if (edgeVoices.length === 0) { voiceSelect.innerHTML = '<option value="">Loading...</option>'; return; }
+    for (const v of edgeVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.name + (v.gender === "Female" ? " \u2640" : " \u2642");
+      if (v.name === "en-US-AnaNeural") opt.selected = true;
+      voiceSelect.appendChild(opt);
+    }
+  } else if (engine === "piper") {
+    voiceSelect.innerHTML = '<option value="amy">amy (en-US)</option>';
+  } else if (engine === "vibevoice") {
+    if (vibeVoices.length === 0) { voiceSelect.innerHTML = '<option value="">Loading...</option>'; return; }
+    for (const v of vibeVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.label || v.name;
+      if (v.name === "en-Carter_man") opt.selected = true;
+      voiceSelect.appendChild(opt);
+    }
+  } else {
+    if (systemVoices.length === 0) { voiceSelect.innerHTML = '<option value="">No English voices</option>'; return; }
+    for (const v of systemVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.name + " (" + v.lang + ")";
+      voiceSelect.appendChild(opt);
+    }
+  }
+}
+ttsEngine.onchange = updateVoiceDropdown;
+updateVoiceDropdown();
+
+const settingsToggle = document.getElementById("settingsToggle");
+const settingsPanel = document.getElementById("settingsPanel");
+settingsToggle.onclick = () => {
+  settingsPanel.classList.toggle("open");
+  settingsToggle.textContent = settingsPanel.classList.contains("open") ? "\u2715 Close" : "\u2699 TTS";
+};
+
+function stopTts() {
+  synth.cancel();
+  if (_ttsSourceNode) { try { _ttsSourceNode.stop(); } catch {} _ttsSourceNode = null; }
+  if (_activeSpeakBtn) { _activeSpeakBtn.textContent = "\ud83d\udd0a"; _activeSpeakBtn.classList.remove("playing"); _activeSpeakBtn = null; }
+  if (_ttsResolve) { _ttsResolve(); _ttsResolve = null; }
+}
+
+function speakWithSystem(text) {
+  synth.cancel();
+  if (_ttsResolve) { _ttsResolve(); _ttsResolve = null; }
+  if (!text) return Promise.resolve();
+  return new Promise(resolve => {
+    _ttsResolve = resolve;
+    const done = () => { if (_activeSpeakBtn) { _activeSpeakBtn.textContent = "\ud83d\udd0a"; _activeSpeakBtn.classList.remove("playing"); _activeSpeakBtn = null; } if (_ttsResolve === resolve) { _ttsResolve = null; } resolve(); };
+    const voice = systemVoices.find(v => v.name === voiceSelect.value) || systemVoices[0];
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; u.rate = 0.85;
+    if (voice) u.voice = voice;
+    u.onend = done; u.onerror = done;
+    synth.speak(u);
+  });
+}
+
+async function speakWithServer(text, engine) {
+  stopTts();
+  if (!text) return;
+  const body = { engine, text };
+  if (engine === "piper") body.speed = 1.0;
+  else if (engine === "edge") { body.voice = voiceSelect.value || "en-US-AnaNeural"; body.rate = "-10%"; }
+  else if (engine === "vibevoice") { body.voice = voiceSelect.value || "en-Carter_man"; body.cfg_scale = 1.5; }
+  try {
+    const res = await fetch(TTS_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!res.ok) return;
+    const arrayBuf = await res.arrayBuffer();
+    if (arrayBuf.byteLength < 256) return;
+    const ctx = _getTtsAudioCtx();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0));
+    return new Promise(resolve => {
+      _ttsResolve = resolve;
+      const done = () => { _ttsSourceNode = null; if (_activeSpeakBtn) { _activeSpeakBtn.textContent = "\ud83d\udd0a"; _activeSpeakBtn.classList.remove("playing"); _activeSpeakBtn = null; } if (_ttsResolve === resolve) { _ttsResolve = null; } resolve(); };
+      if (_ttsSourceNode) { try { _ttsSourceNode.stop(); } catch {} }
+      _ttsSourceNode = ctx.createBufferSource();
+      _ttsSourceNode.buffer = audioBuf;
+      _ttsSourceNode.connect(ctx.destination);
+      _ttsSourceNode.onended = done;
+      _ttsSourceNode.start();
+    });
+  } catch (e) { console.error("TTS error:", e); }
+}
+
+function doSpeak(text) {
+  const engine = ttsEngine.value;
+  if (engine === "system") return speakWithSystem(text);
+  return speakWithServer(text, engine);
+}
+
+// ===== LLM: fetch word info =====
+async function fetchWordInfo(word) {
+  const llm = getSelectedLlm();
+  const prompt = `For the English word "${word}", provide a complete dictionary entry for a child (age 7-12).
+
+Rules:
+- "pos": part of speech (n./v./adj./adv./prep./conj./pron./num./det.)
+- "cn": Chinese meaning (concise, 1-3 words)
+- "forms": array of word forms with example sentences. Rules by part of speech:
+  - Verb: [base, past tense, past participle, present participle] (e.g. decide/decided/decided/deciding)
+  - Noun: [singular, plural] (e.g. foot/feet). Skip if plural is just +s
+  - Adjective/Adverb: [base, comparative, superlative] (e.g. big/bigger/biggest). Skip if uses more/most
+  - Other (prep/conj/pron/num/det): just [the word itself]
+- Each form entry has: "word" (the form), "en" (simple English example), "zh" (Chinese translation of the example)
+- Examples must be simple, suitable for children, and naturally use that specific word form
+
+Reply ONLY with this JSON format:
+{"pos":"v.","cn":"决定","forms":[{"word":"decide","en":"I can't decide what to eat.","zh":"我不知道吃什么。"},{"word":"decided","en":"She decided to go home.","zh":"她决定回家。"},{"word":"decided","en":"I have decided to study harder.","zh":"我已经决定更加努力学习。"},{"word":"deciding","en":"He is deciding which book to read.","zh":"他正在决定读哪本书。"}]}`;
+
+  try {
+    const res = await fetch(LLM_CHAT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        provider: llm.provider, model: llm.model,
+        messages: [
+          { role: "system", content: "You are a dictionary assistant for children learning English. Reply ONLY with valid JSON, no thinking tags, no markdown, no explanation." },
+          { role: "user", content: prompt }
+        ],
+        stream: true, use_proxy: !!llm.use_proxy
+      })
+    });
+    if (!res.ok) { console.error("LLM HTTP error:", res.status); return null; }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let buf = "", full = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n"); buf = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try { const obj = JSON.parse(line); if (obj.content) full += obj.content; } catch {}
+      }
+    }
+    if (buf.trim()) {
+      try { const obj = JSON.parse(buf); if (obj.content) full += obj.content; } catch {}
+    }
+    console.log("[dictation] LLM raw for", word, ":", full);
+    // Strip thinking tags (Qwen3 etc.) and markdown
+    full = full.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+    full = full.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+    const jsonMatch = full.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const data = JSON.parse(jsonMatch[0]);
+      console.log("[dictation] parsed JSON for", word, ":", JSON.stringify(data));
+      const pos = data.pos || "";
+      const cn = data.cn || data.chinese || data.meaning || "";
+      const forms = Array.isArray(data.forms) ? data.forms : [];
+      // Build display: forms line + example blocks
+      const formsLine = forms.map(f => f.word).filter((v, i, a) => a.indexOf(v) === i).join(" → ");
+      let example = "";
+      for (const f of forms) {
+        const en = f.en || f.exampleEn || "";
+        const zh = f.zh || f.exampleCn || "";
+        if (en) example += en + "\n" + zh + "\n";
+      }
+      return { cn: pos + " " + cn, forms: formsLine, example: example.trim() };
+    }
+    if (full.length > 0) {
+      console.warn("[dictation] No JSON found, using raw text for", word);
+      return { cn: full.slice(0, 50), forms: "", example: "" };
+    }
+    console.warn("[dictation] Empty LLM response for", word);
+  } catch (e) { console.error("LLM error for word:", word, e); }
+  return null;
+}
+
+// ===== Rendering =====
+const wordListEl = document.getElementById("wordList");
+const emptyState = document.getElementById("emptyState");
+
+function render() {
+  const words = loadWords();
+  const records = loadRecords();
+  wordListEl.innerHTML = "";
+  emptyState.style.display = words.length === 0 ? "block" : "none";
+
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    const li = document.createElement("li");
+    li.className = "word-item";
+    li.dataset.index = i;
+
+    // Stats
+    const wordRecords = records.filter(r => r.en.toLowerCase() === w.en.toLowerCase());
+    const totalCount = wordRecords.length;
+    const knowCount = wordRecords.filter(r => r.knowCn).length;
+    const spellCount = wordRecords.filter(r => r.canSpell).length;
+
+    let cnDisplay = w.cn || "";
+    let formsDisplay = w.forms || "";
+    let exampleDisplay = w.example || "";
+    let loadingHtml = "";
+    if (!w.llmDone) {
+      loadingHtml = '<span class="word-loading">(click word to load meaning)</span>';
+    }
+
+    // Build example blocks — each pair of lines is en + zh
+    let exampleHtml = "";
+    if (exampleDisplay.trim()) {
+      const lines = exampleDisplay.split("\n");
+      for (let j = 0; j < lines.length; j += 2) {
+        const en = (lines[j] || "").trim();
+        const zh = (lines[j + 1] || "").trim();
+        if (!en) continue;
+        exampleHtml += '<div class="example-block">'
+          + '<button class="play-btn play-example" data-word="' + encodeURIComponent(en) + '" title="Play">&#128266;</button> '
+          + highlightWord(escHtml(en), w.en)
+          + (zh ? '<br><span class="example-zh">' + escHtml(zh) + '</span>' : '')
+          + '</div>';
+      }
+    }
+
+    li.innerHTML = `
+      <div class="word-header">
+        <button class="play-btn" data-word="${encodeURIComponent(w.en)}" title="Play pronunciation">&#128266;</button>
+        <span class="word-en" data-idx="${i}" style="cursor:pointer">${escHtml(w.en)}</span>
+        ${loadingHtml}
+        <div class="word-actions">
+          ${w.llmDone ? '<button class="btn-refresh" data-idx="' + i + '" title="Re-fetch from LLM">&#128260;</button>' : ''}
+          ${w.llmDone ? '<button class="btn-reveal" data-idx="' + i + '" title="Show meaning">&#128065;</button>' : ''}
+          <button class="btn-edit" data-idx="${i}">Edit</button>
+          <button class="btn-del" data-idx="${i}">Del</button>
+        </div>
+      </div>
+      <div class="word-detail" data-idx="${i}" style="display:none">
+        <div class="word-cn-row"><span class="word-cn">${escHtml(cnDisplay)}</span></div>
+        ${formsDisplay ? '<div class="word-forms">' + escHtml(formsDisplay) + '</div>' : ''}
+        ${exampleHtml}
+      </div>
+      <div class="dictation-row">
+        <button class="mark-btn mark-know" data-idx="${i}" data-type="know">Know meaning</button>
+        <button class="mark-btn mark-no" data-idx="${i}" data-type="noknow">&times; Don't know</button>
+        <button class="mark-btn mark-spell" data-idx="${i}" data-type="spell">Can spell</button>
+        <button class="mark-btn mark-no" data-idx="${i}" data-type="nospell">&times; Can't spell</button>
+      </div>
+      ${totalCount > 0 ? `<div class="word-stats">Practiced ${totalCount} time(s) | Know meaning: <span class="pass">${knowCount}</span>/<span class="fail">${totalCount - knowCount}</span> | Spelling: <span class="pass">${spellCount}</span>/<span class="fail">${totalCount - spellCount}</span></div>` : '<div class="word-stats">Not practiced yet</div>'}
+    `;
+    wordListEl.appendChild(li);
+  }
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function highlightWord(html, word) {
+  // Case-insensitive match of the word (and common forms: +s, +ed, +ing, +es)
+  const base = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp("\\b(" + base + "(?:s|es|ed|ing|d)?)\\b", "gi");
+  return html.replace(re, '<b style="color:#c62828">$1</b>');
+}
+
+// ===== Event delegation =====
+wordListEl.addEventListener("click", async (e) => {
+  const target = e.target;
+
+  // Play button (word or example)
+  if (target.classList.contains("play-btn")) {
+    const text = decodeURIComponent(target.dataset.word);
+    if (_activeSpeakBtn === target) { stopTts(); return; }
+    stopTts();
+    _activeSpeakBtn = target;
+    target.textContent = "\u23f9"; target.classList.add("playing");
+    await doSpeak(text);
+    return;
+  }
+
+  // Reveal button — toggle show/hide meaning + example
+  if (target.classList.contains("btn-reveal")) {
+    const idx = parseInt(target.dataset.idx);
+    const detail = wordListEl.querySelector('.word-detail[data-idx="' + idx + '"]');
+    if (!detail) return;
+    const visible = detail.style.display !== "none";
+    detail.style.display = visible ? "none" : "block";
+    target.classList.toggle("revealed", !visible);
+    target.textContent = visible ? "\ud83d\udc41" : "\u2715";
+    return;
+  }
+
+  // Refresh button — re-fetch from LLM
+  if (target.classList.contains("btn-refresh")) {
+    const idx = parseInt(target.dataset.idx);
+    const words = loadWords();
+    if (!words[idx]) return;
+    target.disabled = true; target.textContent = "...";
+    const info = await fetchWordInfo(words[idx].en);
+    const freshWords = loadWords();
+    if (info && freshWords[idx]) {
+      freshWords[idx].cn = info.cn;
+      freshWords[idx].forms = info.forms || "";
+      freshWords[idx].example = info.example;
+      freshWords[idx].llmDone = true;
+      saveWords(freshWords);
+    }
+    render();
+    return;
+  }
+
+  // Click word to load LLM info
+  if (target.classList.contains("word-en")) {
+    const idx = parseInt(target.dataset.idx);
+    const words = loadWords();
+    if (words[idx] && !words[idx].llmDone) {
+      target.nextElementSibling && (target.parentElement.querySelector(".word-loading") || {}).textContent;
+      const loadEl = target.parentElement.querySelector(".word-loading");
+      if (loadEl) loadEl.textContent = "(loading from LLM...)";
+      const info = await fetchWordInfo(words[idx].en);
+      // Re-load in case of concurrent changes
+      const freshWords = loadWords();
+      if (info && freshWords[idx]) {
+        freshWords[idx].cn = info.cn;
+        freshWords[idx].forms = info.forms || "";
+        freshWords[idx].example = info.example;
+        freshWords[idx].llmDone = true;
+        saveWords(freshWords);
+      } else if (freshWords[idx]) {
+        // Don't mark llmDone on failure — allow retry on next click
+        freshWords[idx].cn = freshWords[idx].cn || "(LLM failed — click to retry)";
+        saveWords(freshWords);
+      }
+      render();
+    }
+    return;
+  }
+
+  // Delete
+  if (target.classList.contains("btn-del")) {
+    const idx = parseInt(target.dataset.idx);
+    const words = loadWords();
+    if (words[idx] && confirm("Delete \"" + words[idx].en + "\"?")) {
+      words.splice(idx, 1);
+      saveWords(words);
+      render();
+    }
+    return;
+  }
+
+  // Edit
+  if (target.classList.contains("btn-edit")) {
+    const idx = parseInt(target.dataset.idx);
+    const words = loadWords();
+    const w = words[idx];
+    if (!w) return;
+    const li = target.closest(".word-item");
+    // Check if already editing
+    if (li.querySelector(".edit-form")) return;
+    const form = document.createElement("div");
+    form.className = "edit-form";
+    form.innerHTML = `
+      <input type="text" class="edit-en" value="${escHtml(w.en)}" placeholder="English word" />
+      <input type="text" class="edit-cn" value="${escHtml(w.cn || '')}" placeholder="Chinese meaning" />
+      <textarea class="edit-example" rows="2" placeholder="Example (English\\nChinese)">${escHtml(w.example || '')}</textarea>
+      <button class="btn-save" data-idx="${idx}">Save</button>
+      <button class="btn-cancel">Cancel</button>
+    `;
+    li.appendChild(form);
+    return;
+  }
+
+  // Save edit
+  if (target.classList.contains("btn-save")) {
+    const idx = parseInt(target.dataset.idx);
+    const form = target.closest(".edit-form");
+    const en = form.querySelector(".edit-en").value.trim();
+    const cn = form.querySelector(".edit-cn").value.trim();
+    const example = form.querySelector(".edit-example").value.trim();
+    if (!en) return;
+    const words = loadWords();
+    if (words[idx]) {
+      words[idx].en = en;
+      words[idx].cn = cn;
+      words[idx].example = example;
+      if (cn) words[idx].llmDone = true;
+      saveWords(words);
+      render();
+    }
+    return;
+  }
+
+  // Cancel edit
+  if (target.classList.contains("btn-cancel")) {
+    const form = target.closest(".edit-form");
+    if (form) form.remove();
+    return;
+  }
+
+  // Mark dictation result
+  if (target.classList.contains("mark-btn")) {
+    const idx = parseInt(target.dataset.idx);
+    const type = target.dataset.type;
+    const words = loadWords();
+    const w = words[idx];
+    if (!w) return;
+    const records = loadRecords();
+    const now = new Date().toISOString();
+
+    if (type === "know") {
+      records.push({ en: w.en, time: now, knowCn: true, canSpell: false });
+      saveRecords(records);
+      render();
+    } else if (type === "noknow") {
+      records.push({ en: w.en, time: now, knowCn: false, canSpell: false });
+      saveRecords(records);
+      render();
+    } else if (type === "spell") {
+      records.push({ en: w.en, time: now, knowCn: true, canSpell: true });
+      saveRecords(records);
+      render();
+    } else if (type === "nospell") {
+      records.push({ en: w.en, time: now, knowCn: true, canSpell: false });
+      saveRecords(records);
+      render();
+    }
+    return;
+  }
+});
+
+// ===== Add words =====
+const wordInput = document.getElementById("wordInput");
+const addBtn = document.getElementById("addBtn");
+
+addBtn.onclick = () => {
+  const text = wordInput.value.trim();
+  if (!text) return;
+  const newWords = text.split("\n").map(l => l.trim()).filter(l => l && /^[a-zA-Z\s'-]+$/.test(l));
+  if (newWords.length === 0) { alert("Please enter valid English words (one per line)"); return; }
+  const words = loadWords();
+  const existing = new Set(words.map(w => w.en.toLowerCase()));
+  let added = 0;
+  for (const w of newWords) {
+    if (!existing.has(w.toLowerCase())) {
+      words.push({ en: w, cn: "", example: "", llmDone: false });
+      existing.add(w.toLowerCase());
+      added++;
+    }
+  }
+  saveWords(words);
+  wordInput.value = "";
+  render();
+  if (added > 0 && added < newWords.length) alert(`Added ${added} word(s), ${newWords.length - added} duplicate(s) skipped.`);
+};
+
+// Enter key to add
+wordInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    const lines = wordInput.value.trim().split("\n").filter(l => l.trim());
+    if (lines.length <= 1) { e.preventDefault(); addBtn.click(); }
+  }
+});
+
+// ===== Import Flyers 354 =====
+const importBtn = document.getElementById("importBtn");
+importBtn.onclick = async () => {
+  if (!confirm("Import Flyers 354 word list? Existing words will be kept, duplicates skipped.")) return;
+  importBtn.disabled = true; importBtn.textContent = "Loading...";
+  try {
+    const res = await fetch("flyers354-words.json");
+    const data = await res.json();
+    const words = loadWords();
+    const existing = new Set(words.map(w => w.en.toLowerCase()));
+    let added = 0;
+    for (const w of data) {
+      if (!existing.has(w.en.toLowerCase())) {
+        words.push({ en: w.en, cn: w.cn || "", example: w.example || "", llmDone: !!w.llmDone });
+        existing.add(w.en.toLowerCase());
+        added++;
+      }
+    }
+    saveWords(words);
+    render();
+    alert(`Imported ${added} word(s), ${data.length - added} duplicate(s) skipped.`);
+  } catch (e) { alert("Import failed: " + e.message); }
+  importBtn.disabled = false; importBtn.textContent = "Import Flyers 354";
+};
+
+// ===== Clear All =====
+const clearBtn = document.getElementById("clearBtn");
+clearBtn.onclick = () => {
+  if (!confirm("Delete ALL words and dictation records? This cannot be undone!")) return;
+  localStorage.removeItem(LS_WORDS);
+  localStorage.removeItem(LS_RECORDS);
+  render();
+};
+
+// ===== Init =====
+render();
+</script>
+</body>
+</html>

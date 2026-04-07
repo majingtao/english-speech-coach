@@ -1,0 +1,1512 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Realtime English Speech Coach</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", Arial, sans-serif; max-width: 960px; margin: 0 auto; padding: 16px; background: #f7f8fa; font-size: 16px; }
+    h2 { margin-bottom: 12px; font-size: 1.3em; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+    button { padding: 12px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; touch-action: manipulation; }
+    #startBtn { background: #4caf50; color: #fff; }
+    #startBtn:disabled { background: #aaa; }
+    #stopBtn { background: #f44336; color: #fff; }
+    #stopBtn:disabled { background: #aaa; }
+    #ttsStopBtn { background: #ff9800; color: #fff; font-size: 0.85em; padding: 8px 14px; display: none; }
+    #settingsBtn { background: #607d8b; color: #fff; font-size: 0.85em; padding: 8px 14px; }
+    .status { font-size: 0.85em; color: #666; }
+    .status.connected { color: #4caf50; }
+    .status.error { color: #f44336; }
+    #configSummary { font-size: 0.8em; color: #888; margin-bottom: 6px; padding: 0 2px; }
+    #settingsPanel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    #settingsPanel.open { max-height: 400px; }
+    .settings-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .settings-row label { font-size: 0.9em; white-space: nowrap; }
+    .settings-row select { padding: 5px 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85em; max-width: 260px; }
+    .toggle { display: inline-flex; align-items: center; font-size: 0.9em; cursor: pointer; user-select: none; white-space: nowrap; }
+    .toggle input { margin-right: 5px; width: 18px; height: 18px; cursor: pointer; }
+    .model-info { font-size: 0.8em; color: #888; }
+    .label-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 4px; }
+    .label { font-weight: bold; font-size: 0.85em; color: #555; }
+    .box { border: 1px solid #ddd; border-radius: 8px; padding: 12px; min-height: 50px; background: #fff; white-space: pre-wrap; word-wrap: break-word; font-size: 0.95em; line-height: 1.6; }
+    #partial { color: #888; font-style: italic; }
+    #history { min-height: 80px; }
+    #history.editable { border-color: #2196f3; outline: none; background: #f0f7ff; }
+    #history.editable:focus { border-color: #1976d2; box-shadow: 0 0 0 2px rgba(33,150,243,0.2); }
+    .edit-hint { font-size: 0.75em; color: #2196f3; margin-top: 2px; display: none; }
+    #assistant { min-height: 100px; }
+    #offlineActions { display: none; margin-top: 8px; gap: 8px; }
+    #offlineActions button { padding: 10px 20px; font-size: 0.95em; }
+    #sendBtn { background: #4caf50; color: #fff; }
+    #discardBtn { background: #9e9e9e; color: #fff; }
+    #replayBtn { background: #2196f3; color: #fff; font-size: 0.78em; padding: 4px 12px; border-radius: 6px; display: none; }
+    /* Mode tabs */
+    .mode-tabs { display: flex; gap: 0; margin-bottom: 12px; }
+    .mode-tab { padding: 10px 24px; border: 1px solid #ccc; background: #e8e8e8; color: #555; cursor: pointer; font-size: 0.95em; font-weight: 600; }
+    .mode-tab:first-child { border-radius: 8px 0 0 8px; }
+    .mode-tab:last-child { border-radius: 0 8px 8px 0; }
+    .mode-tab.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+    /* Exam panel */
+    .exam-settings { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .exam-settings select { padding: 5px 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85em; }
+    #examStartBtn { background: #1976d2; color: #fff; padding: 10px 20px; }
+    #examStartBtn:disabled { background: #aaa; }
+    /* Chat area for exam */
+    #examChat { min-height: 200px; max-height: 60vh; overflow-y: auto; }
+    .chat-msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; max-width: 85%; }
+    .chat-examiner { background: #e3f2fd; color: #1565c0; margin-right: auto; }
+    .chat-student { background: #e8f5e9; color: #2e7d32; margin-left: auto; text-align: right; }
+    .chat-system { background: #fff3e0; color: #e65100; margin: 0 auto; text-align: center; font-size: 0.85em; }
+    #examInput { display: none; margin-top: 8px; gap: 8px; flex-direction: column; }
+    #examTextField { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; resize: vertical; box-sizing: border-box; font-family: inherit; }
+    #examBtnRow { display: flex; gap: 8px; justify-content: flex-end; }
+    #examSendBtn { background: #4caf50; color: #fff; padding: 10px 18px; white-space: nowrap; }
+    #examRecordBtn { background: #ff5722; color: #fff; padding: 10px 14px; font-size: 0.85em; white-space: nowrap; }
+    #examProgress { font-size: 0.85em; color: #555; margin-bottom: 8px; padding: 4px 8px; background: #f5f5f5; border-radius: 6px; }
+    .chat-judge { background: #fce4ec; color: #c62828; margin: 0 auto; text-align: center; font-size: 0.9em; padding: 6px 12px; }
+    .chat-judge.correct { background: #e8f5e9; color: #2e7d32; }
+    .chat-hint { background: #fff8e1; color: #f57f17; font-size: 0.85em; margin: 0 auto; text-align: center; position: relative; }
+    .speak-btn { background: none; border: none; cursor: pointer; font-size: 1em; padding: 0 0 0 6px; vertical-align: middle; opacity: 0.7; }
+    .speak-btn:hover { opacity: 1; }
+    .speak-btn.playing { opacity: 1; }
+    #examRecordBtn.recording { background: #b71c1c; }
+    /* Sound wave animation for recording */
+    .wave-bars { display: inline-flex; align-items: center; gap: 2px; height: 16px; margin-left: 6px; vertical-align: middle; }
+    .wave-bars span { display: inline-block; width: 3px; background: #fff; border-radius: 2px; animation: waveBar 1s ease-in-out infinite; }
+    .wave-bars span:nth-child(1) { animation-delay: 0s; }
+    .wave-bars span:nth-child(2) { animation-delay: 0.15s; }
+    .wave-bars span:nth-child(3) { animation-delay: 0.3s; }
+    .wave-bars span:nth-child(4) { animation-delay: 0.45s; }
+    .wave-bars span:nth-child(5) { animation-delay: 0.6s; }
+    @keyframes waveBar {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+    /* Section visibility */
+    .section-freetalk, .section-exam { display: none; }
+    .section-freetalk.visible, .section-exam.visible { display: block; }
+    #examInput.visible { display: flex; flex-direction: column; }
+    /* Voice Only mode — hide text UI, keep only mic + status */
+    .voice-only #examChat, .voice-only #examProgress, .voice-only .label-row,
+    .voice-only #examTextField, .voice-only #examSendBtn { display: none !important; }
+    .voice-only #examBtnRow { justify-content: center; }
+    .voice-only #examRecordBtn { padding: 20px 40px; font-size: 1.3em; border-radius: 50%; }
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      h2 { font-size: 1.15em; }
+      button { padding: 14px 20px; font-size: 1.05em; border-radius: 10px; }
+      .settings-row select { max-width: 180px; }
+      .box { padding: 10px; font-size: 1em; line-height: 1.7; border-radius: 10px; }
+      .mode-tab { padding: 12px 16px; font-size: 1em; }
+    }
+  </style>
+</head>
+<body>
+  <h2>English Speech Coach</h2>
+
+  <!-- Mode tabs -->
+  <div class="mode-tabs">
+    <div class="mode-tab active" data-mode="freetalk">Free Talk</div>
+    <div class="mode-tab" data-mode="exam">Exam Practice</div>
+  </div>
+
+  <!-- ===== FREE TALK SECTION ===== -->
+  <div id="freetalkSection" class="section-freetalk visible">
+    <div class="controls">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <button id="ttsStopBtn">Stop speaking</button>
+      <span id="ttsLoading" style="display:none;font-size:0.85em;color:#888;">&#9203; Loading audio...</span>
+      <button id="settingsBtn">&#9881; Settings</button>
+      <span id="statusText" class="status"></span>
+    </div>
+
+    <div id="configSummary"></div>
+
+    <div id="settingsPanel">
+      <div class="settings-row">
+        <label>LLM: <select id="llmModelSelect"><option>Loading...</option></select></label>
+        <label class="toggle"><input type="checkbox" id="llmProxyToggle" /> Proxy</label>
+      </div>
+      <div class="settings-row">
+        <label>ASR: <select id="asrModelSelect"><option>Loading...</option></select></label>
+        <span id="asrModelInfo" class="model-info"></span>
+      </div>
+      <div class="settings-row">
+        <label class="toggle"><input type="checkbox" id="ttsToggle" checked /> &#128264; Voice reply</label>
+        <label>Engine: <select id="ttsEngine">
+          <option value="edge">Edge-TTS</option>
+          <option value="piper">Piper (Local)</option>
+          <option value="vibevoice">VibeVoice (Local)</option>
+          <option value="system">System</option>
+        </select></label>
+        <label>Voice: <select id="voiceSelect"><option value="">Loading...</option></select></label>
+      </div>
+    </div>
+
+    <div class="label-row"><span class="label" id="partialLabel">Realtime</span></div>
+    <div id="partial" class="box"></div>
+
+    <div class="label-row"><span class="label">Recognized sentences</span></div>
+    <div id="history" class="box"></div>
+    <div class="edit-hint" id="editHint">You can edit the text above before sending</div>
+    <div id="offlineActions">
+      <button id="sendBtn">Send to Coach</button>
+      <button id="discardBtn">Discard</button>
+    </div>
+
+    <div class="label-row">
+      <span class="label">Coach feedback</span>
+      <button id="replayBtn">&#128257; Replay</button>
+    </div>
+    <div id="assistant" class="box"></div>
+  </div>
+
+  <!-- ===== EXAM PRACTICE SECTION ===== -->
+  <div id="examSection" class="section-exam">
+    <div class="exam-settings">
+      <label>Test: <select id="examTestSelect">
+        <option value="">Loading...</option>
+      </select></label>
+      <label>Start from: <select id="examPartSelect">
+        <option value="all">All (Warm-up → Part 4)</option>
+        <option value="1">Part 1</option>
+        <option value="2">Part 2</option>
+        <option value="3">Part 3</option>
+        <option value="4">Part 4</option>
+      </select></label>
+      <button id="examStartBtn">Start Exam</button>
+      <label class="toggle" style="font-size:0.85em;"><input type="checkbox" id="voiceOnlyToggle" /> Voice Only</label>
+      <button id="ttsStopBtn2" style="background:#ff9800;color:#fff;font-size:0.85em;padding:8px 14px;display:none;">Stop speaking</button>
+      <span id="ttsLoading2" style="display:none;font-size:0.85em;color:#888;">&#9203; Loading audio...</span>
+      <span id="examStatus" class="status"></span>
+    </div>
+
+    <div id="examProgress"></div>
+    <div class="label-row"><span class="label">Exam Conversation</span></div>
+    <div id="examChat" class="box"></div>
+
+    <div id="examInput">
+      <textarea id="examTextField" rows="3" placeholder="Type your answer or use mic..."></textarea>
+      <div id="examBtnRow">
+        <button id="examRecordBtn">&#127908; Mic</button>
+        <button id="examSendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ===== Config =====
+const IS_PROXIED = location.port === "8443";
+const _origin = location.protocol + "//" + location.host;
+const _base = IS_PROXIED ? _origin : "http://" + location.hostname + ":8443";
+const TTS_URL = _base + "/tts";
+const TTS_VOICES_URL = _base + "/tts/voices";
+const ASR_MODELS_URL = _base + "/asr/models";
+const ASR_OFFLINE_URL = _base + "/asr";
+const LLM_MODELS_URL = _base + "/llm/models";
+const LLM_CHAT_URL = _base + "/llm/chat";
+const TARGET_SAMPLE_RATE = 16000;
+
+// ===== Mode switching =====
+let currentMode = "freetalk";
+const modeTabs = document.querySelectorAll(".mode-tab");
+const freetalkSection = document.getElementById("freetalkSection");
+const examSection = document.getElementById("examSection");
+
+modeTabs.forEach(tab => {
+  tab.onclick = () => {
+    const mode = tab.dataset.mode;
+    if (mode === currentMode) return;
+    // Release mic from previous mode
+    if (currentMode === "freetalk") releaseFreeTalkMic();
+    if (currentMode === "exam") releaseExamMic();
+    currentMode = mode;
+    modeTabs.forEach(t => t.classList.toggle("active", t.dataset.mode === mode));
+    freetalkSection.classList.toggle("visible", mode === "freetalk");
+    examSection.classList.toggle("visible", mode === "exam");
+  };
+});
+
+// =======================================
+// FREE TALK (all existing code)
+// =======================================
+let ws = null;
+let audioCtx = null;
+let sourceNode = null;
+let processorNode = null;
+let mediaStream = null;
+let lastSegment = -1;
+let sentences = [];
+let offlineChunks = [];
+let lastFeedbackText = "";
+let pendingOfflineText = "";
+
+const partialEl = document.getElementById("partial");
+const partialLabel = document.getElementById("partialLabel");
+const historyEl = document.getElementById("history");
+const assistantEl = document.getElementById("assistant");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const statusText = document.getElementById("statusText");
+const ttsToggle = document.getElementById("ttsToggle");
+const ttsStopBtn = document.getElementById("ttsStopBtn");
+const ttsEngineSelect = document.getElementById("ttsEngine");
+const voiceSelect = document.getElementById("voiceSelect");
+const asrModelSelect = document.getElementById("asrModelSelect");
+const asrModelInfo = document.getElementById("asrModelInfo");
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsPanel = document.getElementById("settingsPanel");
+const configSummary = document.getElementById("configSummary");
+const llmProxyToggle = document.getElementById("llmProxyToggle");
+const offlineActions = document.getElementById("offlineActions");
+const sendBtn = document.getElementById("sendBtn");
+const discardBtn = document.getElementById("discardBtn");
+const replayBtn = document.getElementById("replayBtn");
+const editHint = document.getElementById("editHint");
+const llmModelSelect = document.getElementById("llmModelSelect");
+
+function setHistoryEditable(on) {
+  historyEl.contentEditable = on ? "true" : "false";
+  historyEl.classList.toggle("editable", on);
+  editHint.style.display = on ? "block" : "none";
+}
+
+// Settings Panel
+settingsBtn.onclick = () => {
+  settingsPanel.classList.toggle("open");
+  settingsBtn.textContent = settingsPanel.classList.contains("open") ? "\u2715 Close" : "\u2699 Settings";
+};
+
+function updateConfigSummary() {
+  const m = getSelectedAsrModel();
+  const asrName = m ? m.label.split("(")[0].trim() : "?";
+  const asrType = m ? m.type : "?";
+  const engine = ttsEngineSelect.value;
+  const voice = voiceSelect.value || "-";
+  const voiceReply = ttsToggle.checked ? "ON" : "OFF";
+  const llm = getSelectedLlm();
+  const llmName = llm ? llm.label : "?";
+  const proxyStatus = llmProxyToggle.checked ? "Proxy" : "Direct";
+  configSummary.textContent = "LLM: " + llmName + " (" + proxyStatus + ") | ASR: " + asrName + " (" + asrType + ") | TTS: " + engine + " (" + voice + ")";
+}
+
+// ===== LLM Models =====
+let llmModels = [];
+
+async function loadLlmModels() {
+  try {
+    const res = await fetch(LLM_MODELS_URL);
+    if (res.ok) llmModels = await res.json();
+  } catch (e) { console.warn("Failed to load LLM models:", e); }
+  if (llmModels.length === 0) {
+    llmModels = [{ provider: "ollama", model: "qwen2.5:7b", label: "Qwen 2.5 7B (Local)" }];
+  }
+  llmModelSelect.innerHTML = "";
+  for (const m of llmModels) {
+    const opt = document.createElement("option");
+    opt.value = m.provider + ":" + m.model;
+    opt.textContent = m.label;
+    llmModelSelect.appendChild(opt);
+  }
+  if (llmModels.length > 0) llmProxyToggle.checked = !!llmModels[0].use_proxy;
+  updateConfigSummary();
+}
+
+function getSelectedLlm() {
+  const val = llmModelSelect.value || "";
+  const [provider, ...rest] = val.split(":");
+  const model = rest.join(":");
+  const llm = llmModels.find(m => m.provider === provider && m.model === model) || llmModels[0];
+  return { ...llm, use_proxy: llmProxyToggle.checked };
+}
+
+llmModelSelect.onchange = () => {
+  // Auto-set proxy toggle based on model's default
+  const val = llmModelSelect.value || "";
+  const [provider, ...rest] = val.split(":");
+  const model = rest.join(":");
+  const llm = llmModels.find(m => m.provider === provider && m.model === model);
+  if (llm) llmProxyToggle.checked = !!llm.use_proxy;
+  updateConfigSummary();
+};
+llmProxyToggle.onchange = updateConfigSummary;
+loadLlmModels();
+
+// ASR Models
+let asrModels = [];
+
+async function loadAsrModels() {
+  try {
+    const res = await fetch(ASR_MODELS_URL);
+    if (res.ok) asrModels = await res.json();
+  } catch (e) {
+    console.warn("Failed to load ASR models:", e);
+  }
+  if (asrModels.length === 0) {
+    asrModels = [{ id: "zipformer-en-2023-06-26", port: 6006, type: "streaming", label: "Default (streaming)" }];
+  }
+  asrModelSelect.innerHTML = "";
+  for (const m of asrModels) {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = m.label;
+    if (m.id === "whisper-medium-en") opt.selected = true;
+    asrModelSelect.appendChild(opt);
+  }
+  updateAsrMode();
+}
+
+function getSelectedAsrModel() {
+  return asrModels.find((m) => m.id === asrModelSelect.value) || asrModels[0];
+}
+
+function isOfflineMode() {
+  return getSelectedAsrModel().type === "offline";
+}
+
+function updateAsrMode() {
+  const m = getSelectedAsrModel();
+  if (m.type === "offline") {
+    asrModelInfo.textContent = "Record \u2192 Stop \u2192 Confirm \u2192 Coach";
+    partialLabel.textContent = "Status";
+  } else {
+    asrModelInfo.textContent = "Real-time streaming (auto-send)";
+    partialLabel.textContent = "Realtime";
+  }
+  updateConfigSummary();
+}
+
+asrModelSelect.onchange = updateAsrMode;
+loadAsrModels();
+
+// ===== TTS (shared by both modes) =====
+const synth = window.speechSynthesis;
+let systemVoices = [];
+let edgeVoices = [];
+let vibeVoices = [];
+let ttsUnlocked = false;
+const ttsAudio = new Audio();
+ttsAudio.autoplay = false;
+let ttsAudioUnlocked = false;
+let _lastBlobUrl = null;
+// Shared AudioContext for decoding TTS when HTML5 Audio autoplay is blocked
+let _ttsAudioCtx = null;
+let _ttsSourceNode = null;
+function _getTtsAudioCtx() {
+  if (!_ttsAudioCtx || _ttsAudioCtx.state === "closed")
+    _ttsAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ttsAudioCtx.state === "suspended") _ttsAudioCtx.resume();
+  return _ttsAudioCtx;
+}
+
+function loadSystemVoices() {
+  systemVoices = synth.getVoices().filter((v) => v.lang.startsWith("en"));
+}
+synth.onvoiceschanged = () => { loadSystemVoices(); if (ttsEngineSelect.value === "system") updateVoiceDropdown(); };
+loadSystemVoices();
+
+async function loadEdgeVoices() {
+  try {
+    const res = await fetch(TTS_VOICES_URL + "?engine=edge");
+    if (res.ok) edgeVoices = await res.json();
+  } catch (e) { console.warn("Edge voices load failed:", e); }
+  if (ttsEngineSelect.value === "edge") updateVoiceDropdown();
+}
+loadEdgeVoices();
+
+async function loadVibeVoices() {
+  try {
+    const res = await fetch(TTS_VOICES_URL + "?engine=vibevoice");
+    if (res.ok) vibeVoices = await res.json();
+  } catch (e) { console.warn("VibeVoice voices load failed:", e); }
+  if (ttsEngineSelect.value === "vibevoice") updateVoiceDropdown();
+}
+loadVibeVoices();
+
+function updateVoiceDropdown() {
+  const engine = ttsEngineSelect.value;
+  voiceSelect.innerHTML = "";
+  if (engine === "edge") {
+    if (edgeVoices.length === 0) { voiceSelect.innerHTML = '<option value="">Loading...</option>'; return; }
+    for (const v of edgeVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.name + (v.gender === "Female" ? " \u2640" : " \u2642");
+      if (v.name === "en-US-AnaNeural") opt.selected = true;
+      voiceSelect.appendChild(opt);
+    }
+  } else if (engine === "piper") {
+    voiceSelect.innerHTML = '<option value="amy">amy (en-US)</option>';
+  } else if (engine === "vibevoice") {
+    if (vibeVoices.length === 0) { voiceSelect.innerHTML = '<option value="">Loading...</option>'; return; }
+    for (const v of vibeVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.label || v.name;
+      if (v.name === "en-Carter_man") opt.selected = true;
+      voiceSelect.appendChild(opt);
+    }
+  } else {
+    if (systemVoices.length === 0) { voiceSelect.innerHTML = '<option value="">No English voices</option>'; return; }
+    for (const v of systemVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.name + " (" + v.lang + ")";
+      voiceSelect.appendChild(opt);
+    }
+  }
+  updateConfigSummary();
+}
+ttsEngineSelect.onchange = () => { updateVoiceDropdown(); updateConfigSummary(); };
+ttsToggle.onchange = () => { if (ttsToggle.checked) unlockAudio(); updateConfigSummary(); };
+voiceSelect.onchange = updateConfigSummary;
+updateVoiceDropdown();
+
+function extractEnglishText(text) {
+  return text.split("\n").filter((l) => {
+    const t = l.trim();
+    if (!t) return false;
+    return ((t.match(/[\u4e00-\u9fff]/g) || []).length / t.length) < 0.3;
+  }).join(". ")
+    .replace(/#{1,6}\s*/g, "").replace(/\*{1,3}([^*]+)\*{1,3}/g, "$1")
+    .replace(/`([^`]+)`/g, "$1").replace(/[_~>|]/g, "")
+    .replace(/^\d+\.\s*/gm, "").replace(/^[-*]\s*/gm, "")
+    .replace(/\s{2,}/g, " ").trim();
+}
+
+function unlockAudio() {
+  if (!ttsUnlocked) {
+    const s = new SpeechSynthesisUtterance(""); s.volume = 0; s.lang = "en-US"; synth.speak(s);
+    ttsUnlocked = true;
+  }
+  if (!ttsAudioUnlocked) {
+    ttsAudio.src = "data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAABIYGAAAAAAAAAAAAAAAAAAAA//tQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//tQZB4P8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==";
+    ttsAudio.volume = 0;
+    ttsAudio.play().then(() => { ttsAudio.pause(); ttsAudio.volume = 1; ttsAudioUnlocked = true; }).catch(() => {});
+  }
+}
+
+function speakWithSystem(text) {
+  synth.cancel();
+  if (_ttsResolve) { _ttsResolve(); _ttsResolve = null; }
+  const toSpeak = extractEnglishText(text);
+  if (!toSpeak) return Promise.resolve();
+  return new Promise((resolve) => {
+    _ttsResolve = resolve;
+    const done = () => { ttsStopBtn.style.display = "none"; ttsStopBtn2.style.display = "none"; if (_activeSpeakBtn) _onTtsEndForBtn(); if (_ttsResolve === resolve) { _ttsResolve = null; } resolve(); };
+    const voice = systemVoices.find((v) => v.name === voiceSelect.value) || systemVoices[0];
+    const chunks = []; const parts = toSpeak.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [toSpeak];
+    let cur = "";
+    for (const s of parts) { if ((cur + s).length > 200) { if (cur.trim()) chunks.push(cur.trim()); cur = s; } else cur += s; }
+    if (cur.trim()) chunks.push(cur.trim());
+    for (let i = 0; i < chunks.length; i++) {
+      const u = new SpeechSynthesisUtterance(chunks[i]); u.lang = "en-US"; u.rate = 0.9;
+      if (voice) u.voice = voice;
+      if (i === 0) u.onstart = () => { ttsStopBtn.style.display = "inline-block"; ttsStopBtn2.style.display = "inline-block"; };
+      if (i === chunks.length - 1) { u.onend = done; u.onerror = done; }
+      synth.speak(u);
+    }
+  });
+}
+
+const ttsLoading = document.getElementById("ttsLoading");
+const ttsLoading2 = document.getElementById("ttsLoading2");
+let _ttsLoadingTimer = null;
+function _showTtsLoading() { ttsLoading.style.display = "inline"; ttsLoading2.style.display = "inline"; }
+function _hideTtsLoading() { if (_ttsLoadingTimer) { clearTimeout(_ttsLoadingTimer); _ttsLoadingTimer = null; } ttsLoading.style.display = "none"; ttsLoading2.style.display = "none"; }
+
+async function speakWithServer(text, engine) {
+  stopTts();
+  const toSpeak = extractEnglishText(text);
+  if (!toSpeak) return;
+  ttsStopBtn.style.display = "inline-block";
+  ttsStopBtn2.style.display = "inline-block";
+  const body = { engine, text: toSpeak };
+  if (engine === "piper") {
+    body.speed = 1.0;
+  } else if (engine === "edge") {
+    body.voice = voiceSelect.value || "en-US-AnaNeural";
+    body.rate = "-10%";
+  } else if (engine === "vibevoice") {
+    body.voice = voiceSelect.value || "en-Carter_man";
+    body.cfg_scale = 1.5;
+  }
+  _ttsLoadingTimer = setTimeout(_showTtsLoading, 1000);
+  try {
+    const res = await fetch(TTS_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    _hideTtsLoading();
+    if (!res.ok) { console.warn("TTS server error:", res.status); ttsStopBtn.style.display = "none"; ttsStopBtn2.style.display = "none"; return; }
+    const arrayBuf = await res.arrayBuffer();
+    console.log("[TTS] received", arrayBuf.byteLength, "bytes, content-type:", res.headers.get("content-type"));
+    if (arrayBuf.byteLength < 256) { console.warn("[TTS] audio too small, skipping"); ttsStopBtn.style.display = "none"; ttsStopBtn2.style.display = "none"; return; }
+    const ctx = _getTtsAudioCtx();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0));
+    return new Promise((resolve) => {
+      _ttsResolve = resolve;
+      const done = () => { ttsStopBtn.style.display = "none"; ttsStopBtn2.style.display = "none"; _ttsSourceNode = null; if (_activeSpeakBtn) _onTtsEndForBtn(); if (_ttsResolve === resolve) { _ttsResolve = null; } resolve(); };
+      if (_ttsSourceNode) { try { _ttsSourceNode.stop(); } catch(e) {} }
+      _ttsSourceNode = ctx.createBufferSource();
+      _ttsSourceNode.buffer = audioBuf;
+      _ttsSourceNode.connect(ctx.destination);
+      _ttsSourceNode.onended = done;
+      _ttsSourceNode.start();
+    });
+  } catch (e) { console.error("TTS error:", e); _hideTtsLoading(); ttsStopBtn.style.display = "none"; ttsStopBtn2.style.display = "none"; }
+}
+
+function speakText(text) {
+  if (!ttsToggle.checked) return;
+  doSpeak(text);
+}
+
+let _ttsResolve = null; // resolve callback for current doSpeak promise
+
+function doSpeak(text) {
+  const engine = ttsEngineSelect.value;
+  if (engine === "system") return speakWithSystem(text);
+  return speakWithServer(text, engine);
+}
+
+function stopTts() {
+  synth.cancel();
+  if (!ttsAudio.paused) { ttsAudio.pause(); ttsAudio.currentTime = 0; }
+  if (_ttsSourceNode) { try { _ttsSourceNode.stop(); } catch(e) {} _ttsSourceNode = null; }
+  _hideTtsLoading();
+  ttsStopBtn.style.display = "none";
+  ttsStopBtn2.style.display = "none";
+  if (_activeSpeakBtn) _onTtsEndForBtn();
+  // Resolve any pending doSpeak promise so await doesn't hang
+  if (_ttsResolve) { _ttsResolve(); _ttsResolve = null; }
+}
+
+const ttsStopBtn2 = document.getElementById("ttsStopBtn2");
+ttsStopBtn.onclick = stopTts;
+ttsStopBtn2.onclick = stopTts;
+
+// Replay (debounced — ignore rapid clicks while speaking)
+let _replayBusy = false;
+replayBtn.onclick = async () => {
+  if (!lastFeedbackText || _replayBusy) return;
+  _replayBusy = true;
+  replayBtn.disabled = true;
+  unlockAudio();
+  try { await doSpeak(lastFeedbackText); } catch {}
+  replayBtn.disabled = false;
+  _replayBusy = false;
+};
+
+// Status
+function setStatus(text, cls) {
+  statusText.textContent = text;
+  statusText.className = "status" + (cls ? " " + cls : "");
+}
+
+// Audio
+function downsample(buffer, inputRate) {
+  if (inputRate === TARGET_SAMPLE_RATE) return new Float32Array(buffer);
+  const ratio = inputRate / TARGET_SAMPLE_RATE;
+  const newLen = Math.round(buffer.length / ratio);
+  const result = new Float32Array(newLen);
+  for (let i = 0; i < newLen; i++) {
+    const idx = Math.round(i * ratio);
+    result[i] = Math.max(-1, Math.min(1, buffer[idx] || 0));
+  }
+  return result;
+}
+
+// Unified LLM streaming reader (works for all providers via /llm/chat)
+async function streamLLM(targetEl, llm, messages, onDone) {
+  targetEl.textContent = "Thinking...";
+  try {
+    const res = await fetch(LLM_CHAT_URL, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        provider: llm.provider,
+        model: llm.model,
+        messages: messages,
+        stream: true,
+        use_proxy: !!llm.use_proxy
+      })
+    });
+    targetEl.textContent = "";
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let buf = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n"); buf = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const obj = JSON.parse(line);
+          if (obj.content) targetEl.textContent += obj.content;
+        } catch (e) {}
+      }
+    }
+    if (onDone) onDone(targetEl.textContent);
+  } catch (err) { targetEl.textContent = "LLM error: " + err.message; }
+}
+
+// Free talk LLM call
+async function askLLM(text) {
+  replayBtn.style.display = "none";
+  const llm = getSelectedLlm();
+  const messages = [
+    { role: "system", content: "You are an English speaking coach for a child learner (Cambridge Flyers / KET level). Give short, friendly feedback. Always include a Chinese explanation." },
+    { role: "user", content: "Please help correct this spoken English:\n" + text + "\n\nRespond in this format:\n1. Corrected sentence\n2. More natural version\n3. Key mistakes\n4. Chinese explanation\n5. One practice sentence" }
+  ];
+  await streamLLM(assistantEl, llm, messages, (fullText) => {
+    lastFeedbackText = fullText;
+    if (lastFeedbackText) replayBtn.style.display = "inline-block";
+    speakText(fullText);
+  });
+}
+
+// ASR: Streaming
+function onAsrMessage(event) {
+  if (typeof event.data !== "string") return;
+  try {
+    const msg = JSON.parse(event.data);
+    const text = (msg.text || "").trim();
+    const segment = msg.segment;
+    partialEl.textContent = text;
+    if (segment !== lastSegment && lastSegment >= 0) {
+      const completed = sentences[sentences.length - 1];
+      if (completed && completed.trim()) askLLM(completed.trim());
+    }
+    if (segment !== lastSegment) { sentences.push(text); lastSegment = segment; }
+    else sentences[sentences.length - 1] = text;
+    historyEl.textContent = sentences.filter((s) => s.trim()).map((s, i) => (i + 1) + ". " + s).join("\n");
+  } catch (e) {}
+}
+
+async function startStreaming() {
+  const model = getSelectedAsrModel();
+  const wsUrl = IS_PROXIED
+    ? (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws?model=" + model.id
+    : "ws://" + location.hostname + ":" + model.port;
+  setStatus("Connecting...");
+  ws = new WebSocket(wsUrl);
+  ws.binaryType = "arraybuffer";
+  ws.onopen = async () => {
+    setStatus("Listening...", "connected");
+    const micOk = await ensureFreeTalkMic();
+    if (!micOk) { ws.close(); return; }
+    sourceNode = audioCtx.createMediaStreamSource(mediaStream);
+    processorNode = audioCtx.createScriptProcessor(4096, 1, 1);
+    processorNode.onaudioprocess = (e) => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) return;
+      const raw = e.inputBuffer.getChannelData(0);
+      const resampled = downsample(raw, audioCtx.sampleRate);
+      ws.send(resampled.buffer);
+    };
+    sourceNode.connect(processorNode);
+    processorNode.connect(audioCtx.destination);
+  };
+  ws.onmessage = onAsrMessage;
+  ws.onerror = () => setStatus("WebSocket error", "error");
+  ws.onclose = () => { setStatus("Disconnected"); startBtn.disabled = false; stopBtn.disabled = true; asrModelSelect.disabled = false; };
+}
+
+function stopStreaming() {
+  if (processorNode) { processorNode.disconnect(); processorNode = null; }
+  if (sourceNode) { sourceNode.disconnect(); sourceNode = null; }
+  // Keep mediaStream & audioCtx alive for reuse (persistent mic pattern)
+  if (ws && ws.readyState === WebSocket.OPEN) { ws.send("Done"); ws.close(); }
+  ws = null;
+  const last = sentences.length > 0 ? sentences[sentences.length - 1] : "";
+  if (last && last.trim()) askLLM(last.trim());
+}
+
+// Persistent mic for Free Talk (acquire once, reuse across recordings)
+async function ensureFreeTalkMic() {
+  if (mediaStream && mediaStream.getTracks().some(t => t.readyState === "live")) {
+    if (!audioCtx || audioCtx.state === "closed") {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } else if (audioCtx.state === "suspended") {
+      await audioCtx.resume();
+    }
+    return true;
+  }
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } });
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return true;
+  } catch (err) {
+    setStatus("Microphone denied", "error");
+    return false;
+  }
+}
+
+function releaseFreeTalkMic() {
+  if (processorNode) { processorNode.disconnect(); processorNode = null; }
+  if (sourceNode) { sourceNode.disconnect(); sourceNode = null; }
+  if (audioCtx) { audioCtx.close(); audioCtx = null; }
+  if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+}
+
+// ASR: Offline
+async function startOffline() {
+  partialEl.textContent = "Recording... Click Stop when done.";
+  setStatus("Recording...", "connected");
+  offlineActions.style.display = "none";
+  const micOk = await ensureFreeTalkMic();
+  if (!micOk) { startBtn.disabled = false; stopBtn.disabled = true; asrModelSelect.disabled = false; return; }
+  try {
+    sourceNode = audioCtx.createMediaStreamSource(mediaStream);
+    processorNode = audioCtx.createScriptProcessor(4096, 1, 1);
+    offlineChunks = [];
+    processorNode.onaudioprocess = (e) => {
+      const raw = e.inputBuffer.getChannelData(0);
+      offlineChunks.push(downsample(raw, audioCtx.sampleRate));
+    };
+    sourceNode.connect(processorNode);
+    processorNode.connect(audioCtx.destination);
+  } catch (e) {
+    console.error("[free-talk] startOffline error:", e);
+    setStatus("Mic error: " + e.message, "error");
+    startBtn.disabled = false; stopBtn.disabled = true; asrModelSelect.disabled = false;
+  }
+}
+
+async function stopOffline() {
+  if (processorNode) { processorNode.disconnect(); processorNode = null; }
+  if (sourceNode) { sourceNode.disconnect(); sourceNode = null; }
+  if (offlineChunks.length === 0) { partialEl.textContent = "No audio recorded."; setStatus("Stopped"); return; }
+  partialEl.textContent = "Recognizing...";
+  setStatus("Processing...");
+  try {
+    const totalLen = offlineChunks.reduce((sum, c) => sum + c.length, 0);
+    const allSamples = new Float32Array(totalLen);
+    let offset = 0;
+    for (const c of offlineChunks) { allSamples.set(c, offset); offset += c.length; }
+    offlineChunks = [];
+    const model = getSelectedAsrModel();
+    const res = await fetch(ASR_OFFLINE_URL + "?model=" + model.id, {
+      method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: allSamples.buffer,
+    });
+    const data = await res.json();
+    const text = (data.text || "").trim();
+    partialEl.textContent = "";
+    if (text) {
+      sentences.push(text);
+      historyEl.textContent = sentences.filter((s) => s.trim()).map((s, i) => (i + 1) + ". " + s).join("\n");
+      pendingOfflineText = text;
+      offlineActions.style.display = "flex";
+      setHistoryEditable(true);
+      setStatus("Edit if needed, then Send or Discard");
+    } else { partialEl.textContent = "No speech detected."; setStatus("Stopped"); }
+  } catch (e) {
+    offlineChunks = [];
+    partialEl.textContent = "Recognition error: " + e.message;
+    setStatus("Stopped");
+  }
+}
+
+sendBtn.onclick = () => {
+  offlineActions.style.display = "none";
+  setHistoryEditable(false);
+  const editedText = (historyEl.innerText || "").replace(/^\d+\.\s*/gm, "").trim();
+  if (editedText) {
+    if (sentences.length > 0) sentences[sentences.length - 1] = editedText;
+    historyEl.textContent = sentences.filter((s) => s.trim()).map((s, i) => (i + 1) + ". " + s).join("\n");
+    askLLM(editedText);
+  }
+  pendingOfflineText = "";
+  setStatus("Stopped");
+};
+
+discardBtn.onclick = () => {
+  offlineActions.style.display = "none";
+  setHistoryEditable(false);
+  if (sentences.length > 0) sentences.pop();
+  historyEl.textContent = sentences.filter((s) => s.trim()).map((s, i) => (i + 1) + ". " + s).join("\n");
+  pendingOfflineText = "";
+  setStatus("Discarded. Ready.");
+};
+
+async function start() {
+  unlockAudio();
+  sentences = [];
+  lastSegment = -1;
+  partialEl.textContent = "";
+  historyEl.textContent = "";
+  assistantEl.textContent = "";
+  offlineActions.style.display = "none";
+  setHistoryEditable(false);
+  replayBtn.style.display = "none";
+  lastFeedbackText = "";
+  pendingOfflineText = "";
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+  asrModelSelect.disabled = true;
+  try {
+    if (isOfflineMode()) await startOffline();
+    else await startStreaming();
+  } catch (e) {
+    console.error("[free-talk] start error:", e);
+    setStatus("Error: " + e.message, "error");
+    startBtn.disabled = false; stopBtn.disabled = true; asrModelSelect.disabled = false;
+  }
+}
+
+async function stop() {
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+  asrModelSelect.disabled = false;
+  if (isOfflineMode()) await stopOffline();
+  else { stopStreaming(); setStatus("Stopped"); }
+}
+
+startBtn.onclick = start;
+stopBtn.onclick = stop;
+setTimeout(updateConfigSummary, 500);
+
+// =======================================
+// EXAM PRACTICE (State Machine + LLM Judge)
+// =======================================
+const examTestSelect = document.getElementById("examTestSelect");
+const examPartSelect = document.getElementById("examPartSelect");
+const examStartBtn = document.getElementById("examStartBtn");
+const voiceOnlyToggle = document.getElementById("voiceOnlyToggle");
+
+// Voice Only mode — hide chat/text, mic-only interaction
+voiceOnlyToggle.onchange = () => {
+  examSection.classList.toggle("voice-only", voiceOnlyToggle.checked);
+};
+const examStatus = document.getElementById("examStatus");
+const examChat = document.getElementById("examChat");
+const examInput = document.getElementById("examInput");
+const examTextField = document.getElementById("examTextField");
+const examSendBtn = document.getElementById("examSendBtn");
+const examRecordBtn = document.getElementById("examRecordBtn");
+const examProgress = document.getElementById("examProgress");
+
+let examBank = null;
+let examActive = false;
+let examRecording = false;
+let examAudioCtx = null;       // persists for entire exam session
+let examSourceNode = null;
+let examProcessorNode = null;
+let examMediaStream = null;    // persists for entire exam session
+let examOfflineChunks = [];
+const JUDGE_URL = _base + "/llm/judge";
+
+// Acquire mic + AudioContext once for the whole exam
+async function ensureExamMic() {
+  if (examMediaStream && examMediaStream.getTracks().some(t => t.readyState === "live")) {
+    // AudioContext may have been closed (not just suspended) — recreate if needed
+    if (!examAudioCtx || examAudioCtx.state === "closed") {
+      examAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } else if (examAudioCtx.state === "suspended") {
+      await examAudioCtx.resume();
+    }
+    return true;
+  }
+  try {
+    examMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } });
+    examAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return true;
+  } catch (err) {
+    setExamStatus("Microphone denied", "error");
+    return false;
+  }
+}
+
+function releaseExamMic() {
+  if (examProcessorNode) { examProcessorNode.disconnect(); examProcessorNode = null; }
+  if (examSourceNode) { examSourceNode.disconnect(); examSourceNode = null; }
+  if (examAudioCtx) { examAudioCtx.close(); examAudioCtx = null; }
+  if (examMediaStream) { examMediaStream.getTracks().forEach(t => t.stop()); examMediaStream = null; }
+  if (_examRecTimer) { clearInterval(_examRecTimer); _examRecTimer = null; }
+  examRecording = false;
+}
+
+// Exam state machine
+const ES = {
+  steps: [],
+  stepIdx: 0,
+  retries: 0,
+  score: { correct: 0, retry: 0, showAnswer: 0 },
+  waiting: false,
+  _requireRepeat: null,
+};
+
+// Load question bank JSON
+async function loadExamBank() {
+  if (examBank) return;
+  try {
+    let res = await fetch(_base + "/question-bank.json");
+    if (!res.ok) res = await fetch("question-bank.json");
+    if (res.ok) examBank = await res.json();
+  } catch (e) { console.warn("Failed to load exam bank:", e); }
+  if (examBank && examBank.tests) populateTestSelect();
+}
+function populateTestSelect() {
+  examTestSelect.innerHTML = "";
+  for (const [id, test] of Object.entries(examBank.tests)) {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = test.label || id;
+    examTestSelect.appendChild(opt);
+  }
+}
+loadExamBank();
+
+let _activeSpeakBtn = null;
+
+function _onTtsEndForBtn() {
+  if (_activeSpeakBtn) { _activeSpeakBtn.textContent = "\ud83d\udd0a"; _activeSpeakBtn.classList.remove("playing"); _activeSpeakBtn = null; }
+}
+
+function addExamMsg(role, text) {
+  const div = document.createElement("div");
+  const cls = role === "examiner" ? "chat-examiner" : role === "student" ? "chat-student"
+    : role === "judge-ok" ? "chat-judge correct" : role === "judge-fail" ? "chat-judge"
+    : role === "hint" ? "chat-hint" : "chat-system";
+  div.className = "chat-msg " + cls;
+
+  // Add speak button for hint/answer messages that contain English sentences
+  // Show speak button for hint messages with English content (skip short phrases like "Try again.")
+  const needSpeak = role === "hint" && /(?:Hint|Answer|Sample|Your turn to ask):/i.test(text);
+  if (needSpeak) {
+    // Extract the sentence part after emoji prefix (e.g. "💡 Hint: xxx" → "xxx")
+    const sentenceMatch = text.match(/(?:Hint|Answer|Sample|Please type|Your turn to ask):\s*(.+)/i);
+    const speakText = sentenceMatch ? sentenceMatch[1].trim() : text.replace(/^[\u{1F000}-\u{1FFFF}\s]+/u, "").trim();
+
+    const span = document.createElement("span");
+    span.textContent = text;
+    div.appendChild(span);
+
+    const btn = document.createElement("button");
+    btn.className = "speak-btn";
+    btn.textContent = "\ud83d\udd0a";
+    btn.title = "Play";
+    btn.onclick = () => {
+      if (_activeSpeakBtn === btn) {
+        // Currently playing this one — stop
+        stopTts();
+        btn.textContent = "\ud83d\udd0a"; btn.classList.remove("playing"); _activeSpeakBtn = null;
+        return;
+      }
+      // Reset previous
+      if (_activeSpeakBtn) { _activeSpeakBtn.textContent = "\ud83d\udd0a"; _activeSpeakBtn.classList.remove("playing"); }
+      _activeSpeakBtn = btn;
+      btn.textContent = "\u23f9"; btn.classList.add("playing");
+      doSpeak(speakText);
+    };
+    div.appendChild(btn);
+  } else {
+    div.textContent = text;
+  }
+
+  examChat.appendChild(div);
+  examChat.scrollTop = examChat.scrollHeight;
+  return div;
+}
+
+function setExamStatus(text, cls) {
+  examStatus.textContent = text;
+  examStatus.className = "status" + (cls ? " " + cls : "");
+}
+
+function updateExamProgress() {
+  const step = ES.steps[ES.stepIdx];
+  if (!step) { examProgress.textContent = ""; return; }
+  const total = ES.steps.filter(s => s.type === "judge" || s.type === "judge-question").length;
+  const done = ES.steps.slice(0, ES.stepIdx).filter(s => s.type === "judge" || s.type === "judge-question").length;
+  examProgress.textContent = (step.label || "") + "  (" + done + "/" + total + " questions)";
+}
+
+// Build flat step list from question bank
+function buildSteps(testNum, startPart) {
+  const steps = [];
+  const test = examBank.tests[testNum];
+  if (!test) return steps;
+
+  const doWarmup = startPart === "all";
+  const parts = startPart === "all" ? ["1","2","3","4"] : [startPart];
+
+  if (doWarmup && examBank.warmup) {
+    for (let i = 0; i < examBank.warmup.length; i++) {
+      const w = examBank.warmup[i];
+      steps.push({ type: "speak", text: w.examiner, label: "Warm-up" });
+      steps.push({ type: "judge", question: w.examiner, expected: "", sample: w.sample || "", open_ended: true,
+        label: "Warm-up " + (i+1) + "/" + examBank.warmup.length });
+    }
+  }
+
+  for (const pn of parts) {
+    const part = test["part" + pn];
+    if (!part) continue;
+
+    if (pn === "1") {
+      steps.push({ type: "speak", text: part.intro, label: "Part 1 — " + part.title });
+      if (part.example) steps.push({ type: "speak", text: part.example });
+      if (part.instruction) steps.push({ type: "speak", text: part.instruction });
+      part.questions.forEach((q, i) => {
+        steps.push({ type: "speak", text: q.examiner, label: "Part 1: " + (i+1) + "/" + part.questions.length });
+        steps.push({ type: "judge", question: q.examiner, expected: q.expected, prompt: q.prompt,
+          label: "Part 1: " + (i+1) + "/" + part.questions.length });
+      });
+    }
+
+    if (pn === "2") {
+      steps.push({ type: "speak", text: part.intro, label: "Part 2 — " + part.title });
+      part.phaseA.forEach((q, i) => {
+        steps.push({ type: "speak", text: q.examiner, label: "Part 2A: " + (i+1) + "/" + part.phaseA.length });
+        steps.push({ type: "judge", question: q.examiner, expected: q.expected,
+          label: "Part 2A: " + (i+1) + "/" + part.phaseA.length });
+      });
+      steps.push({ type: "speak", text: part.transition, label: "Part 2 — Now you ask" });
+      part.phaseB.forEach((q, i) => {
+        steps.push({ type: "show-hint", hint: q.hint, label: "Part 2B: " + (i+1) + "/" + part.phaseB.length });
+        steps.push({ type: "judge-question", expected_question: q.expected_question, hint: q.hint,
+          label: "Part 2B: " + (i+1) + "/" + part.phaseB.length });
+        steps.push({ type: "speak", text: q.answer, label: "Part 2B: answer" });
+      });
+    }
+
+    if (pn === "3") {
+      steps.push({ type: "speak", text: part.intro, label: "Part 3 — " + part.title });
+      if (part.pic1) steps.push({ type: "speak", text: part.pic1 });
+      if (part.instruction) steps.push({ type: "speak", text: part.instruction });
+      part.pictures.forEach((pic) => {
+        steps.push({ type: "speak", text: "Picture " + pic.pic + ": " + pic.prompt, label: "Part 3: Picture " + pic.pic });
+        pic.sentences.forEach((s, si) => {
+          // Support both old format (string) and new format ({text, hint})
+          const sText = typeof s === "string" ? s : s.text;
+          const sHint = typeof s === "string" ? pic.prompt : s.hint;
+          steps.push({ type: "judge", question: "Picture " + pic.pic + " — " + sHint,
+            expected: sText, hint_text: sHint,
+            label: "Part 3: Pic " + pic.pic + " (" + (si+1) + "/" + pic.sentences.length + ")" });
+        });
+      });
+    }
+
+    if (pn === "4") {
+      steps.push({ type: "speak", text: part.intro, label: "Part 4 — " + part.title });
+      part.questions.forEach((q, i) => {
+        steps.push({ type: "speak", text: q.examiner, label: "Part 4: " + (i+1) + "/" + part.questions.length });
+        steps.push({ type: "judge", question: q.examiner, expected: "", sample: q.sample || "", open_ended: true,
+          label: "Part 4: " + (i+1) + "/" + part.questions.length });
+      });
+      if (part.followups && part.followups.length > 0) {
+        part.followups.forEach((q, i) => {
+          steps.push({ type: "speak", text: q.examiner, label: "Part 4+: " + (i+1) + "/" + part.followups.length });
+          steps.push({ type: "judge", question: q.examiner, expected: "", sample: q.sample || "", open_ended: true,
+            label: "Part 4+: " + (i+1) + "/" + part.followups.length });
+        });
+      }
+    }
+  }
+
+  steps.push({ type: "speak", text: "OK. Thank you. Goodbye.", label: "End" });
+  steps.push({ type: "end" });
+  return steps;
+}
+
+// Execute current step
+async function runStep() {
+  if (!examActive || ES.stepIdx >= ES.steps.length) return;
+  const step = ES.steps[ES.stepIdx];
+  updateExamProgress();
+
+  if (step.type === "speak") {
+    addExamMsg("examiner", step.text);
+    if (ttsToggle.checked) await doSpeak(step.text);
+    ES.stepIdx++;
+    const next = ES.steps[ES.stepIdx];
+    if (next && (next.type === "judge" || next.type === "judge-question")) {
+      ES.waiting = true;
+      ES.retries = 0;
+      ES._requireRepeat = null;
+      setExamStatus("Your turn", "connected");
+      examSendBtn.disabled = false;
+      examRecordBtn.disabled = false;
+      examTextField.focus();
+      updateExamProgress();
+    } else if (next && next.type === "show-hint") {
+      setTimeout(() => runStep(), 300);
+    } else {
+      setTimeout(() => runStep(), ttsToggle.checked ? 300 : 500);
+    }
+  }
+  else if (step.type === "show-hint") {
+    addExamMsg("hint", "Your turn to ask: " + step.hint);
+    ES.stepIdx++;
+    ES.waiting = true;
+    ES.retries = 0;
+    ES._requireRepeat = null;
+    setExamStatus("Form a question using the hint", "connected");
+    examSendBtn.disabled = false;
+    examRecordBtn.disabled = false;
+    examTextField.focus();
+    updateExamProgress();
+  }
+  else if (step.type === "judge" || step.type === "judge-question") {
+    // Consecutive judge step (no preceding speak) — e.g. Part 3 multiple sentences per picture
+    if (step.hint_text) {
+      addExamMsg("examiner", step.hint_text);
+      if (ttsToggle.checked) await doSpeak(step.hint_text);
+    }
+    ES.waiting = true;
+    ES.retries = 0;
+    ES._requireRepeat = null;
+    setExamStatus("Your turn — next sentence", "connected");
+    examSendBtn.disabled = false;
+    examRecordBtn.disabled = false;
+    examTextField.focus();
+    updateExamProgress();
+  }
+  else if (step.type === "end") {
+    const s = ES.score;
+    addExamMsg("system", "Exam complete!  \u2705 " + s.correct + " correct  |  \ud83d\udd04 " + s.retry + " retried  |  \ud83d\udcd6 " + s.showAnswer + " shown answer");
+    setExamStatus("Exam finished");
+    examActive = false;
+    examSendBtn.disabled = true;
+    examRecordBtn.disabled = true;
+    examStartBtn.disabled = false;
+    examTestSelect.disabled = false;
+    examPartSelect.disabled = false;
+    examProgress.textContent = "";
+  }
+}
+
+// Call /llm/judge
+async function callJudge(question, expected, student) {
+  const llm = getSelectedLlm();
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 45000);
+  try {
+    const res = await fetch(JUDGE_URL, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      signal: ctrl.signal,
+      body: JSON.stringify({
+        provider: llm.provider, model: llm.model, use_proxy: !!llm.use_proxy,
+        question, expected, student
+      })
+    });
+    clearTimeout(timer);
+    if (!res.ok) return { ok: false, fb: "Server error " + res.status, cn: "服务器错误", ans: expected };
+    return await res.json();
+  } catch (e) {
+    clearTimeout(timer);
+    const msg = e.name === "AbortError" ? "Judge timed out (45s)" : "Network error: " + e.message;
+    return { ok: false, fb: msg, cn: e.name === "AbortError" ? "判���超时" : "网络错误", ans: expected, timeout: e.name === "AbortError" };
+  }
+}
+
+// Handle student answer submission
+async function submitExamAnswer(text) {
+  if (!examActive || !ES.waiting) return;
+  ES.waiting = false;
+  examSendBtn.disabled = true;
+  examRecordBtn.disabled = true;
+  addExamMsg("student", text);
+
+  try {
+  // If in repeat mode (shown standard answer, must type it)
+  if (ES._requireRepeat) {
+    setExamStatus("Checking...");
+    const norm = s => s.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
+    const nStudent = norm(text), nExpected = norm(ES._requireRepeat);
+    // Accept if normalized text matches, or if >70% of key words are present
+    const expWords = nExpected.split(" ").filter(w => w.length > 2);
+    const matched = expWords.filter(w => nStudent.includes(w)).length;
+    const ratio = expWords.length > 0 ? matched / expWords.length : 0;
+    if (nStudent === nExpected || ratio >= 0.7) {
+      addExamMsg("judge-ok", "\u2705 Good. Let's continue.");
+      ES._requireRepeat = null;
+      ES.stepIdx++;
+      setTimeout(() => runStep(), 800);
+    } else {
+      addExamMsg("judge-fail", "\u274c Please type: " + ES._requireRepeat);
+      ES.waiting = true;
+      examSendBtn.disabled = false;
+      examRecordBtn.disabled = false;
+      examTextField.focus();
+    }
+    return;
+  }
+
+  setExamStatus("Judging...");
+  const step = ES.steps[ES.stepIdx];
+  const isQ = step.type === "judge-question";
+  const question = isQ ? ("Form a question using hint: " + step.hint) : step.question;
+  const expected = isQ ? step.expected_question : (step.expected || "");
+  // For open-ended questions, pass sample as reference hint to judge
+  const sample = step.sample || "";
+  const judgeExpected = expected || (sample ? "(open-ended, sample: " + sample + ")" : "");
+  const result = await callJudge(question, judgeExpected, text);
+
+  // Safe TTS wrapper — never let TTS block exam flow for more than 5s
+  async function safeTtsSpeak(text) {
+    if (!ttsToggle.checked) return;
+    try { await Promise.race([doSpeak(text), new Promise(r => setTimeout(r, 5000))]); } catch {}
+  }
+
+  if (result.ok) {
+    addExamMsg("judge-ok", "\u2705 Correct!");
+    await safeTtsSpeak("Correct!");
+    ES.score.correct++;
+    ES.stepIdx++;
+    setTimeout(() => runStep(), 300);
+  } else if (result.timeout) {
+    // Judge timed out — don't count as wrong, auto-skip to avoid getting stuck
+    addExamMsg("system", "\u23f3 Judge timed out. Skipping this question.");
+    if (expected) addExamMsg("hint", "\ud83d\udcd6 Expected: " + expected);
+    else if (sample) addExamMsg("hint", "\ud83d\udca1 Sample: " + sample);
+    ES.stepIdx++;
+    setTimeout(() => runStep(), 800);
+  } else {
+    ES.retries++;
+    addExamMsg("judge-fail", "\u274c " + (result.fb || "Not quite."));
+    await safeTtsSpeak("Not quite.");
+    if (result.cn) addExamMsg("hint", "\ud83c\udde8\ud83c\uddf3 " + result.cn);
+
+    // Speak the correct answer so the child hears it
+    const correctText = result.ans || expected || sample || "";
+    if (correctText) await safeTtsSpeak(correctText);
+
+    if (step.open_ended) {
+      // Open-ended questions (Part 4, Warmup): show feedback + sample, then move on
+      if (ES.retries >= 2) {
+        if (sample) addExamMsg("hint", "\ud83d\udca1 Sample: " + sample);
+        addExamMsg("system", "Let's move on.");
+        ES.score.showAnswer++;
+        ES.stepIdx++;
+        setTimeout(() => runStep(), 1000);
+      } else {
+        if (sample) addExamMsg("hint", "\ud83d\udca1 Sample: " + sample);
+        addExamMsg("hint", "Try again.");
+        ES.score.retry++;
+        ES.waiting = true;
+        examSendBtn.disabled = false;
+        examRecordBtn.disabled = false;
+        examTextField.focus();
+      }
+    } else {
+      // Structured questions (Part 1-3): retry then require repeat
+      const ans = expected || "";
+      if (ES.retries >= 2) {
+        addExamMsg("hint", "\ud83d\udcd6 Answer: " + ans);
+        addExamMsg("hint", "\ud83d\udc49 Please type the correct answer to continue.");
+        ES.score.showAnswer++;
+        ES._requireRepeat = ans;
+        setExamStatus("Type the correct answer", "connected");
+      } else {
+        if (ans) addExamMsg("hint", "\ud83d\udca1 Hint: " + ans);
+        addExamMsg("hint", "Try again.");
+        ES.score.retry++;
+      }
+      ES.waiting = true;
+      examSendBtn.disabled = false;
+      examRecordBtn.disabled = false;
+      examTextField.focus();
+    }
+  }
+  } catch (err) {
+    // Safety net: always re-enable input on unexpected errors
+    console.error("[exam] submitExamAnswer error:", err);
+    addExamMsg("system", "Error: " + err.message + " — try again.");
+    ES.waiting = true;
+    examSendBtn.disabled = false;
+    examRecordBtn.disabled = false;
+    setExamStatus("Error occurred, try again", "error");
+  }
+}
+
+// Send text answer
+function sendExamAnswer() {
+  const text = examTextField.value.trim();
+  if (!text || !examActive) return;
+  examTextField.value = "";
+  submitExamAnswer(text);
+}
+
+examSendBtn.onclick = sendExamAnswer;
+examTextField.onkeydown = (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendExamAnswer(); } };
+
+// Start exam
+examStartBtn.onclick = async () => {
+  if (!examBank) {
+    await loadExamBank();
+    if (!examBank) { setExamStatus("Failed to load question bank", "error"); return; }
+  }
+  unlockAudio();
+  // Acquire mic once at exam start (avoids repeated permission prompts)
+  const micOk = await ensureExamMic();
+  if (!micOk) return;
+
+  examActive = true;
+  examChat.innerHTML = "";
+  examInput.style.display = "flex";
+  examStartBtn.disabled = true;
+  examTestSelect.disabled = true;
+  examPartSelect.disabled = true;
+  examSendBtn.disabled = true;
+  examRecordBtn.disabled = true;
+
+  const testNum = examTestSelect.value;
+  const startPart = examPartSelect.value;
+
+  ES.score = { correct: 0, retry: 0, showAnswer: 0 };
+  ES._requireRepeat = null;
+  ES.steps = buildSteps(testNum, startPart);
+  ES.stepIdx = 0;
+
+  const testLabel = examBank.tests[testNum]?.label || testNum;
+  addExamMsg("system", "Starting " + testLabel + (startPart === "all" ? " (full exam)" : " Part " + startPart));
+  await runStep();
+};
+
+// Mic recording for exam — reuses persistent stream/AudioContext
+let _examMicBusy = false; // re-entrance guard
+let _examRecTimer = null; // recording duration timer
+examRecordBtn.onclick = async () => {
+  if (_examMicBusy) return;
+  _examMicBusy = true;
+  try {
+  if (examRecording) {
+    // === STOP recording ===
+    examRecording = false;
+    if (_examRecTimer) { clearInterval(_examRecTimer); _examRecTimer = null; }
+    examRecordBtn.innerHTML = "&#127908; Mic";
+    examRecordBtn.classList.remove("recording");
+
+    // Disconnect processor but keep stream + AudioContext alive
+    if (examProcessorNode) { examProcessorNode.disconnect(); examProcessorNode = null; }
+    if (examSourceNode) { examSourceNode.disconnect(); examSourceNode = null; }
+
+    if (examOfflineChunks.length === 0) { setExamStatus("No audio", "error"); return; }
+
+    try {
+      setExamStatus("Recognizing...");
+      const totalLen = examOfflineChunks.reduce((sum, c) => sum + c.length, 0);
+      const allSamples = new Float32Array(totalLen);
+      let off = 0;
+      for (const c of examOfflineChunks) { allSamples.set(c, off); off += c.length; }
+      examOfflineChunks = [];
+
+      const asrModel = getSelectedAsrModel();
+      let _asrSec = 0;
+      const _asrTick = setInterval(() => { _asrSec++; setExamStatus("Recognizing (" + asrModel.id + ")... " + _asrSec + "s"); }, 1000);
+      setExamStatus("Recognizing (" + asrModel.id + ")... 0s");
+      const asrCtrl = new AbortController();
+      const asrTimer = setTimeout(() => asrCtrl.abort(), 60000);
+      try {
+        const res = await fetch(ASR_OFFLINE_URL + "?model=" + asrModel.id, {
+          method: "POST", headers: { "Content-Type": "application/octet-stream" },
+          signal: asrCtrl.signal, body: allSamples.buffer,
+        });
+        clearTimeout(asrTimer);
+        clearInterval(_asrTick);
+        const data = await res.json();
+        const text = (data.text || "").trim();
+        if (text) {
+          if (voiceOnlyToggle.checked) {
+            // Voice Only mode: auto-send recognized text
+            setExamStatus("Heard: " + text, "connected");
+            submitExamAnswer(text);
+          } else {
+            examTextField.value = text;
+            setExamStatus("Recognized. Edit if needed, then Send.", "connected");
+            examTextField.focus();
+          }
+        } else {
+          setExamStatus("No speech detected. Type your answer instead.", "error");
+        }
+      } catch (e) {
+        clearTimeout(asrTimer);
+        clearInterval(_asrTick);
+        const msg = e.name === "AbortError" ? "ASR timed out (60s). Type your answer instead." : "ASR error: " + e.message;
+        setExamStatus(msg, "error");
+      }
+      // Always ensure input is usable after ASR attempt
+      if (examActive && ES.waiting) {
+        examSendBtn.disabled = false;
+        examRecordBtn.disabled = false;
+      }
+    } catch (e2) {
+      console.error("[exam] stop-recording error:", e2);
+      setExamStatus("Error: " + e2.message, "error");
+      examOfflineChunks = [];
+    }
+  } else {
+    // === START recording ===
+    unlockAudio();
+    const micOk = await ensureExamMic();
+    if (!micOk) return;
+
+    try {
+      if (examAudioCtx.state === "suspended") await examAudioCtx.resume();
+      examSourceNode = examAudioCtx.createMediaStreamSource(examMediaStream);
+      examProcessorNode = examAudioCtx.createScriptProcessor(4096, 1, 1);
+      examOfflineChunks = [];
+
+      examProcessorNode.onaudioprocess = (e) => {
+        const raw = e.inputBuffer.getChannelData(0);
+        examOfflineChunks.push(downsample(raw, examAudioCtx.sampleRate));
+      };
+      examSourceNode.connect(examProcessorNode);
+      examProcessorNode.connect(examAudioCtx.destination);
+
+      examRecording = true;
+      examRecordBtn.innerHTML = '\u23F9 Stop <span class="wave-bars"><span></span><span></span><span></span><span></span><span></span></span>';
+      examRecordBtn.classList.add("recording");
+      // Show recording duration so user knows it's active
+      let recSec = 0;
+      setExamStatus("Recording... 0s", "connected");
+      _examRecTimer = setInterval(() => {
+        recSec++;
+        setExamStatus("Recording... " + recSec + "s", "connected");
+      }, 1000);
+    } catch (e) {
+      console.error("[exam] start-recording error:", e);
+      setExamStatus("Mic error: " + e.message, "error");
+      // Clean up partial state
+      if (examProcessorNode) { try { examProcessorNode.disconnect(); } catch(x) {} examProcessorNode = null; }
+      if (examSourceNode) { try { examSourceNode.disconnect(); } catch(x) {} examSourceNode = null; }
+      examRecording = false;
+    }
+  }
+  } finally { _examMicBusy = false; }
+};
+
+// Reset exam
+function resetExam() {
+  examActive = false;
+  examChat.innerHTML = "";
+  examInput.style.display = "none";
+  examStartBtn.disabled = false;
+  examTestSelect.disabled = false;
+  examPartSelect.disabled = false;
+  examProgress.textContent = "";
+  setExamStatus("");
+  stopTts();
+  releaseExamMic();
+  ES.steps = [];
+  ES.stepIdx = 0;
+  ES._requireRepeat = null;
+}
+
+examTestSelect.onchange = resetExam;
+examPartSelect.onchange = resetExam;
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

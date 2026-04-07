@@ -1,0 +1,93 @@
+# ============================================================
+# English Speech Coach — root .gitignore
+# Subprojects (realtime/admin/service, realtime/admin/web,
+# realtime/h5) carry their own .gitignore which still applies.
+# This file adds repo-wide bottom-line rules.
+# ============================================================
+
+# ---- Secrets & local config ----
+*.env
+*.env.local
+.env
+.env.*
+!.env.example
+!.env.development
+!.env.production
+
+# HTTPS keys — never commit
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+
+# ---- Node ----
+node_modules/
+dist/
+build/
+.cache/
+.turbo/
+.pnpm-store/
+*.tsbuildinfo
+.eslintcache
+
+# ---- Java / Maven ----
+target/
+*.class
+*.jar
+*.war
+!**/lib/*.jar
+.mvn/wrapper/maven-wrapper.jar
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- IDE / OS ----
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Project-specific large / generated assets ----
+
+# Model weights & ASR/TTS resources (huge, downloadable)
+realtime/models/
+realtime/repo/
+whisper-tiny-en/
+whisper-tiny-en.tar.bz2
+audio/
+assets/vibevoice/
+book/
+
+# VibeVoice editable install (separate upstream repo)
+vibevoice_repo/
+
+# yudao upstream SQL seed dumps — contain real-format placeholder
+# keys (Aliyun/Volcengine/DingTalk) that trigger GitHub secret
+# scanning. Keep them on disk for local DB init but not in VCS.
+realtime/admin/service/sql/
+
+# Generated WAV / audio output
+*.wav
+*.mp3
+*.ogg
+
+# Backups
+*.bak
+*.old
+*~

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Flyers Word Book</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", Arial, sans-serif; max-width: 960px; margin: 0 auto; padding: 16px; background: #f7f8fa; font-size: 16px; }
+    h2 { margin-bottom: 12px; font-size: 1.3em; display: flex; align-items: center; gap: 10px; }
+    h2 a { font-size: 0.7em; color: #1976d2; text-decoration: none; }
+    h2 a:hover { text-decoration: underline; }
+
+    /* Filter bar */
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; align-items: center; }
+    .filter-bar label { font-size: 0.9em; color: #555; }
+    .filter-bar select, .filter-bar input { padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em; }
+    .filter-bar input { flex: 1; min-width: 120px; max-width: 260px; }
+
+    /* Letter nav */
+    .letter-nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+    .letter-nav a { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center;
+      background: #e3f2fd; color: #1565c0; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9em; }
+    .letter-nav a:hover, .letter-nav a.active { background: #1565c0; color: #fff; }
+    .letter-nav a.disabled { background: #eee; color: #bbb; pointer-events: none; }
+
+    /* Letter section */
+    .letter-section { margin-bottom: 20px; }
+    .letter-heading { font-size: 1.2em; font-weight: bold; color: #1565c0; border-bottom: 2px solid #e3f2fd;
+      padding-bottom: 4px; margin-bottom: 10px; scroll-margin-top: 60px; }
+
+    /* Word cards */
+    .word-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .word-card { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #fff;
+      border: 1px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.15s;
+      user-select: none; -webkit-tap-highlight-color: transparent; }
+    .word-card:hover { border-color: #1976d2; background: #e3f2fd; }
+    .word-card:active, .word-card.playing { border-color: #1565c0; background: #bbdefb; transform: scale(0.97); }
+    .word-card .word { font-weight: 600; font-size: 1em; color: #212121; }
+    .word-card .pos { font-size: 0.75em; color: #888; font-style: italic; }
+    .word-card .variant { font-size: 0.72em; color: #af6e00; }
+    .word-card .speaker { font-size: 1em; opacity: 0.5; }
+    .word-card:hover .speaker { opacity: 1; }
+    .word-card.learned { background: #e8f5e9; border-color: #a5d6a7; }
+    .word-card.learned .word { color: #2e7d32; }
+    .word-card .star { font-size: 0.9em; opacity: 0.3; padding: 2px; margin-left: auto; }
+    .word-card .star:hover { opacity: 1; transform: scale(1.3); }
+    .word-card.learned .star { opacity: 0.8; }
+
+    /* Theme tag */
+    .theme-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .theme-tag { padding: 4px 10px; border-radius: 12px; font-size: 0.8em; cursor: pointer;
+      border: 1px solid #ccc; background: #fff; transition: all 0.15s; }
+    .theme-tag:hover { border-color: #1976d2; }
+    .theme-tag.active { background: #1565c0; color: #fff; border-color: #1565c0; }
+
+    /* Stats */
+    .stats { font-size: 0.85em; color: #777; margin-bottom: 10px; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 40px; color: #999; font-size: 1.1em; }
+
+    /* TTS engine selector */
+    .tts-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 0.9em; }
+    .tts-bar select { padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; }
+    .tts-bar .tts-status { color: #888; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+
+<h2>📖 Flyers Word Book <a href="index.html">← Speech Coach</a> <a href="dictation.html">听写实验室 →</a></h2>
+
+<div class="tts-bar">
+  <label>TTS: <select id="ttsEngine">
+    <option value="edge">Edge-TTS</option>
+    <option value="piper">Piper (Local)</option>
+    <option value="system">System</option>
+  </select></label>
+  <label>Voice: <select id="voiceSelect"></select></label>
+  <span id="ttsStatus" class="tts-status"></span>
+</div>
+
+<div class="filter-bar">
+  <input type="text" id="searchInput" placeholder="Search words..." />
+  <label>Theme:
+    <select id="themeSelect">
+      <option value="">All Words</option>
+    </select>
+  </label>
+  <label>Show:
+    <select id="learnFilter">
+      <option value="">All</option>
+      <option value="unlearned">Unlearned</option>
+      <option value="learned">Learned</option>
+    </select>
+  </label>
+</div>
+
+<div class="stats"><span id="stats"></span> &nbsp; <span id="learnedStats" style="color:#2e7d32;"></span></div>
+<div class="letter-nav" id="letterNav"></div>
+<div id="wordList"><div class="loading">Loading words...</div></div>
+
+<script>
+const _base = location.origin;
+const TTS_URL = _base + "/tts";
+
+// ---- TTS (reuse same AudioContext approach as main app) ----
+let _ttsAudioCtx = null;
+let _ttsSourceNode = null;
+let _ttsPlaying = null; // currently playing card element
+
+function _getTtsAudioCtx() {
+  if (!_ttsAudioCtx || _ttsAudioCtx.state === "closed")
+    _ttsAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ttsAudioCtx.state === "suspended") _ttsAudioCtx.resume();
+  return _ttsAudioCtx;
+}
+
+function stopTts() {
+  if (_ttsSourceNode) { try { _ttsSourceNode.stop(); } catch(e) {} _ttsSourceNode = null; }
+  if (_ttsPlaying) { _ttsPlaying.classList.remove("playing"); _ttsPlaying = null; }
+  ttsStatus.textContent = "";
+}
+
+async function speak(word, cardEl) {
+  stopTts();
+  _ttsPlaying = cardEl;
+  if (cardEl) cardEl.classList.add("playing");
+
+  const engine = ttsEngine.value;
+
+  // System TTS
+  if (engine === "system") {
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = "en-US"; u.rate = 0.85;
+    u.onend = u.onerror = stopTts;
+    speechSynthesis.speak(u);
+    return;
+  }
+
+  const body = engine === "piper"
+    ? { engine: "piper", text: word, speed: 0.9 }
+    : { engine: "edge", text: word, voice: voiceSelect.value || "en-US-AnaNeural", rate: "-15%" };
+
+  ttsStatus.textContent = "⏳";
+  try {
+    const res = await fetch(TTS_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    ttsStatus.textContent = "";
+    if (!res.ok) { stopTts(); return; }
+    const arrayBuf = await res.arrayBuffer();
+    if (arrayBuf.byteLength < 256) { stopTts(); return; }
+    const ctx = _getTtsAudioCtx();
+    const audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0));
+    if (_ttsSourceNode) { try { _ttsSourceNode.stop(); } catch(e) {} }
+    _ttsSourceNode = ctx.createBufferSource();
+    _ttsSourceNode.buffer = audioBuf;
+    _ttsSourceNode.connect(ctx.destination);
+    _ttsSourceNode.onended = stopTts;
+    _ttsSourceNode.start();
+  } catch (e) {
+    console.error("TTS error:", e);
+    stopTts();
+  }
+}
+
+// ---- Elements ----
+const ttsEngine = document.getElementById("ttsEngine");
+const voiceSelect = document.getElementById("voiceSelect");
+const ttsStatus = document.getElementById("ttsStatus");
+const searchInput = document.getElementById("searchInput");
+const themeSelect = document.getElementById("themeSelect");
+const learnFilter = document.getElementById("learnFilter");
+const letterNav = document.getElementById("letterNav");
+const wordListEl = document.getElementById("wordList");
+const statsEl = document.getElementById("stats");
+
+// ---- Learned words (localStorage) ----
+const LS_KEY = "flyers_learned_words";
+let learnedSet = new Set(JSON.parse(localStorage.getItem(LS_KEY) || "[]"));
+
+function saveLearned() { localStorage.setItem(LS_KEY, JSON.stringify([...learnedSet])); }
+
+function toggleLearned(word, cardEl, e) {
+  e.stopPropagation();
+  if (learnedSet.has(word)) { learnedSet.delete(word); cardEl.classList.remove("learned"); }
+  else { learnedSet.add(word); cardEl.classList.add("learned"); }
+  saveLearned();
+  updateStats();
+}
+
+// ---- Edge-TTS voices ----
+async function loadVoices() {
+  try {
+    const res = await fetch(_base + "/tts/voices");
+    if (!res.ok) return;
+    const voices = await res.json();
+    voiceSelect.innerHTML = "";
+    const enVoices = voices.filter(v => (v.ShortName || v.name || "").startsWith("en-"));
+    for (const v of enVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.ShortName || v.name;
+      opt.textContent = v.ShortName || v.name;
+      voiceSelect.appendChild(opt);
+    }
+    if (voiceSelect.querySelector('[value="en-US-AnaNeural"]'))
+      voiceSelect.value = "en-US-AnaNeural";
+  } catch(e) {}
+}
+loadVoices();
+
+// ---- Data ----
+let allWords = [];
+let themes = {};
+let wordThemeMap = {}; // word -> [theme names]
+
+async function loadData() {
+  try {
+    const res = await fetch(_base + "/flyers-wordlist.json");
+    const data = await res.json();
+    allWords = data.words;
+    themes = data.themes;
+    // Build reverse theme map
+    for (const [theme, words] of Object.entries(themes)) {
+      for (const w of words) {
+        const key = w.toLowerCase();
+        if (!wordThemeMap[key]) wordThemeMap[key] = [];
+        wordThemeMap[key].push(theme);
+      }
+    }
+    // Populate theme select
+    for (const theme of Object.keys(themes)) {
+      const opt = document.createElement("option");
+      opt.value = theme;
+      opt.textContent = theme + " (" + themes[theme].length + ")";
+      themeSelect.appendChild(opt);
+    }
+    render();
+  } catch(e) {
+    wordListEl.innerHTML = '<div class="loading">Failed to load word list.</div>';
+  }
+}
+
+// ---- Render ----
+function updateStats() {
+  const total = allWords.length;
+  const learned = learnedSet.size;
+  const pct = total > 0 ? Math.round(learned / total * 100) : 0;
+  document.getElementById("learnedStats").textContent = learned + "/" + total + " learned (" + pct + "%)";
+}
+
+function render() {
+  const query = searchInput.value.trim().toLowerCase();
+  const theme = themeSelect.value;
+  const lf = learnFilter.value;
+
+  let filtered = allWords;
+  if (theme) {
+    const themeWords = new Set(themes[theme].map(w => w.toLowerCase()));
+    filtered = filtered.filter(w => themeWords.has(w.word.toLowerCase()));
+  }
+  if (query) {
+    filtered = filtered.filter(w => w.word.toLowerCase().includes(query));
+  }
+  if (lf === "learned") filtered = filtered.filter(w => learnedSet.has(w.word));
+  if (lf === "unlearned") filtered = filtered.filter(w => !learnedSet.has(w.word));
+
+  // Group by letter
+  const groups = {};
+  for (const w of filtered) {
+    const letter = w.letter;
+    if (!groups[letter]) groups[letter] = [];
+    groups[letter].push(w);
+  }
+
+  // Letter nav
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  letterNav.innerHTML = letters.map(l => {
+    const has = groups[l] && groups[l].length > 0;
+    return `<a href="#letter-${l}" class="${has ? "" : "disabled"}">${l}</a>`;
+  }).join("");
+
+  // Stats
+  statsEl.textContent = filtered.length + " words" + (theme ? " in " + theme : "") + (query ? ' matching "' + query + '"' : "");
+  updateStats();
+
+  // Word list
+  if (filtered.length === 0) {
+    wordListEl.innerHTML = '<div class="loading">No words found.</div>';
+    return;
+  }
+
+  let html = "";
+  for (const letter of letters) {
+    if (!groups[letter]) continue;
+    html += `<div class="letter-section"><div class="letter-heading" id="letter-${letter}">${letter}</div><div class="word-grid">`;
+    for (const w of groups[letter]) {
+      const variant = w.variant ? `<span class="variant">(${w.variant})</span>` : "";
+      const pos = w.pos ? `<span class="pos">${w.pos}</span>` : "";
+      const isLearned = learnedSet.has(w.word);
+      const cls = isLearned ? "word-card learned" : "word-card";
+      const starIcon = isLearned ? "✅" : "○";
+      const safeWord = w.word.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      html += `<div class="${cls}" data-word="${safeWord}" onclick="speak('${safeWord}', this)">
+        <span class="speaker">🔊</span>
+        <span class="word">${w.word}</span>${pos}${variant}
+        <span class="star" onclick="toggleLearned('${safeWord}', this.parentElement, event)" title="Mark as learned">${starIcon}</span>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+  wordListEl.innerHTML = html;
+}
+
+searchInput.oninput = render;
+themeSelect.onchange = render;
+learnFilter.onchange = render;
+
+loadData();
+</script>
+</body>
+</html>

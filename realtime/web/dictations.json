@@ -1,0 +1,5905 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-31T07:02:20+00:00",
+  "limit": 320,
+  "words": [
+    {
+      "word": "a few",
+      "pos": "det",
+      "letter": "F",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "a little",
+      "pos": "adv, det",
+      "letter": "L",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "a.m.",
+      "pos": "",
+      "letter": "A",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "across",
+      "pos": "prep",
+      "letter": "A",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "act",
+      "pos": "v",
+      "letter": "A",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "actor",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "actually",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "adventure",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "after",
+      "pos": "adv, conj",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "ago",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "agree",
+      "pos": "v",
+      "letter": "A",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "air",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "airport",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core",
+        "target"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "alone",
+      "pos": "adj",
+      "letter": "A",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "already",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "also",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "amazing",
+      "pos": "adj, excl",
+      "letter": "A",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "ambulance",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "anyone",
+      "pos": "pron",
+      "letter": "A",
+      "category": "pronoun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "anything",
+      "pos": "pron",
+      "letter": "A",
+      "category": "pronoun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "anywhere",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "appear",
+      "pos": "v",
+      "letter": "A",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "April",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "arrive",
+      "pos": "v",
+      "letter": "A",
+      "category": "verb",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "art",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "artist",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "as",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "as ... as",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "astronaut",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "at the moment",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "August",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "autumn",
+      "pos": "n",
+      "letter": "A",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "away",
+      "pos": "adv",
+      "letter": "A",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "backpack",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "bandage",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "bank",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "beautiful",
+      "pos": "adj",
+      "letter": "B",
+      "category": "adjective",
+      "topics": [],
+      "tags": [
+        "core",
+        "tricky"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "because",
+      "pos": "",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "bedroom",
+      "pos": "",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "beetle",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "before",
+      "pos": "adv, conj",
+      "letter": "B",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "begin",
+      "pos": "v",
+      "letter": "B",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "believe",
+      "pos": "v",
+      "letter": "B",
+      "category": "verb",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "belt",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Betty",
+      "pos": "name",
+      "letter": "B",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "bicycle",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "bin",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "biscuit",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "bit",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "bored",
+      "pos": "adj",
+      "letter": "B",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "borrow",
+      "pos": "v",
+      "letter": "B",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "bracelet",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [
+        "Flyers Party"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "break",
+      "pos": "v",
+      "letter": "B",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "breakfast",
+      "pos": "",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "bridge",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "broken",
+      "pos": "adj",
+      "letter": "B",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "brother",
+      "pos": "",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "brush",
+      "pos": "n, v",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "burn",
+      "pos": "v",
+      "letter": "B",
+      "category": "verb",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "business",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "businessman/woman",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "butter",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "butterfly",
+      "pos": "n",
+      "letter": "B",
+      "category": "noun",
+      "topics": [
+        "Flyers Party"
+      ],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "by myself",
+      "pos": "adv",
+      "letter": "B",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "by yourself",
+      "pos": "adv",
+      "letter": "B",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "calendar",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "camel",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "camera",
+      "pos": "",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "camp",
+      "pos": "v",
+      "letter": "C",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "card",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "cartoon",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Winter"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "castle",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "cave",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "century",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "cereal",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "channel",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Winter"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "chat",
+      "pos": "v",
+      "letter": "C",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "cheap",
+      "pos": "adj",
+      "letter": "C",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "chemist",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "chess",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Winter"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "chopsticks",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "club",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "collect",
+      "pos": "v",
+      "letter": "C",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "college",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "comb",
+      "pos": "n, v",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "competition",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core",
+        "tricky"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "computer",
+      "pos": "",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "concert",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "conversation",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "cooker",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "cookie",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "corner",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "costume",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Flyers Party"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "could",
+      "pos": "v",
+      "letter": "C",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "creature",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "crown",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "cushion",
+      "pos": "n",
+      "letter": "C",
+      "category": "noun",
+      "topics": [
+        "Flyers Party"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "cut",
+      "pos": "v",
+      "letter": "C",
+      "category": "verb",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "cycle",
+      "pos": "v",
+      "letter": "C",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "dark",
+      "pos": "adj",
+      "letter": "D",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "date",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "David",
+      "pos": "name",
+      "letter": "D",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "dear",
+      "pos": "adj",
+      "letter": "D",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "December",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "decide",
+      "pos": "v",
+      "letter": "D",
+      "category": "verb",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "deep",
+      "pos": "adj",
+      "letter": "D",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "delicious",
+      "pos": "adj",
+      "letter": "D",
+      "category": "adjective",
+      "topics": [],
+      "tags": [
+        "core",
+        "tricky"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "desert",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "design",
+      "pos": "n, v",
+      "letter": "D",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "designer",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "diary",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "dictionary",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "dinner",
+      "pos": "",
+      "letter": "D",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "dinosaur",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "disappear",
+      "pos": "v",
+      "letter": "D",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "do homework",
+      "pos": "phrase",
+      "letter": "D",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "drum",
+      "pos": "n",
+      "letter": "D",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "during",
+      "pos": "prep",
+      "letter": "D",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "each",
+      "pos": "det, pron",
+      "letter": "E",
+      "category": "pronoun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "eagle",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "early",
+      "pos": "adj, adv",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Earth",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "east",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "eight",
+      "pos": "n",
+      "letter": "E",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "eighteen",
+      "pos": "n",
+      "letter": "E",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "eighth",
+      "pos": "n",
+      "letter": "E",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "eighty",
+      "pos": "n",
+      "letter": "E",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "elbow",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "eleven",
+      "pos": "n",
+      "letter": "E",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "else",
+      "pos": "adv",
+      "letter": "E",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "Emma",
+      "pos": "name",
+      "letter": "E",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "empty",
+      "pos": "adj",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "end",
+      "pos": "v",
+      "letter": "E",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "engine",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "engineer",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "enormous",
+      "pos": "adj",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "enough",
+      "pos": "adj, pron",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "enter",
+      "pos": "v",
+      "letter": "E",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "entrance",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "envelope",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "environment",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [
+        "core",
+        "tricky"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "ever",
+      "pos": "adv",
+      "letter": "E",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "everywhere",
+      "pos": "adv",
+      "letter": "E",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "excellent",
+      "pos": "adj, excl",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "excited",
+      "pos": "adj",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [
+        "target"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "exit",
+      "pos": "n",
+      "letter": "E",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "expensive",
+      "pos": "adj",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [],
+      "tags": [
+        "core",
+        "tricky"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "explain",
+      "pos": "v",
+      "letter": "E",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "explore",
+      "pos": "v",
+      "letter": "E",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "extinct",
+      "pos": "adj",
+      "letter": "E",
+      "category": "adjective",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "factory",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "fall",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fall over",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "family",
+      "pos": "",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "far",
+      "pos": "adj, adv",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fast",
+      "pos": "adj, adv",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "favorite",
+      "pos": "",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "February",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "feel",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "festival",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "fetch",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fifteen",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "fifth",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "fifty",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "file",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "find out",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "finger",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "finish",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fire",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fire engine",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "fire fighter",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "fire station",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "first",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "five",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "flag",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "flashlight",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "flour",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fog",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "foggy",
+      "pos": "adj",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "follow",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "for",
+      "pos": "prep",
+      "letter": "F",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "forget",
+      "pos": "v",
+      "letter": "F",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fork",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "forty",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "four",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "fourteen",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "fourth",
+      "pos": "n",
+      "letter": "F",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "Frank",
+      "pos": "name",
+      "letter": "F",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "fridge",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "friend",
+      "pos": "",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "friendly",
+      "pos": "adj",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "frightening",
+      "pos": "adj",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "front",
+      "pos": "adj, n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "full",
+      "pos": "adj",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "fur",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "furry",
+      "pos": "adj",
+      "letter": "F",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "future",
+      "pos": "n",
+      "letter": "F",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "gate",
+      "pos": "n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "geography",
+      "pos": "n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "George",
+      "pos": "name",
+      "letter": "G",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "get to",
+      "pos": "v",
+      "letter": "G",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "glass",
+      "pos": "adj",
+      "letter": "G",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "glove",
+      "pos": "n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "glue",
+      "pos": "n, v",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "go away!",
+      "pos": "excl",
+      "letter": "G",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "go camping",
+      "pos": "phrase",
+      "letter": "G",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "go out",
+      "pos": "v",
+      "letter": "G",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "go shopping",
+      "pos": "phrase",
+      "letter": "G",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "gold",
+      "pos": "adj, n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "golf",
+      "pos": "n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "grandma",
+      "pos": "",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "grandpa",
+      "pos": "",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "group",
+      "pos": "n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "guess",
+      "pos": "n, v",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "guitar",
+      "pos": "",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "gym",
+      "pos": "n",
+      "letter": "G",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "half",
+      "pos": "adj, n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "happen",
+      "pos": "v",
+      "letter": "H",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "hard",
+      "pos": "adj, adv",
+      "letter": "H",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Harry",
+      "pos": "name",
+      "letter": "H",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "hate",
+      "pos": "v",
+      "letter": "H",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "have breakfast",
+      "pos": "phrase",
+      "letter": "H",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "have dinner",
+      "pos": "phrase",
+      "letter": "H",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "have lunch",
+      "pos": "phrase",
+      "letter": "H",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "hear",
+      "pos": "v",
+      "letter": "H",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "heavy",
+      "pos": "adj",
+      "letter": "H",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Helen",
+      "pos": "name",
+      "letter": "H",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "high",
+      "pos": "adj",
+      "letter": "H",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "hill",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "history",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "hole",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "holiday",
+      "pos": "",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "Holly",
+      "pos": "name",
+      "letter": "H",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "homework",
+      "pos": "",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "honey",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "hope",
+      "pos": "v",
+      "letter": "H",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "horrible",
+      "pos": "adj",
+      "letter": "H",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "hospital",
+      "pos": "",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "hotel",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "hour",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "how long",
+      "pos": "adv, int",
+      "letter": "H",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "hundred",
+      "pos": "n",
+      "letter": "H",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "hurry",
+      "pos": "v",
+      "letter": "H",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "husband",
+      "pos": "n",
+      "letter": "H",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "if",
+      "pos": "conj",
+      "letter": "I",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "if you want!",
+      "pos": "excl",
+      "letter": "I",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "important",
+      "pos": "adj",
+      "letter": "I",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "improve",
+      "pos": "v",
+      "letter": "I",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "in a minute!",
+      "pos": "excl",
+      "letter": "I",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "information",
+      "pos": "n",
+      "letter": "I",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "insect",
+      "pos": "n",
+      "letter": "I",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "instead",
+      "pos": "adv",
+      "letter": "I",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "instrument",
+      "pos": "n",
+      "letter": "I",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "interested",
+      "pos": "adj",
+      "letter": "I",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "interesting",
+      "pos": "adj",
+      "letter": "I",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "invent",
+      "pos": "v",
+      "letter": "I",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "invitation",
+      "pos": "n",
+      "letter": "I",
+      "category": "noun",
+      "topics": [
+        "Flyers Party"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "jam",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "January",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "job",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "join",
+      "pos": "v",
+      "letter": "J",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "journalist",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "journey",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "July",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "June",
+      "pos": "n",
+      "letter": "J",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "just",
+      "pos": "adv",
+      "letter": "J",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "Katy",
+      "pos": "name",
+      "letter": "K",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "keep",
+      "pos": "v",
+      "letter": "K",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "key",
+      "pos": "n",
+      "letter": "K",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "kilometre",
+      "pos": "n",
+      "letter": "K",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "kind",
+      "pos": "adj",
+      "letter": "K",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "king",
+      "pos": "n",
+      "letter": "K",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "kitchen",
+      "pos": "",
+      "letter": "K",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "knee",
+      "pos": "n",
+      "letter": "K",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "knife",
+      "pos": "n",
+      "letter": "K",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "land",
+      "pos": "v",
+      "letter": "L",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "language",
+      "pos": "n",
+      "letter": "L",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "large",
+      "pos": "adj",
+      "letter": "L",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "late",
+      "pos": "adj, adv",
+      "letter": "L",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "later",
+      "pos": "adv",
+      "letter": "L",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "lazy",
+      "pos": "adj",
+      "letter": "L",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "leave",
+      "pos": "v",
+      "letter": "L",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "left",
+      "pos": "adj, n",
+      "letter": "L",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "let",
+      "pos": "v",
+      "letter": "L",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "letter",
+      "pos": "n",
+      "letter": "L",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "library",
+      "pos": "",
+      "letter": "L",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "lie",
+      "pos": "v",
+      "letter": "L",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "lift",
+      "pos": "n",
+      "letter": "L",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "light",
+      "pos": "adj, n",
+      "letter": "L",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "look after",
+      "pos": "v",
+      "letter": "L",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "look like",
+      "pos": "v",
+      "letter": "L",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "lovely",
+      "pos": "adj",
+      "letter": "L",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "low",
+      "pos": "adj",
+      "letter": "L",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "lucky",
+      "pos": "adj",
+      "letter": "L",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "lunch",
+      "pos": "",
+      "letter": "L",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "magazine",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "make sure",
+      "pos": "v",
+      "letter": "M",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "manager",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "March",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "married",
+      "pos": "adj",
+      "letter": "M",
+      "category": "adjective",
+      "topics": [
+        "Winter"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "match",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "maths",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "May",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "meal",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "mechanic",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "medicine",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "meet",
+      "pos": "v",
+      "letter": "M",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "meeting",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "member",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "metal",
+      "pos": "adj, n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Michael",
+      "pos": "name",
+      "letter": "M",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "midday",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "middle",
+      "pos": "n, adj",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "midnight",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "might",
+      "pos": "v",
+      "letter": "M",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "million",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "mind",
+      "pos": "v",
+      "letter": "M",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "minute",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "missing",
+      "pos": "adj",
+      "letter": "M",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "mix",
+      "pos": "v",
+      "letter": "M",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "money",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "month",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "motorway",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "much",
+      "pos": "adv, det, pron",
+      "letter": "M",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "museum",
+      "pos": "n",
+      "letter": "M",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "necklace",
+      "pos": "n",
+      "letter": "N",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "nest",
+      "pos": "n",
+      "letter": "N",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "news",
+      "pos": "n",
+      "letter": "N",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "newspaper",
+      "pos": "n",
+      "letter": "N",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "next",
+      "pos": "adj, adv",
+      "letter": "N",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "nine",
+      "pos": "n",
+      "letter": "N",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "nineteen",
+      "pos": "n",
+      "letter": "N",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "ninety",
+      "pos": "n",
+      "letter": "N",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "ninth",
+      "pos": "n",
+      "letter": "N",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "no problem!",
+      "pos": "excl",
+      "letter": "N",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "no-one",
+      "pos": "pron",
+      "letter": "N",
+      "category": "pronoun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "noisy",
+      "pos": "adj",
+      "letter": "N",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "north",
+      "pos": "n",
+      "letter": "N",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "November",
+      "pos": "n",
+      "letter": "N",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "nowhere",
+      "pos": "adv",
+      "letter": "N",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "ocean",
+      "pos": "n",
+      "letter": "O",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "October",
+      "pos": "n",
+      "letter": "O",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "octopus",
+      "pos": "n",
+      "letter": "O",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "of course",
+      "pos": "adv",
+      "letter": "O",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "office",
+      "pos": "n",
+      "letter": "O",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "Oliver",
+      "pos": "name",
+      "letter": "O",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "olives",
+      "pos": "n",
+      "letter": "O",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "once",
+      "pos": "adv",
+      "letter": "O",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "one",
+      "pos": "n",
+      "letter": "O",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "online",
+      "pos": "adj",
+      "letter": "O",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "other",
+      "pos": "det, pron",
+      "letter": "O",
+      "category": "pronoun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "oven",
+      "pos": "n",
+      "letter": "O",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "over",
+      "pos": "adv, prep",
+      "letter": "O",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "p.m.",
+      "pos": "",
+      "letter": "P",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "pajamas",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "parent",
+      "pos": "",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "party",
+      "pos": "",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "passenger",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "past",
+      "pos": "n, prep",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "path",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "pepper",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "perhaps",
+      "pos": "adv",
+      "letter": "P",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "photographer",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core",
+        "tricky"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "picture",
+      "pos": "",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "piece",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "pilot",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "pizza",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "planet",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "plastic",
+      "pos": "adj, n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "platform",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "play the guitar",
+      "pos": "phrase",
+      "letter": "P",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "pleased",
+      "pos": "adj",
+      "letter": "P",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "pocket",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "police officer",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "police station",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "pond",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "poor",
+      "pos": "adj",
+      "letter": "P",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "pop music",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "popular",
+      "pos": "adj",
+      "letter": "P",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "post",
+      "pos": "v",
+      "letter": "P",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "post office",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "postcard",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "practice",
+      "pos": "",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "prefer",
+      "pos": "v",
+      "letter": "P",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "prepare",
+      "pos": "v",
+      "letter": "P",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "prize",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Flyers Party"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "problem",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Exam Day"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "programme",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "project",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "pull",
+      "pos": "v",
+      "letter": "P",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "push",
+      "pos": "v",
+      "letter": "P",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "puzzle",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Exam Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "pyjamas",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "pyramid",
+      "pos": "n",
+      "letter": "P",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "quarter",
+      "pos": "n",
+      "letter": "Q",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "queen",
+      "pos": "n",
+      "letter": "Q",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "quite",
+      "pos": "adv",
+      "letter": "Q",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "quiz",
+      "pos": "n",
+      "letter": "Q",
+      "category": "noun",
+      "topics": [
+        "Exam Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "race",
+      "pos": "n, v",
+      "letter": "R",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "racing",
+      "pos": "adj",
+      "letter": "R",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "railway",
+      "pos": "n",
+      "letter": "R",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "ready",
+      "pos": "adj",
+      "letter": "R",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "remember",
+      "pos": "v",
+      "letter": "R",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "repair",
+      "pos": "v",
+      "letter": "R",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "repeat",
+      "pos": "v",
+      "letter": "R",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "restaurant",
+      "pos": "n",
+      "letter": "R",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core",
+        "target"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "rich",
+      "pos": "adj",
+      "letter": "R",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Richard",
+      "pos": "name",
+      "letter": "R",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "ride a bike",
+      "pos": "phrase",
+      "letter": "R",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "right",
+      "pos": "adj",
+      "letter": "R",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "ring",
+      "pos": "n",
+      "letter": "R",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "Robert",
+      "pos": "name",
+      "letter": "R",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "rock music",
+      "pos": "n",
+      "letter": "R",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "rocket",
+      "pos": "n",
+      "letter": "R",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "rucksack",
+      "pos": "n",
+      "letter": "R",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "salt",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Autumn/Fall"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "same",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "sandwich",
+      "pos": "",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "Sarah",
+      "pos": "name",
+      "letter": "S",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "save",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "school",
+      "pos": "",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "science",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "scissors",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "score",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Exam Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "screen",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "search",
+      "pos": "n, v",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "second",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "secret",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "sell",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "September",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "calendar"
+      ],
+      "tags": [
+        "month"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "seven",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "seventeen",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "seventh",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "seventy",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "several",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "shampoo",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "shelf",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "should",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "silver",
+      "pos": "adj, n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "since",
+      "pos": "prep",
+      "letter": "S",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "singer",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "sister",
+      "pos": "",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "six",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "sixteen",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "sixth",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "sixty",
+      "pos": "n",
+      "letter": "S",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "ski",
+      "pos": "n, v",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "skyscraper",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "sledge",
+      "pos": "n, v",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "smell",
+      "pos": "n, v",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "snack",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "snowball",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "snowboard",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "snowboarding",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Winter"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "snowman",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Winter"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "so",
+      "pos": "adv, conj",
+      "letter": "S",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "soap",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "soft",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "somewhere",
+      "pos": "adv",
+      "letter": "S",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "soon",
+      "pos": "adv",
+      "letter": "S",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "Sophia",
+      "pos": "name",
+      "letter": "S",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "sore",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "sound",
+      "pos": "n, v",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "south",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "space",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "spaceship",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Flyers Adventure"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "speak",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "special",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "spend",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "spoon",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "spot",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "spotted",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "spring",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "stadium",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "stage",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "stamp",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "stay",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "step",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "still",
+      "pos": "adv",
+      "letter": "S",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "stone",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "storm",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "target"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "story",
+      "pos": "",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "straight on",
+      "pos": "adv",
+      "letter": "S",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "strange",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "strawberry",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "stream",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "stripe",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "striped",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "student",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "study",
+      "pos": "v",
+      "letter": "S",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "subject",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "such",
+      "pos": "det",
+      "letter": "S",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "suddenly",
+      "pos": "adv",
+      "letter": "S",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "sugar",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "suitcase",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "summer",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "sunglasses",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "sure",
+      "pos": "adj",
+      "letter": "S",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "surname",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "surprise",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "swan",
+      "pos": "n",
+      "letter": "S",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "swing",
+      "pos": "n, v",
+      "letter": "S",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "take",
+      "pos": "v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "take a bus",
+      "pos": "phrase",
+      "letter": "T",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "take photos",
+      "pos": "phrase",
+      "letter": "T",
+      "category": "phrase",
+      "topics": [],
+      "tags": [
+        "phrase"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "taste",
+      "pos": "n, v",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "taxi",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "teacher",
+      "pos": "",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "team",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "telephone",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "ten",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "tent",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "tenth",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "thank",
+      "pos": "v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "theatre",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "third",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "thirteen",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "thirtieth",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "thirty",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "thousand",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "three",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "through",
+      "pos": "prep",
+      "letter": "T",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "ticket",
+      "pos": "",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "tidy",
+      "pos": "adj, v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "time",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "timetable",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [
+        "Exam Day"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "toe",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "together",
+      "pos": "adv",
+      "letter": "T",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "tomorrow",
+      "pos": "adv, n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "tonight",
+      "pos": "adv, n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "torch",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "tortoise",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "touch",
+      "pos": "v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "tour",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [
+        "Summer"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "traffic",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "trainers",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "tune",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "turn",
+      "pos": "v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "turn off",
+      "pos": "v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "turn on",
+      "pos": "v",
+      "letter": "T",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "twelve",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "twentieth",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "twenty",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "twice",
+      "pos": "adv",
+      "letter": "T",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "two",
+      "pos": "n",
+      "letter": "T",
+      "category": "number",
+      "topics": [
+        "numbers"
+      ],
+      "tags": [
+        "number"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "tyre",
+      "pos": "n",
+      "letter": "T",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "umbrella",
+      "pos": "n",
+      "letter": "U",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "unfriendly",
+      "pos": "adj",
+      "letter": "U",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "unhappy",
+      "pos": "adj",
+      "letter": "U",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "uniform",
+      "pos": "n",
+      "letter": "U",
+      "category": "noun",
+      "topics": [
+        "Meet the Flyers"
+      ],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "university",
+      "pos": "n",
+      "letter": "U",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "unkind",
+      "pos": "adj",
+      "letter": "U",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "untidy",
+      "pos": "adj",
+      "letter": "U",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "until",
+      "pos": "prep",
+      "letter": "U",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "unusual",
+      "pos": "adj",
+      "letter": "U",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "use",
+      "pos": "v",
+      "letter": "U",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "usually",
+      "pos": "adv",
+      "letter": "U",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "view",
+      "pos": "n",
+      "letter": "V",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "violin",
+      "pos": "n",
+      "letter": "V",
+      "category": "noun",
+      "topics": [
+        "Flyers Fun Day"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "visit",
+      "pos": "v",
+      "letter": "V",
+      "category": "verb",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "volleyball",
+      "pos": "n",
+      "letter": "V",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "waiter",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "warm",
+      "pos": "adj",
+      "letter": "W",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "way",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "west",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wheel",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "while",
+      "pos": "conj",
+      "letter": "W",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "whisper",
+      "pos": "v",
+      "letter": "W",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "whistle",
+      "pos": "v",
+      "letter": "W",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wife",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wifi",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wild",
+      "pos": "adj",
+      "letter": "W",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "will",
+      "pos": "v",
+      "letter": "W",
+      "category": "verb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "William",
+      "pos": "name",
+      "letter": "W",
+      "category": "name",
+      "topics": [
+        "listening-part5"
+      ],
+      "tags": [
+        "name"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "win",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wing",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [
+        "Spring"
+      ],
+      "tags": [],
+      "write_required": true
+    },
+    {
+      "word": "winner",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "winter",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [
+        "core"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "wish",
+      "pos": "n, v",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "without",
+      "pos": "prep",
+      "letter": "W",
+      "category": "preposition",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wonderful",
+      "pos": "adj",
+      "letter": "W",
+      "category": "adjective",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wood",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "wool",
+      "pos": "n",
+      "letter": "W",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "worried",
+      "pos": "adj",
+      "letter": "W",
+      "category": "adjective",
+      "topics": [],
+      "tags": [
+        "target"
+      ],
+      "write_required": true
+    },
+    {
+      "word": "x-ray",
+      "pos": "n",
+      "letter": "X",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "yet",
+      "pos": "adv",
+      "letter": "Y",
+      "category": "adverb",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "yoghurt",
+      "pos": "n",
+      "letter": "Y",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "you're welcome!",
+      "pos": "excl",
+      "letter": "Y",
+      "category": "other",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    },
+    {
+      "word": "zero",
+      "pos": "n",
+      "letter": "Z",
+      "category": "noun",
+      "topics": [],
+      "tags": [],
+      "write_required": false
+    }
+  ],
+  "metadata": {
+    "write_required_count": 320,
+    "names": 16,
+    "phrases": 12
+  }
+}

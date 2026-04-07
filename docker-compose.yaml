@@ -1,0 +1,53 @@
+services:
+  ollama:
+    image: dockerproxy.com/ollama/ollama:latest
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  open-webui:
+    image: ghcr.nju.edu.cn/open-webui/open-webui:cuda
+    container_name: open-webui
+    restart: always
+    ports:
+      - "3000:8080"
+    depends_on:
+      - ollama
+    volumes:
+      - open-webui:/app/backend/data
+      # VibeVoice model snapshot
+      - ./audio/VibeVoice-Realtime-0.5B:/workspace/vibevoice-model:ro
+      # Voice prompts for realtime presets
+      - ./assets/vibevoice/voices:/workspace/vibevoice-voices:ro
+    environment:
+      - ENABLE_OLLAMA_API=True
+      - OLLAMA_BASE_URL=http://ollama:11434
+
+      - ENABLE_AUDIO_TRANSCRIPTION=True
+      - WHISPER_ENGINE=faster-whisper
+      - WHISPER_MODEL=small.en
+      - DEVICE_TYPE=cuda
+      - USE_CUDA_HALF_PRECISION=True
+
+      - ENABLE_AUDIO_GENERATION=True
+      - AUDIO_TTS_ENGINE=web
+      - AUDIO_TTS_VOICE=en-US
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  open-webui:

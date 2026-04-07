@@ -1,0 +1,2294 @@
+[
+  {
+    "en": "eleven",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "twelve",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "thirteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fourteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fifteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sixteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "seventeen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "eighteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "nineteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "twenty",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "thirty",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "forty",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fifty",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sixty",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "seventy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "eighty",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ninety",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hundred",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "farmer",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hair",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "eye",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ear",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "nose",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "mouth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hand",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "foot",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "feet",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "happy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sad",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "angry",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "excited",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bored",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tired",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "afraid",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "brave",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "kind",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "friendly",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "funny",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "careful",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "because",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "but",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "or",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "so",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "and",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "when",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "before",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "after",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "if",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "table",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "chair",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bed",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sofa",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "lamp",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "clock",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "phone",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "food",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "water",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "milk",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "juice",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tea",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "coffee",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "clothes",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "shirt",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "dress",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "skirt",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "trousers",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "jeans",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "jacket",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "coat",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sweater",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "shoes",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "socks",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hat",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "colour",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "color",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "red",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "blue",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "green",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "yellow",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "black",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "white",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "brown",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "pink",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grey",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "gray",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "place",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "town",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "city",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "village",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "street",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "road",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bike",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bicycle",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bus",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "car",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "taxi",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "train",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "plane",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "boat",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ship",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Monday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Tuesday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Wednesday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Thursday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Friday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Saturday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Sunday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "January",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "February",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "March",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "April",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "May",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "June",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "July",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "August",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "September",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "October",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "November",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "December",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "today",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tomorrow",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "yesterday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "morning",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "afternoon",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "evening",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "night",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hour",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "minute",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "second",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "first",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "third",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fourth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fifth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "eighth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ninth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "twelfth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "twentieth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "thirtieth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "family",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "parent",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "mother",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "mum",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "father",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "dad",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "brother",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sister",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "daughter",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "son",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grandfather",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grandpa",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grandmother",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grandma",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "uncle",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "aunt",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cousin",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "friend",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "neighbour",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "neighbor",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "stranger",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "baby",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "child",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "children",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "boy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "girl",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "person",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "people",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "man",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "men",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "woman",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "women",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "teacher",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "student",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "doctor",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "nurse",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "dentist",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "driver",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "pilot",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "police",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "policeman",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "firefighter",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cook",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "waiter",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "waitress",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tall",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "short",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "old",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "beautiful",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "handsome",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "strong",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "weak",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "thin",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fat",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "have",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "like",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "want",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "need",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "help",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "visit",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "live",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "work",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "play",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "run",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "jump",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "walk",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "swim",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fly",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "went",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "had",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "was",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "were",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "said",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "came",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "got",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "saw",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ate",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "drank",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "took",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bought",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "thought",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "school",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "classroom",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "library",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "playground",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "canteen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "office",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hall",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "gym",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "toilet",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "book",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "pencil",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "pen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ruler",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "eraser",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "rubber",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "notebook",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "paper",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "crayon",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "scissors",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "glue",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bag",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "backpack",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "dictionary",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "English",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "Chinese",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "maths",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "math",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "science",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "history",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "geography",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "music",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "art",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "PE",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "computer",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "lesson",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "class",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "homework",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "exam",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "test",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "question",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "answer",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "page",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "story",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "picture",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "word",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sentence",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "study",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "learn",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "read",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "write",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "spell",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "listen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "speak",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "understand",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "remember",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "forget",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "easy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "difficult",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hard",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "interesting",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "boring",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "important",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "favorite",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "favourite",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "different",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "same",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "correct",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "wrong",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "always",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sometimes",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "never",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "often",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "usually",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "house",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "home",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "room",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "kitchen",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bedroom",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bathroom",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "garden",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "door",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "window",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "floor",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "wall",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "roof",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "breakfast",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "lunch",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "dinner",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "meal",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "rice",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bread",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "noodles",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "pizza",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sandwich",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hamburger",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "salad",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "soup",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "meat",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "chicken",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fish",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "egg",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "vegetable",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tomato",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "potato",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "carrot",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fruit",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "apple",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "banana",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "orange",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grape",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cake",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "chocolate",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "restaurant",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hospital",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cinema",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "park",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "zoo",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "beach",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "mountain",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "river",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "lake",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sea",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "animal",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "pet",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "dog",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cat",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bird",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "rabbit",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "horse",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "elephant",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tiger",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "lion",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "monkey",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bear",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "tree",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "flower",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "grass",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "weather",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "sunny",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cloudy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "rainy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "windy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "snowy",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "hot",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cold",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "warm",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cool",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "big",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "small",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "large",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "new",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "good",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "bad",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "nice",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "great",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fast",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "slow",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "here",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "there",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "up",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "down",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "left",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "right",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  }
+]
