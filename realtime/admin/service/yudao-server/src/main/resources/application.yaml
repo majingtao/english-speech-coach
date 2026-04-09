@@ -76,7 +76,7 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
     banner: false # 关闭控制台的 Banner 打印
-  type-aliases-package: ${yudao.info.base-package}.module.*.dal.dataobject
+  type-aliases-package: ${yudao.info.base-package}.module.*.dal.dataobject,cn.kugua.module.*.dal.dataobject
   encryptor:
     password: XDV71a+xqStEA3WH # 加解密的秘钥，可使用 https://www.imaegoo.com/2020/aes-key-generator/ 网站生成
 
@@ -315,6 +315,9 @@ yudao:
       - /admin-api/system/user/profile/**
       - /admin-api/system/auth/**
     ignore-tables:
+      # kugua-module-english 跨租户共享的字典表（无 tenant_id 列）
+      - esc_exam_level
+      - esc_exam_part_type
     ignore-caches:
       - user_role_ids
       - permission_menu_ids

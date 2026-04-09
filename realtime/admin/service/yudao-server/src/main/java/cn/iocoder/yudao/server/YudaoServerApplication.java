@@ -13,7 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author 芋道源码
  */
 @SuppressWarnings("SpringComponentScan") // 忽略 IDEA 无法识别 ${yudao.info.base-package}
-@SpringBootApplication(scanBasePackages = {"${yudao.info.base-package}.server", "${yudao.info.base-package}.module"})
+@SpringBootApplication(scanBasePackages = {
+        "${yudao.info.base-package}.server",
+        "${yudao.info.base-package}.module",
+        "cn.kugua.module" // kugua 自研模块统一根包
+})
 public class YudaoServerApplication {
 
     public static void main(String[] args) {

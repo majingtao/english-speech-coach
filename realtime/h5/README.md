@@ -241,3 +241,14 @@ Our contributors have made this project better. Thank you! 🙏
 <p align="right">
   <a href="#top">⬆️ Back to Top</a>
 </p>
+## Realtime Speech Coach 页面
+
+The default Home route now renders the realtime speech coach that mirrors the legacy `realtime/web/index.html` 功能：
+
+- 使用 Vant Tabs 切换 “Flyers / KET / PET” 三个口语陪练场景，所有控件均为 Vant 组件以适配移动端交互。
+- ASR/LLM/TTS 模型列表通过 `/asr/models`、`/llm/models`、`/tts/voices` 请求实时服务，配合 `.env` 中的 `VITE_APP_API_BASE_URL` 可走代理或本地直连。
+- 题库首先从 `VITE_APP_API_BASE_URL + /speech/question-bank` 拉取；若后台尚未提供接口，则自动回退到 `public/question-bank.json`，便于先行联调。
+- 运行方式保持不变：在 `realtime/h5` 目录执行 `pnpm install && pnpm dev`，即可在 `http://localhost:5173` 体验 H5 页，确认语音服务（8443）已就绪即可对接。
+- 调试建议：
+  - `docker compose up -d` 启动后端实时服务，再在 H5 页面切换模型/语音；
+  - 通过浏览器控制台可以查看请求 `/llm/chat`、`/llm/judge`、`/tts`、`/asr` 是否成功，便于和原 Web 页面比对。

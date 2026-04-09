@@ -3,12 +3,7 @@ import { handleHotUpdate, routes } from 'vue-router/auto-routes'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-
-import type { EnhancedRouteLocation } from './types'
-import { useRouteCacheStore, useUserStore } from '@/stores'
-
 import { isLogin } from '@/utils/auth'
-import setPageTitle from '@/utils/set-page-title'
 
 NProgress.configure({ showSpinner: true, parent: '#app' })
 
@@ -21,20 +16,16 @@ const router = createRouter({
 if (import.meta.hot)
   handleHotUpdate(router)
 
-router.beforeEach(async (to: EnhancedRouteLocation) => {
+router.beforeEach((to) => {
   NProgress.start()
-
-  const routeCacheStore = useRouteCacheStore()
-  const userStore = useUserStore()
-
-  // Route cache
-  routeCacheStore.addRoute(to)
-
-  // Set page title
-  setPageTitle(to.name)
-
-  if (isLogin() && !userStore.userInfo?.uid)
-    await userStore.info()
+  const publicPages = ['/login']
+  if (!isLogin() && !publicPages.includes(to.path)) {
+    return { path: '/login', query: { redirect: to.fullPath } }
+  }
+  if (isLogin() && to.path === '/login') {
+    const redirect = typeof to.query.redirect === 'string' ? to.query.redirect : '/'
+    return redirect
+  }
 })
 
 router.afterEach(() => {

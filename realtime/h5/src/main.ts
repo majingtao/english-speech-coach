@@ -3,10 +3,10 @@ import { createHead } from '@unhead/vue/client'
 import App from '@/App.vue'
 import router from '@/router'
 import pinia from '@/stores'
+import { getToken } from '@/utils/auth'
 import 'virtual:uno.css'
 import '@/styles/app.less'
 import '@/styles/var.less'
-import { i18n } from '@/utils/i18n'
 
 // Vant 桌面端适配
 import '@vant/touch-emulator'
@@ -22,12 +22,23 @@ import 'vant/es/dialog/style'
 import 'vant/es/notify/style'
 import 'vant/es/image-preview/style'
 
+if (typeof window !== 'undefined') {
+  const nativeFetch = window.fetch.bind(window)
+  window.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
+    const headers = new Headers(init?.headers || (input instanceof Request ? input.headers : undefined))
+    const token = getToken()
+    if (token && !headers.has('Authorization'))
+      headers.set('Authorization', `Bearer ${token}`)
+    const request = new Request(input, { ...init, headers })
+    return nativeFetch(request)
+  }) as typeof window.fetch
+}
+
 const app = createApp(App)
 const head = createHead()
 
 app.use(head)
 app.use(router)
 app.use(pinia)
-app.use(i18n)
 
 app.mount('#app')

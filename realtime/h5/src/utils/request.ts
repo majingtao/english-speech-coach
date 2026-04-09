@@ -1,71 +1,64 @@
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { showNotify } from 'vant'
-import { STORAGE_TOKEN_KEY } from '@/stores/mutation-type'
+import { clearToken, getToken } from '@/utils/auth'
 
-// 这里是用于设定请求后端时，所用的 Token KEY
-// 可以根据自己的需要修改，常见的如 Access-Token，Authorization
-// 需要注意的是，请尽量保证使用中横线`-` 来作为分隔符，
-// 避免被 nginx 等负载均衡器丢弃了自定义的请求头
-export const REQUEST_TOKEN_KEY = 'Access-Token'
-
-// 创建 axios 实例
+// 创建 axios 实例：默认指向 yudao /admin-api
+// Python 语音代理（/llm /asr /tts）由 index.vue 内部 fetch 直连，不走这里
 const request = axios.create({
-  // API 请求的默认前缀
-  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
-  timeout: 6000, // 请求超时时间
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL || '/admin-api',
+  timeout: 15000,
 })
 
-export type RequestError = AxiosError<{
-  message?: string
-  result?: any
-  errorMessage?: string
-}>
+export interface YudaoResult<T = any> {
+  code: number
+  data: T
+  msg: string
+}
 
-// 异常拦截处理器
+export type RequestError = AxiosError<YudaoResult>
+
 function errorHandler(error: RequestError): Promise<any> {
   if (error.response) {
-    const { data = {}, status, statusText } = error.response
-    // 403 无权限
-    if (status === 403) {
-      showNotify({
-        type: 'danger',
-        message: (data && data.message) || statusText,
-      })
+    const { data, status, statusText } = error.response
+    if (status === 401) {
+      clearToken()
+      showNotify({ type: 'danger', message: '登录已失效，请重新登录' })
     }
-    // 401 未登录/未授权
-    if (status === 401 && data.result && data.result.isLogin) {
-      showNotify({
-        type: 'danger',
-        message: 'Authorization verification failed',
-      })
-      // 如果你需要直接跳转登录页面
-      // location.replace(loginRoutePath)
+    else if (status === 403) {
+      showNotify({ type: 'danger', message: data?.msg || statusText || '无权访问' })
+    }
+    else {
+      showNotify({ type: 'danger', message: data?.msg || statusText || '请求失败' })
     }
   }
   return Promise.reject(error)
 }
 
-// 请求拦截器
-function requestHandler(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig> {
-  const savedToken = localStorage.getItem(STORAGE_TOKEN_KEY)
-  // 如果 token 存在
-  // 让每个请求携带自定义 token, 请根据实际情况修改
-  if (savedToken)
-    config.headers[REQUEST_TOKEN_KEY] = savedToken
-
+function requestHandler(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
+  const token = getToken()
+  if (token)
+    config.headers.Authorization = `Bearer ${token}`
+  // yudao 多租户：H5 默认走默认租户，必要时可改成读取 store
+  if (!config.headers['tenant-id'])
+    config.headers['tenant-id'] = import.meta.env.VITE_APP_TENANT_ID || '1'
   return config
 }
 
-// Add a request interceptor
 request.interceptors.request.use(requestHandler, errorHandler)
 
-// 响应拦截器
-function responseHandler(response: AxiosResponse) {
-  return response.data
+// yudao 标准响应：{ code, data, msg }；code === 0 视为成功，直接返回 data
+function responseHandler(response: AxiosResponse<YudaoResult>) {
+  const body = response.data
+  if (body && typeof body === 'object' && 'code' in body) {
+    if (body.code === 0)
+      return body.data
+    showNotify({ type: 'danger', message: body.msg || '业务异常' })
+    return Promise.reject(body)
+  }
+  return body
 }
 
-// Add a response interceptor
 request.interceptors.response.use(responseHandler, errorHandler)
 
 interface RequestInstance extends AxiosInstance {

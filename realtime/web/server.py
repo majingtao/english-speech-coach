@@ -18,6 +18,7 @@ Usage:
 """
 
 import asyncio
+import base64
 import copy
 import io
 import json
@@ -27,6 +28,7 @@ import ssl
 import struct
 import subprocess
 import sys
+import uuid
 
 # Force transformers/HuggingFace Hub to work offline — avoids network calls to
 # huggingface.co on every startup (fails when the host can't reach HF).
@@ -142,6 +144,14 @@ MOONSHOT_BASE_URL = os.environ.get("MOONSHOT_BASE_URL", "https://api.moonshot.cn
 OPENROUTER_BASE_URL = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 HTTP_PROXY = os.environ.get("HTTP_PROXY", "") or os.environ.get("http_proxy", "")
 
+# 火山引擎 ASR V2（一句话识别 / 流式识别）
+# VOLC_ASR_APPID   = 控制台项目 App ID
+# VOLC_ASR_TOKEN   = 控制台项目 Token
+# VOLC_ASR_CLUSTER = 集群名称（一句话识别: volcengine_input_common）
+VOLC_ASR_APPID = os.environ.get("VOLC_ASR_APPID", "")
+VOLC_ASR_TOKEN = os.environ.get("VOLC_ASR_TOKEN", "")
+VOLC_ASR_CLUSTER = os.environ.get("VOLC_ASR_CLUSTER", "volcengine_input_common")
+
 # ---------- LLM model registry ----------
 
 LLM_MODELS = [
@@ -209,6 +219,14 @@ ASR_MODELS = [
         "label": "SenseVoice Small (230MB, bilingual, offline)",
     },
 ]
+
+if VOLC_ASR_APPID and VOLC_ASR_TOKEN:
+    ASR_MODELS.append({
+        "id": "volcano-asr",
+        "port": 0,
+        "type": "online",
+        "label": "Volcano ASR (ByteDance, online)",
+    })
 
 ASR_MODEL_MAP = {m["id"]: m for m in ASR_MODELS}
 
@@ -337,13 +355,235 @@ async def ws_proxy(request):
     return ws_client
 
 
-# ---------- Offline ASR: POST /asr?model=xxx ----------
+# ---------- Volcano Engine ASR V2 (WebSocket binary protocol) ----------
+# 完全对齐官方 streaming_asr_demo.py 协议
+
+import gzip as gzip_mod
+
+VOLC_ASR_WS_URL = "wss://openspeech.bytedance.com/api/v2/asr"
+
+# Message types
+_VOLC_FULL_CLIENT_REQUEST  = 0b0001
+_VOLC_AUDIO_ONLY           = 0b0010
+_VOLC_SERVER_FULL_RESPONSE = 0b1001
+_VOLC_SERVER_ACK           = 0b1011
+_VOLC_SERVER_ERROR         = 0b1111
+
+# Flags
+_VOLC_NO_SEQ  = 0b0000
+_VOLC_NEG_SEQ = 0b0010
+
+# Serialization / Compression
+_VOLC_JSON = 0b0001
+_VOLC_GZIP = 0b0001
+
+SUCCESS_CODE = 1000
+
+
+def _volc_build_header(msg_type, flags=_VOLC_NO_SEQ, serial=_VOLC_JSON, compress=_VOLC_GZIP):
+    return bytes([
+        (0x01 << 4) | 0x01,       # version=1, header_size=1
+        (msg_type << 4) | flags,
+        (serial << 4) | compress,
+        0x00,
+    ])
+
+
+def _volc_pack(header: bytes, payload: bytes) -> bytes:
+    """header(4) + payload_size(4 big-endian) + payload"""
+    return header + len(payload).to_bytes(4, "big") + payload
+
+
+def _volc_parse_response(data: bytes):
+    """Parse server response, matching official demo parse_response()."""
+    if len(data) < 4:
+        return {"error": "response too short"}
+    header_size = data[0] & 0x0F
+    msg_type = (data[1] >> 4) & 0x0F
+    msg_flags = data[1] & 0x0F
+    serial_method = (data[2] >> 4) & 0x0F
+    compress = data[2] & 0x0F
+    payload = data[header_size * 4:]
+    result = {"msg_type": msg_type, "flags": msg_flags}
+
+    payload_msg = None
+    if msg_type == _VOLC_SERVER_FULL_RESPONSE:
+        if len(payload) >= 4:
+            payload_size = int.from_bytes(payload[:4], "big", signed=True)
+            payload_msg = payload[4:]
+    elif msg_type == _VOLC_SERVER_ACK:
+        seq = int.from_bytes(payload[:4], "big", signed=True)
+        result["seq"] = seq
+        if len(payload) >= 8:
+            payload_size = int.from_bytes(payload[4:8], "big", signed=False)
+            payload_msg = payload[8:]
+    elif msg_type == _VOLC_SERVER_ERROR:
+        if len(payload) >= 4:
+            code = int.from_bytes(payload[:4], "big", signed=False)
+            result["code"] = code
+        if len(payload) >= 8:
+            payload_size = int.from_bytes(payload[4:8], "big", signed=False)
+            payload_msg = payload[8:]
+
+    if payload_msg is not None:
+        if compress == _VOLC_GZIP:
+            payload_msg = gzip_mod.decompress(payload_msg)
+        if serial_method == _VOLC_JSON:
+            payload_msg = json.loads(payload_msg.decode("utf-8"))
+        result["payload_msg"] = payload_msg
+    return result
+
+
+async def asr_volcano(session, pcm_float32: bytes, sample_rate: int = 16000):
+    """Volcano Engine ASR V2 — matches official streaming_asr_demo.py protocol.
+    Input: raw float32 PCM → int16 → chunk upload → get text result.
+    """
+    import websockets
+
+    samples = np.frombuffer(pcm_float32, dtype=np.float32)
+    int16_samples = np.clip(samples * 32767, -32768, 32767).astype(np.int16)
+    audio_bytes = int16_samples.tobytes()
+    duration = len(samples) / sample_rate
+    reqid = str(uuid.uuid4())
+    log.info("[asr] volcano v2: %.1fs audio, %d samples, reqid=%s",
+             duration, len(samples), reqid[:8])
+
+    # Auth header — Bearer; {token}（官方 demo token_auth）
+    ws_headers = {"Authorization": f"Bearer; {VOLC_ASR_TOKEN}"}
+
+    # Full client request config（官方 demo construct_request）
+    config = {
+        "app": {
+            "appid": VOLC_ASR_APPID,
+            "cluster": VOLC_ASR_CLUSTER,
+            "token": VOLC_ASR_TOKEN,
+        },
+        "user": {
+            "uid": "esc-h5",
+        },
+        "audio": {
+            "format": "raw",
+            "rate": sample_rate,
+            "bits": 16,
+            "channel": 1,
+            "language": "en",
+            "codec": "raw",
+        },
+        "request": {
+            "reqid": reqid,
+            "workflow": "audio_in,resample,partition,vad,fe,decode,itn,nlu_punctuate",
+            "sequence": 1,
+            "nbest": 1,
+            "show_utterances": True,
+            "result_type": "full",
+        },
+    }
+
+    log.info("[asr] volcano v2 appid=%s cluster=%s", VOLC_ASR_APPID, VOLC_ASR_CLUSTER)
+
+    try:
+        # 1) Build full_client_request frame
+        config_gz = gzip_mod.compress(json.dumps(config).encode("utf-8"))
+        header = _volc_build_header(_VOLC_FULL_CLIENT_REQUEST)
+        full_request = _volc_pack(header, config_gz)
+
+        # 2) Connect & send (使用 websockets 库，和官方 demo 一致)
+        async with websockets.connect(
+            VOLC_ASR_WS_URL,
+            additional_headers=ws_headers,
+            max_size=1000000000,
+        ) as ws:
+            def _get_code(pm):
+                """Extract code from payload_msg, handles both dict and other types."""
+                if isinstance(pm, dict):
+                    return pm.get("code", SUCCESS_CODE)
+                return SUCCESS_CODE
+
+            def _get_msg(pm):
+                if isinstance(pm, dict):
+                    return pm.get("message", "unknown")
+                return str(pm)[:200]
+
+            # Send config
+            await ws.send(full_request)
+            res = await ws.recv()
+            result = _volc_parse_response(res)
+            log.debug("[asr] volcano v2 config resp: %s",
+                      json.dumps(result.get("payload_msg"), ensure_ascii=False, default=str)[:300]
+                      if "payload_msg" in result else "no payload")
+            if "payload_msg" in result:
+                code = _get_code(result["payload_msg"])
+                if code != SUCCESS_CODE:
+                    msg = _get_msg(result["payload_msg"])
+                    log.error("[asr] volcano v2 config rejected: %s", msg)
+                    return {"error": f"Volcano ASR: {msg}"}
+
+            # Send audio chunks (~1s each, gzip compressed)
+            chunk_size = sample_rate * 2  # 1 second of int16
+            total = len(audio_bytes)
+            offset = 0
+            final_result = result
+            while offset < total:
+                end = min(offset + chunk_size, total)
+                is_last = (end >= total)
+                chunk = audio_bytes[offset:end]
+                chunk_gz = gzip_mod.compress(chunk)
+
+                if is_last:
+                    audio_header = _volc_build_header(_VOLC_AUDIO_ONLY, flags=_VOLC_NEG_SEQ)
+                else:
+                    audio_header = _volc_build_header(_VOLC_AUDIO_ONLY, flags=_VOLC_NO_SEQ)
+
+                frame = _volc_pack(audio_header, chunk_gz)
+                await ws.send(frame)
+                res = await ws.recv()
+                result = _volc_parse_response(res)
+                if "payload_msg" in result:
+                    code = _get_code(result["payload_msg"])
+                    if code != SUCCESS_CODE:
+                        msg = _get_msg(result["payload_msg"])
+                        log.error("[asr] volcano v2 chunk error: %s", msg)
+                        return {"error": f"Volcano ASR: {msg}"}
+                final_result = result
+                offset = end
+
+            # Extract text from final result
+            log.info("[asr] volcano v2 final payload: %s",
+                     json.dumps(final_result.get("payload_msg"), ensure_ascii=False, default=str)[:500])
+            text = ""
+            pm = final_result.get("payload_msg")
+            if isinstance(pm, dict):
+                # result 是 list（一句话识别返回格式）
+                res_field = pm.get("result", [])
+                if isinstance(res_field, list):
+                    for item in res_field:
+                        if isinstance(item, dict) and item.get("text"):
+                            text += item["text"] + " "
+                elif isinstance(res_field, dict):
+                    for u in res_field.get("utterances", []):
+                        if isinstance(u, dict):
+                            text += u.get("text", "") + " "
+                # 兜底: 直接取顶层 text
+                if not text.strip():
+                    text = pm.get("text", "")
+
+            log.info("[asr] volcano v2 result: %s", text.strip()[:100])
+            return {"text": text.strip()}
+
+    except Exception as e:
+        log.error("[asr] volcano v2 exception: %s", e)
+        return {"error": f"Volcano ASR: {e}"}
+
+
+# ---------- Offline/Online ASR: POST /asr?model=xxx ----------
 
 async def asr_offline(request):
     model_id = request.query.get("model", "whisper-medium-en")
     model = ASR_MODEL_MAP.get(model_id)
-    if not model or model["type"] != "offline":
-        return web.json_response({"error": "Invalid offline model"}, status=400)
+    if not model:
+        return web.json_response({"error": "Invalid ASR model"}, status=400)
+    if model["type"] not in ("offline", "online"):
+        return web.json_response({"error": "Model does not support POST"}, status=400)
 
     audio_bytes = await request.read()
     if not audio_bytes:
@@ -369,10 +609,18 @@ async def asr_offline(request):
             samples = np.frombuffer(raw_pcm, dtype=np.float32)
         pcm_data = samples.astype(np.float32).tobytes()
 
-    # non_streaming_server.py protocol:
-    # Message 1: 8-byte header (sample_rate:int32LE + num_bytes:int32LE) + audio bytes
-    # Message 2: "Done"
-    # Response: text string
+    # ---------- 在线 ASR（火山引擎等）----------
+    if model["type"] == "online":
+        session = request.app["session"]
+        if model_id == "volcano-asr":
+            result = await asr_volcano(session, pcm_data, sample_rate)
+        else:
+            return web.json_response({"error": f"Unknown online model: {model_id}"}, status=400)
+        if "error" in result:
+            return web.json_response(result, status=502)
+        return web.json_response(result)
+
+    # ---------- 本地离线 ASR（sherpa-onnx websocket）----------
     port = model["port"]
     header = struct.pack("<ii", sample_rate, len(pcm_data))
 
@@ -1248,6 +1496,8 @@ def main():
         print(f"    [moonshot] Not configured (set MOONSHOT_API_KEY in .env)")
     if not OPENROUTER_API_KEY:
         print(f"    [openrouter] Not configured (set OPENROUTER_API_KEY in .env)")
+    if not VOLC_ASR_APPID or not VOLC_ASR_TOKEN:
+        print(f"    [volcano-asr] Not configured (set VOLC_ASR_APPID + VOLC_ASR_TOKEN + VOLC_ASR_CLUSTER in .env)")
     if HTTP_PROXY:
         print(f"  HTTP Proxy: {HTTP_PROXY}")
     else:

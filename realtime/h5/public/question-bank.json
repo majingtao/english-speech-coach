@@ -1,0 +1,3552 @@
+{
+  "warmup": [
+    {
+      "examiner": "Hello. My name's Anna. What's your name?",
+      "type": "personal"
+    },
+    {
+      "examiner": "What's your surname?",
+      "type": "personal"
+    },
+    {
+      "examiner": "How old are you?",
+      "type": "personal"
+    }
+  ],
+  "tests": {
+    "gf_1": {
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of an outdoor picnic scene near a lake (tent, bikes, blanket)",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture there's a girl on a rock in the lake, but in your picture there isn't.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, two boys are sitting under a tree.",
+            "expected": "In my picture, two girls are sitting under a tree.",
+            "prompt": "Who is sitting under a tree in your picture?"
+          },
+          {
+            "examiner": "In my picture, the woman is eating a sandwich.",
+            "expected": "In my picture, the woman is eating pizza.",
+            "prompt": "What is the woman eating?"
+          },
+          {
+            "examiner": "In my picture, there isn't a pizza on the blanket.",
+            "expected": "In my picture there is a pizza on the blanket.",
+            "prompt": "What's on the blanket?"
+          },
+          {
+            "examiner": "In my picture, two boys are riding their bikes.",
+            "expected": "In my picture, one boy is riding his bike.",
+            "prompt": "How many boys are riding their bikes?"
+          },
+          {
+            "examiner": "In my picture, a man is reading a newspaper outside the tent.",
+            "expected": "In my picture, a man is reading a magazine outside the tent.",
+            "prompt": "What is the man outside the tent reading?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Richard and Harry are friends who go to school together.",
+        "intro": "Richard and Harry are friends. They go to school together. I don't know anything about Richard's programme. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What time does he get up in the morning?",
+            "expected": "At 7:00."
+          },
+          {
+            "examiner": "What time does he go to school?",
+            "expected": "At 8:00."
+          },
+          {
+            "examiner": "What does he do at 4:00 p.m.?",
+            "expected": "He does his homework."
+          },
+          {
+            "examiner": "What does he do at 7:00 p.m.?",
+            "expected": "He has a tennis lesson."
+          },
+          {
+            "examiner": "What time does he go to bed?",
+            "expected": "At 10:00."
+          }
+        ],
+        "transition": "Now, you don't know anything about Harry's programme, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "get up — time?",
+            "expected_question": "What time does he get up?",
+            "answer": "At 7:30."
+          },
+          {
+            "hint": "go to school — time?",
+            "expected_question": "What time does he go to school?",
+            "answer": "At 8:15."
+          },
+          {
+            "hint": "2 o'clock — do?",
+            "expected_question": "What does he do at 2 o'clock?",
+            "answer": "He has lunch."
+          },
+          {
+            "hint": "6 p.m. — do?",
+            "expected_question": "What does he do at 6 p.m.?",
+            "answer": "He plays football."
+          },
+          {
+            "hint": "go to bed — time?",
+            "expected_question": "What time does he go to bed?",
+            "answer": "At 10:30."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Betty's visit to London",
+        "intro": "These pictures tell a story. It's called 'Betty's visit to London'. Look at the pictures first.",
+        "pic1": "Betty, her brother Fred and their parents visit London. They arrive there on Monday and they go for a walk. They see Big Ben.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What day is it? What does the family do?",
+            "sentences": [
+              {
+                "text": "On Tuesday Betty and her family go shopping.",
+                "hint": "What day is it? What do they do?"
+              },
+              {
+                "text": "They buy many presents and souvenirs.",
+                "hint": "What do they buy?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What day is it? What is Betty doing?",
+            "sentences": [
+              {
+                "text": "On Wednesday Betty writes a postcard to her grandmother.",
+                "hint": "What day is it? What does Betty do?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What day is it? Where is the family? What do they see? Is Betty afraid of the snakes? Who laughs?",
+            "sentences": [
+              {
+                "text": "On Thursday the family visits the zoo.",
+                "hint": "What day is it? Where do they go?"
+              },
+              {
+                "text": "They see a lot of animals there.",
+                "hint": "What do they see at the zoo?"
+              },
+              {
+                "text": "Betty is afraid of the snakes and her brother Fred laughs.",
+                "hint": "Is Betty afraid of the snakes? Who laughs?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What day is it? Where is the family? What have they got with them? What does the father do?",
+            "sentences": [
+              {
+                "text": "On Friday they are at the airport.",
+                "hint": "What day is it? Where are they?"
+              },
+              {
+                "text": "It is the last day in London.",
+                "hint": "Is it their last day?"
+              },
+              {
+                "text": "They have their bags with them.",
+                "hint": "What have they got with them?"
+              },
+              {
+                "text": "Betty's father takes pictures of the family.",
+                "hint": "What does the father do?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Free time",
+        "intro": "Now let's talk about what you do in your free time.",
+        "questions": [
+          {
+            "examiner": "What do you do after school?",
+            "sample": "I do my homework."
+          },
+          {
+            "examiner": "How often do you go out with your friends?",
+            "sample": "Three times a week."
+          },
+          {
+            "examiner": "What do you usually do at the weekend?",
+            "sample": "I visit my grandparents."
+          },
+          {
+            "examiner": "Do you play any sports?",
+            "sample": "Yes, I play football."
+          },
+          {
+            "examiner": "What other things do you do in your free time?",
+            "sample": "I sometimes go to the cinema."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you play basketball or football?",
+            "sample": "I play football."
+          },
+          {
+            "examiner": "Do you go to the cinema?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you play computer games with your friends?",
+            "sample": "Yes, sometimes."
+          },
+          {
+            "examiner": "Do you help with the housework?",
+            "sample": "Yes, I do."
+          }
+        ]
+      },
+      "label": "Go Flyers - Test 1"
+    },
+    "gf_2": {
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a fire station",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture two firemen are drinking coffee, but in your picture they are eating.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the man who is going to the toilet is wearing a white shirt.",
+            "expected": "In my picture, the man who is going to the toilet is wearing a black shirt.",
+            "prompt": "Is the man wearing a white shirt?"
+          },
+          {
+            "examiner": "In my picture, the driver in the fire engine has got a beard.",
+            "expected": "In my picture, the driver has got a moustache.",
+            "prompt": "Has the driver got a beard?"
+          },
+          {
+            "examiner": "In my picture, a man is going up the stairs.",
+            "expected": "In my picture, the man is going down the stairs.",
+            "prompt": "Is the man going up the stairs?"
+          },
+          {
+            "examiner": "In my picture, there is a restaurant next to the fire station.",
+            "expected": "In my picture, there is a bookshop next to the fire station.",
+            "prompt": "Is there a restaurant next to the fire station?"
+          },
+          {
+            "examiner": "In my picture, there is a motorbike near the trees.",
+            "expected": "In my picture, there is a bike near the trees.",
+            "prompt": "Is there a motorbike near the trees?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Mr Brown and Mrs Silver are two teachers.",
+        "intro": "Mr Brown and Mrs Silver are two teachers. I don't know anything about Mr Brown, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What's his name?",
+            "expected": "Richard."
+          },
+          {
+            "examiner": "How old is he?",
+            "expected": "He's 37."
+          },
+          {
+            "examiner": "What subject does he teach?",
+            "expected": "Geography."
+          },
+          {
+            "examiner": "How many years has he been a teacher?",
+            "expected": "Eight."
+          },
+          {
+            "examiner": "Is he married?",
+            "expected": "Yes."
+          }
+        ],
+        "transition": "Now, you don't know anything about Mrs Silver, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "name — ?",
+            "expected_question": "What's her name?",
+            "answer": "Emma."
+          },
+          {
+            "hint": "age — ?",
+            "expected_question": "How old is she?",
+            "answer": "She's 35."
+          },
+          {
+            "hint": "subject — teach?",
+            "expected_question": "What subject does she teach?",
+            "answer": "History."
+          },
+          {
+            "hint": "teacher — how many years?",
+            "expected_question": "How many years has she been a teacher?",
+            "answer": "Six."
+          },
+          {
+            "hint": "married — ?",
+            "expected_question": "Is she married?",
+            "answer": "Yes."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Michael's dream",
+        "intro": "These pictures tell a story. It's called 'Michael's dream'. Look at the pictures first.",
+        "pic1": "Michael is very tired. He brushes his teeth and he's getting ready to go to bed.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What is Michael doing?",
+            "sentences": [
+              {
+                "text": "Michael is sleeping and he is dreaming.",
+                "hint": "What is Michael doing in bed?"
+              },
+              {
+                "text": "In his dream, he is in a desert and he is riding a camel.",
+                "hint": "What is happening in his dream?"
+              },
+              {
+                "text": "It's very hot and Michael is very thirsty.",
+                "hint": "How is the weather? How does Michael feel?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "Where is Michael now?",
+            "sentences": [
+              {
+                "text": "Michael is now on a big bird.",
+                "hint": "Where is Michael now?"
+              },
+              {
+                "text": "Michael is flying in the sky on the bird and he is excited.",
+                "hint": "What is he doing on the bird? How does he feel?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Where is Michael? What does he want to do?",
+            "sentences": [
+              {
+                "text": "Michael is in space now.",
+                "hint": "Where is Michael now?"
+              },
+              {
+                "text": "He is going to the moon in a rocket.",
+                "hint": "Where is he going? How?"
+              },
+              {
+                "text": "He is ready to get off the rocket and walk on the moon.",
+                "hint": "What does he want to do on the moon?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What happens to Michael? Why?",
+            "sentences": [
+              {
+                "text": "Michael falls off the bed and wakes up.",
+                "hint": "What happens to Michael?"
+              },
+              {
+                "text": "He was dreaming.",
+                "hint": "Why did he fall?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Summer holidays",
+        "intro": "Now, let's talk about what you do in the summer.",
+        "questions": [
+          {
+            "examiner": "Where do you like going for your holidays?",
+            "sample": "To an island."
+          },
+          {
+            "examiner": "What time do you usually get up?",
+            "sample": "At 11 o'clock."
+          },
+          {
+            "examiner": "Who do you spend your summer with?",
+            "sample": "My family."
+          },
+          {
+            "examiner": "What do you like doing in the summer?",
+            "sample": "I go swimming."
+          },
+          {
+            "examiner": "Tell me about other things you do in the summer.",
+            "sample": "I do water sports."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you do water sports?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you spend time with your friends?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you look for shells on the beach?",
+            "sample": "Yes, sometimes."
+          },
+          {
+            "examiner": "Do you go fishing?",
+            "sample": "No, I don't."
+          }
+        ]
+      },
+      "label": "Go Flyers - Test 2"
+    },
+    "gf_3": {
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a countryside scene (farm, lake, bridge, truck)",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture the boy who is carrying the bottles has longer hair, but in your picture he has shorter hair.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the girl who is cleaning the table is wearing glasses.",
+            "expected": "In my picture, the girl isn't wearing glasses.",
+            "prompt": "Is the girl wearing glasses?"
+          },
+          {
+            "examiner": "In my picture, there are two rabbits behind the tree.",
+            "expected": "In my picture, there are three rabbits behind the tree.",
+            "prompt": "How many rabbits are there behind the tree?"
+          },
+          {
+            "examiner": "In my picture, there is a swan in the lake.",
+            "expected": "In my picture, there is a duck in the lake.",
+            "prompt": "Is there a swan in the lake?"
+          },
+          {
+            "examiner": "In my picture, the woman on the bridge is wearing a ring.",
+            "expected": "In my picture, the woman isn't wearing a ring.",
+            "prompt": "Is the woman wearing a ring?"
+          },
+          {
+            "examiner": "In my picture, there is a driver in the truck.",
+            "expected": "In my picture, there isn't a driver in the truck.",
+            "prompt": "Is there a driver in the truck?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Robert and William are brothers who each have a pet.",
+        "intro": "Robert and William are brothers. They have got two pets. I don't know anything about Robert's pet, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What pet has he got?",
+            "expected": "A rabbit."
+          },
+          {
+            "examiner": "What's its name?",
+            "expected": "Snowball."
+          },
+          {
+            "examiner": "What colour is it?",
+            "expected": "It's white."
+          },
+          {
+            "examiner": "What's its favourite food?",
+            "expected": "Carrots."
+          },
+          {
+            "examiner": "Where does it live?",
+            "expected": "It lives in a cage."
+          }
+        ],
+        "transition": "Now, you don't know anything about William's pet, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "pet — what?",
+            "expected_question": "What pet has he got?",
+            "answer": "A snake."
+          },
+          {
+            "hint": "name — ?",
+            "expected_question": "What's its name?",
+            "answer": "Ice."
+          },
+          {
+            "hint": "colour — ?",
+            "expected_question": "What colour is it?",
+            "answer": "It's black and white."
+          },
+          {
+            "hint": "favourite food — ?",
+            "expected_question": "What's its favourite food?",
+            "answer": "Spiders."
+          },
+          {
+            "hint": "live — where?",
+            "expected_question": "Where does it live?",
+            "answer": "It lives in a cage."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "A hungry bird",
+        "intro": "These pictures tell a story. It's called 'A hungry bird'. Look at the pictures first.",
+        "pic1": "Betty and her mum are making a cake.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What is Betty doing? What is her mother doing? Where is the parrot?",
+            "sentences": [
+              {
+                "text": "Betty and her mum are in the kitchen.",
+                "hint": "Where are Betty and her mum?"
+              },
+              {
+                "text": "Betty's mum is putting some flour in a bowl and Betty is taking the eggs out of the fridge.",
+                "hint": "What are Betty and her mum doing?"
+              },
+              {
+                "text": "Their pet parrot is in a cage.",
+                "hint": "Where is the parrot?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "Who is in the kitchen? What is Betty doing now?",
+            "sentences": [
+              {
+                "text": "Betty is holding the bowl.",
+                "hint": "What is Betty doing?"
+              },
+              {
+                "text": "Her mother is looking for something in a cupboard.",
+                "hint": "What is her mother doing?"
+              },
+              {
+                "text": "A boy is in the kitchen and is giving some water to the parrot.",
+                "hint": "Who else is in the kitchen? What is he doing?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Where is the parrot now? Where is the butter?",
+            "sentences": [
+              {
+                "text": "The boy leaves the room but he has left the door of the cage open.",
+                "hint": "What did the boy forget to do?"
+              },
+              {
+                "text": "The parrot has come out of the cage.",
+                "hint": "Where is the parrot now?"
+              },
+              {
+                "text": "Betty and her mother don't see that.",
+                "hint": "Do Betty and her mother notice?"
+              },
+              {
+                "text": "The parrot is eating the butter.",
+                "hint": "What is the parrot doing?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "Where is the chocolate? Is the parrot in the cage?",
+            "sentences": [
+              {
+                "text": "The parrot has taken the chocolate to its cage.",
+                "hint": "What has the parrot done with the chocolate?"
+              },
+              {
+                "text": "Betty and her mother can't find anything on the table.",
+                "hint": "What do Betty and her mother see on the table?"
+              }
+            ]
+          },
+          {
+            "pic": 6,
+            "prompt": "Where is the parrot? What has it eaten? Are Betty and her mother happy?",
+            "sentences": [
+              {
+                "text": "Betty is trying to see where the parrot is and she sees it in the cage.",
+                "hint": "Where does Betty find the parrot?"
+              },
+              {
+                "text": "It's just eaten all the chocolate.",
+                "hint": "What has the parrot eaten?"
+              },
+              {
+                "text": "Betty and her mother are both angry.",
+                "hint": "How do Betty and her mother feel?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "School",
+        "intro": "Now, let's talk about school.",
+        "questions": [
+          {
+            "examiner": "What time do you get there?",
+            "sample": "At 8 o'clock."
+          },
+          {
+            "examiner": "How do you get to school?",
+            "sample": "I walk to school."
+          },
+          {
+            "examiner": "What's your favourite subject?",
+            "sample": "Maths."
+          },
+          {
+            "examiner": "What sports do you play at school?",
+            "sample": "Basketball and volleyball."
+          },
+          {
+            "examiner": "Tell me about other things you do at school.",
+            "sample": "I spend time with my friends in the playground."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you spend time with your friends?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you draw pictures?",
+            "sample": "Yes, sometimes."
+          },
+          {
+            "examiner": "Do you have lunch at school?",
+            "sample": "Yes, I do."
+          }
+        ]
+      },
+      "label": "Go Flyers - Test 3"
+    },
+    "gf_4": {
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a fishing trip (boat, boys, fish)",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture the man is holding an octopus, but in your picture he's holding a fish.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, it's windy and it's raining.",
+            "expected": "In my picture it isn't raining.",
+            "prompt": "What's the weather like?"
+          },
+          {
+            "examiner": "In my picture, the first boy has got a knife in his pocket.",
+            "expected": "In my picture, he has got a fork in his pocket.",
+            "prompt": "What has he got in his pocket?"
+          },
+          {
+            "examiner": "In my picture, the third boy is carrying a rucksack.",
+            "expected": "In my picture, he isn't carrying a rucksack.",
+            "prompt": "What is the boy carrying?"
+          },
+          {
+            "examiner": "In my picture, the third boy isn't holding anything.",
+            "expected": "In my picture, the third boy is holding a map.",
+            "prompt": "What is the boy holding?"
+          },
+          {
+            "examiner": "In my picture, there are four fish in the boat.",
+            "expected": "In my picture, there are five fish.",
+            "prompt": "How many fish are there in the boat?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Helen and Katy are best friends, each with a favourite toy.",
+        "intro": "Helen and Katy are best friends. They have got a favourite toy each. I don't know anything about Helen's favourite toy, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What is Helen's favourite toy?",
+            "expected": "A doll."
+          },
+          {
+            "examiner": "What colour is it?",
+            "expected": "It's pink."
+          },
+          {
+            "examiner": "What is it made of?",
+            "expected": "Plastic."
+          },
+          {
+            "examiner": "Why does she like it?",
+            "expected": "Her mum bought it for her."
+          },
+          {
+            "examiner": "How long has she had it?",
+            "expected": "A year."
+          }
+        ],
+        "transition": "Now, you don't know anything about Katy's favourite toy, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "favourite toy — what?",
+            "expected_question": "What is Katy's favourite toy?",
+            "answer": "A rabbit."
+          },
+          {
+            "hint": "colour — ?",
+            "expected_question": "What colour is it?",
+            "answer": "It's brown."
+          },
+          {
+            "hint": "made of — ?",
+            "expected_question": "What is it made of?",
+            "answer": "Wood."
+          },
+          {
+            "hint": "like — why?",
+            "expected_question": "Why does she like it?",
+            "answer": "She's always wanted to have a pet."
+          },
+          {
+            "hint": "had it — how long?",
+            "expected_question": "How long has she had it?",
+            "answer": "6 months."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Harry's castle",
+        "intro": "These pictures tell a story. It's called 'Harry's castle'. Look at the pictures first.",
+        "pic1": "Harry has to make a castle for a school project.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What is the teacher doing?",
+            "sentences": [
+              {
+                "text": "Harry's teacher is holding a castle and tells the students to make a castle, too.",
+                "hint": "What is the teacher showing? What does she tell the students?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "Where is Harry now? How does he feel? What is his dad carrying?",
+            "sentences": [
+              {
+                "text": "Harry goes back home.",
+                "hint": "Where does Harry go?"
+              },
+              {
+                "text": "He is in the garage and he is thinking how to make the castle.",
+                "hint": "Where is he? What is he thinking about?"
+              },
+              {
+                "text": "He is sad.",
+                "hint": "How does Harry feel?"
+              },
+              {
+                "text": "His dad comes in the garage carrying a box.",
+                "hint": "Who comes in? What is he carrying?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Is Harry sad now? What is he thinking about?",
+            "sentences": [
+              {
+                "text": "Harry has an idea.",
+                "hint": "Does Harry have a plan now?"
+              },
+              {
+                "text": "He is going to ask his father to help him.",
+                "hint": "Who is he going to ask for help?"
+              },
+              {
+                "text": "They are going to use the box, some glue and some coloured pencils to make the castle.",
+                "hint": "What will they use to make the castle?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "Is the castle ready? Does Harry like it? What is Harry's dad putting on the castle?",
+            "sentences": [
+              {
+                "text": "His dad is helping him.",
+                "hint": "Who is helping Harry?"
+              },
+              {
+                "text": "The castle is ready and Harry is very happy now.",
+                "hint": "Is the castle ready? How does Harry feel?"
+              },
+              {
+                "text": "Harry's dad is putting a flag on the castle.",
+                "hint": "What is his dad putting on the castle?"
+              }
+            ]
+          },
+          {
+            "pic": 6,
+            "prompt": "Do Harry's friends like the castle?",
+            "sentences": [
+              {
+                "text": "Harry takes the castle to school and everyone likes it.",
+                "hint": "What happens at school?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "The future",
+        "intro": "Now, let's talk about the future.",
+        "questions": [
+          {
+            "examiner": "What job would you like to do?",
+            "sample": "Businessman."
+          },
+          {
+            "examiner": "How old are you going to be when you get married?",
+            "sample": "25."
+          },
+          {
+            "examiner": "Where would you like to live?",
+            "sample": "In a big city."
+          },
+          {
+            "examiner": "How many children would you like to have?",
+            "sample": "Two."
+          }
+        ],
+        "followups": []
+      },
+      "label": "Go Flyers - Test 4"
+    },
+    "gf_5": {
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of an indoor scene with a table, plant, and a woman",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture there are five plates on the table, but in your picture there are six plates.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the bottle of water is full.",
+            "expected": "In my picture, the bottle is empty.",
+            "prompt": "Is there any water in the bottle?"
+          },
+          {
+            "examiner": "In my picture, there are flowers on the table.",
+            "expected": "In my picture, there are sweets on the table.",
+            "prompt": "What is on the table?"
+          },
+          {
+            "examiner": "In my picture, there is a pair of scissors under the table.",
+            "expected": "In my picture, there is a belt under the table.",
+            "prompt": "What is there under the table?"
+          },
+          {
+            "examiner": "In my picture, there is an insect on the plant.",
+            "expected": "In my picture, there are two insects on the plant.",
+            "prompt": "What's on the plant in your picture?"
+          },
+          {
+            "examiner": "In my picture, the woman is wearing a spotted dress.",
+            "expected": "In my picture, the woman is wearing a striped dress.",
+            "prompt": "What kind of dress is the woman wearing?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Betty and Helen are friends who each went on a holiday.",
+        "intro": "Betty and Helen are friends. They took some pictures of their last holiday. I don't know anything about Betty's holiday, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "Where did she go?",
+            "expected": "To the beach."
+          },
+          {
+            "examiner": "Where did she stay?",
+            "expected": "In a tent."
+          },
+          {
+            "examiner": "Who did she go with?",
+            "expected": "With her family."
+          },
+          {
+            "examiner": "When did she go?",
+            "expected": "In July."
+          },
+          {
+            "examiner": "What did she do there?",
+            "expected": "She went swimming."
+          }
+        ],
+        "transition": "Now, you don't know anything about Helen's holiday, but I do. So you are going to ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "go — where?",
+            "expected_question": "Where did she go?",
+            "answer": "In the mountains."
+          },
+          {
+            "hint": "stay — where?",
+            "expected_question": "Where did she stay?",
+            "answer": "At a hotel."
+          },
+          {
+            "hint": "go with — who?",
+            "expected_question": "Who did she go with?",
+            "answer": "With her grandparents."
+          },
+          {
+            "hint": "go — when?",
+            "expected_question": "When did she go?",
+            "answer": "In June."
+          },
+          {
+            "hint": "do there — what?",
+            "expected_question": "What did she do there?",
+            "answer": "She went for walks in the forest."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Family shopping",
+        "intro": "These pictures tell a story. It's called 'Family shopping'. Look at the pictures first.",
+        "pic1": "Richard and his parents go to a shop. There are bookcases there.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What is Richard's mum looking at? How does she feel about them? What do you think she wants to do?",
+            "sentences": [
+              {
+                "text": "Richard's mum is looking at some silver spoons, forks and knives and she likes them.",
+                "hint": "What is Richard's mum looking at? Does she like them?"
+              },
+              {
+                "text": "I think she wants to buy them.",
+                "hint": "What do you think she wants to do?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "Where are the people now? What are these things made of?",
+            "sentences": [
+              {
+                "text": "Now the family is in a room with things made of paper.",
+                "hint": "Where are they now? What are things made of?"
+              },
+              {
+                "text": "For example, there are lots of boxes, envelopes and books.",
+                "hint": "What things can you see?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What happens then? What are these made of? What does Richard do? How does he feel?",
+            "sentences": [
+              {
+                "text": "Now the family is looking at some things made of glass, like vases.",
+                "hint": "What are they looking at now? What are these made of?"
+              },
+              {
+                "text": "Richard drops one.",
+                "hint": "What does Richard do?"
+              },
+              {
+                "text": "He looks very unhappy.",
+                "hint": "How does Richard feel?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What happens in the end?",
+            "sentences": [
+              {
+                "text": "In the end, the glass breaks.",
+                "hint": "What happens in the end?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Food",
+        "intro": "Now, let's talk about food.",
+        "questions": [
+          {
+            "examiner": "What's your favourite food?",
+            "sample": "Pizza."
+          },
+          {
+            "examiner": "What time do you have breakfast?",
+            "sample": "At 8 o'clock."
+          },
+          {
+            "examiner": "How often do you eat chocolate?",
+            "sample": "Three times a week."
+          },
+          {
+            "examiner": "What do you usually have for dinner?",
+            "sample": "A sandwich."
+          },
+          {
+            "examiner": "Now tell me what other food you like eating.",
+            "sample": "I like pasta and chicken."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you like pasta or chicken for lunch?",
+            "sample": "I like pasta."
+          },
+          {
+            "examiner": "Do you love eating sweets?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you drink orange juice?",
+            "sample": "Yes, I do."
+          }
+        ]
+      },
+      "label": "Go Flyers - Test 5"
+    },
+    "f4_1": {
+      "label": "官方真题2022 - Test 1",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a museum/dinosaur scene with a tent, fire, and tiger display",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture there are two fish, but in your picture there are three.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the dinosaur's tail is long.",
+            "expected": "In my picture, the dinosaur's tail is short.",
+            "prompt": "Is the dinosaur's tail long?"
+          },
+          {
+            "examiner": "In my picture, I can see a torch in the boy's backpack.",
+            "expected": "In my picture, I can see a bottle in his backpack.",
+            "prompt": "Is there a torch in the boy's backpack?"
+          },
+          {
+            "examiner": "In my picture, the sky is yellow.",
+            "expected": "In my picture, the sky is blue.",
+            "prompt": "What colour is the sky?"
+          },
+          {
+            "examiner": "In my picture, the spider is below the tiger.",
+            "expected": "In my picture, it's above the tiger.",
+            "prompt": "Where's the spider?"
+          },
+          {
+            "examiner": "In my picture, the door of the tent is open.",
+            "expected": "In my picture, the door of the tent is closed.",
+            "prompt": "Is the door of the tent open?"
+          },
+          {
+            "examiner": "In my picture, there are two stones around the fire.",
+            "expected": "In my picture, there are three stones around the fire.",
+            "prompt": "How many stones are there around the fire?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Harry and Helen have new books to read.",
+        "intro": "Harry and Helen have new books to read. I don't know anything about Harry's new book, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What's the name of Harry's new book?",
+            "expected": "The Snowman."
+          },
+          {
+            "examiner": "How many pages has the book got?",
+            "expected": "145."
+          },
+          {
+            "examiner": "When did he buy it?",
+            "expected": "Yesterday."
+          },
+          {
+            "examiner": "Is the book funny or sad?",
+            "expected": "It's sad."
+          },
+          {
+            "examiner": "Where did Harry buy it?",
+            "expected": "In the bookshop."
+          }
+        ],
+        "transition": "Now you don't know anything about Helen's new book, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "name — ?",
+            "expected_question": "What's the name of Helen's book?",
+            "answer": "The Circus Clown."
+          },
+          {
+            "hint": "where / buy — ?",
+            "expected_question": "Where did she buy it?",
+            "answer": "In the supermarket."
+          },
+          {
+            "hint": "when / buy — ?",
+            "expected_question": "When did she buy it?",
+            "answer": "On Saturday."
+          },
+          {
+            "hint": "how many pages — ?",
+            "expected_question": "How many pages has the book got?",
+            "answer": "200."
+          },
+          {
+            "hint": "funny / sad — ?",
+            "expected_question": "Is the book funny or sad?",
+            "answer": "It's funny."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Mum and the fruit salad",
+        "intro": "These pictures tell a story. It's called 'Mum and the fruit salad'. Look at the pictures first.",
+        "pic1": "Ben's mum wants to make fruit salad. She's just bought a lot of fruit. Now they're going home.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What's happening to the fruit? What is the boy doing?",
+            "sentences": [
+              {
+                "text": "The fruit is falling out of Mum's bags.",
+                "hint": "What's happening to the fruit?"
+              },
+              {
+                "text": "A boy is picking up the fruit.",
+                "hint": "What is the boy doing?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What's Mum saying? What can Ben see?",
+            "sentences": [
+              {
+                "text": "Mum's saying, 'Where's my fruit?'",
+                "hint": "What's Mum saying?"
+              },
+              {
+                "text": "Ben can see some people with the fruit.",
+                "hint": "What can Ben see?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Has Mum got her fruit now? What's she saying?",
+            "sentences": [
+              {
+                "text": "The people are giving the fruit to Mum and Ben.",
+                "hint": "Has Mum got her fruit now?"
+              },
+              {
+                "text": "Mum's saying, 'Thank you.'",
+                "hint": "What's Mum saying?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What's Mum doing? And the other people?",
+            "sentences": [
+              {
+                "text": "Mum's making fruit salad.",
+                "hint": "What's Mum doing?"
+              },
+              {
+                "text": "Everyone's eating it.",
+                "hint": "What are the other people doing?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your city/town/village",
+        "intro": "Now let's talk about your city, town or village.",
+        "questions": [
+          {
+            "examiner": "Where do you live?",
+            "sample": "I live in Beijing."
+          },
+          {
+            "examiner": "How do you go to school?",
+            "sample": "I go by car."
+          },
+          {
+            "examiner": "What's your favourite place in your city/town/village?",
+            "sample": "The sports centre."
+          },
+          {
+            "examiner": "Where do you go shopping?",
+            "sample": "I go shopping in the town centre."
+          },
+          {
+            "examiner": "Tell me what you do at the weekends in your city/town/village.",
+            "sample": "I go to the cinema. I go to a restaurant with my family."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you live in a city or a village?",
+            "sample": "I live in a city."
+          },
+          {
+            "examiner": "Do you go to school by car?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like the sports centre?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go to the cinema?",
+            "sample": "Yes, sometimes."
+          },
+          {
+            "examiner": "Do you play football?",
+            "sample": "Yes, I play with my friends."
+          }
+        ]
+      }
+    },
+    "f4_2": {
+      "label": "官方真题2022 - Test 2",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a bedroom scene with toys",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture the racing cars are red and blue, but in your picture they are red and yellow.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, there's a camel on the poster.",
+            "expected": "In my picture, there are two eagles.",
+            "prompt": "Is there a camel on the poster?"
+          },
+          {
+            "examiner": "In my picture, the tortoise is on the rug.",
+            "expected": "In my picture, the tortoise is under the desk.",
+            "prompt": "Where's the tortoise?"
+          },
+          {
+            "examiner": "In my picture, the robot is standing on the shelf.",
+            "expected": "In my picture, the robot's sitting on the shelf.",
+            "prompt": "What's the robot doing?"
+          },
+          {
+            "examiner": "In my picture, there's a castle outside the window.",
+            "expected": "In my picture, there's a bridge outside the window.",
+            "prompt": "What's outside the window?"
+          },
+          {
+            "examiner": "In my picture, there's a message on the computer screen.",
+            "expected": "In my picture, there's a photo on the computer screen.",
+            "prompt": "What's on the computer screen?"
+          },
+          {
+            "examiner": "In my picture, the bin is on the right.",
+            "expected": "In my picture, the bin is on the left.",
+            "prompt": "Where's the bin?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Robert and Vicky have both got a present.",
+        "intro": "Robert and Vicky have both got a present. I don't know anything about Robert's present, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "When did Robert get his present?",
+            "expected": "This morning."
+          },
+          {
+            "examiner": "Who gave Robert his present?",
+            "expected": "His uncle."
+          },
+          {
+            "examiner": "What's the present?",
+            "expected": "It's a computer."
+          },
+          {
+            "examiner": "What colour is it?",
+            "expected": "It's grey."
+          },
+          {
+            "examiner": "Where will Robert put it?",
+            "expected": "In the living room."
+          }
+        ],
+        "transition": "Now you don't know anything about Vicky's present, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "present — ?",
+            "expected_question": "What's Vicky's present?",
+            "answer": "A football shirt."
+          },
+          {
+            "hint": "who / give — ?",
+            "expected_question": "Who gave her the present?",
+            "answer": "Her aunt."
+          },
+          {
+            "hint": "where / put — ?",
+            "expected_question": "Where will she put it?",
+            "answer": "In her bedroom."
+          },
+          {
+            "hint": "when / get — ?",
+            "expected_question": "When did she get it?",
+            "answer": "Yesterday."
+          },
+          {
+            "hint": "colour — ?",
+            "expected_question": "What colour is it?",
+            "answer": "Red and black."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Peter and Charlie get lost",
+        "intro": "These pictures tell a story. It's called 'Peter and Charlie get lost'. Look at the pictures first.",
+        "pic1": "Two brothers, Peter and Charlie, are camping. They decide to go for a long walk in the jungle.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "Where are Peter and Charlie? What's the monkey doing?",
+            "sentences": [
+              {
+                "text": "Peter and Charlie are in the jungle.",
+                "hint": "Where are Peter and Charlie?"
+              },
+              {
+                "text": "A monkey's throwing bananas to them.",
+                "hint": "What's the monkey doing?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What are the boys doing now? Are the boys lost?",
+            "sentences": [
+              {
+                "text": "The boys are looking at a map.",
+                "hint": "What are the boys doing?"
+              },
+              {
+                "text": "They're lost.",
+                "hint": "Are the boys lost?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What can the monkey see?",
+            "sentences": [
+              {
+                "text": "The monkey can see the boys' tent.",
+                "hint": "What can the monkey see?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "Where's the monkey taking the boys? Are they happy?",
+            "sentences": [
+              {
+                "text": "The monkey's taking the boys back to their tent.",
+                "hint": "Where's the monkey taking the boys?"
+              },
+              {
+                "text": "They're happy.",
+                "hint": "Are they happy?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Food",
+        "intro": "Now let's talk about food.",
+        "questions": [
+          {
+            "examiner": "What do you have for breakfast?",
+            "sample": "Orange juice and bread."
+          },
+          {
+            "examiner": "Where do you usually eat at home?",
+            "sample": "In the kitchen."
+          },
+          {
+            "examiner": "What time do you have lunch?",
+            "sample": "At one o'clock."
+          },
+          {
+            "examiner": "What food don't you like?",
+            "sample": "I don't like fish."
+          },
+          {
+            "examiner": "Tell me about dinner in your home.",
+            "sample": "My mum cooks dinner. We have chicken and rice. We eat at 8 o'clock."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you have orange juice?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you usually eat in the kitchen?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you have lunch at one o'clock?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like fish?",
+            "sample": "No, I don't."
+          },
+          {
+            "examiner": "Who cooks dinner?",
+            "sample": "My mum cooks dinner."
+          },
+          {
+            "examiner": "What time do you eat dinner?",
+            "sample": "We eat at 8 o'clock."
+          }
+        ]
+      }
+    },
+    "f4_3": {
+      "label": "官方真题2022 - Test 3",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of an airport scene",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture a dog is at the back of the truck, but in your picture it's at the front.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, one person is on the steps of the plane.",
+            "expected": "In my picture, three people are on the steps of the plane.",
+            "prompt": "How many people are on the steps?"
+          },
+          {
+            "examiner": "In my picture, the blue plane is going up into the sky.",
+            "expected": "In my picture, the blue plane is coming down.",
+            "prompt": "Is the blue plane going up?"
+          },
+          {
+            "examiner": "In my picture, the woman in the uniform is wearing a green scarf.",
+            "expected": "In my picture, the woman's scarf is orange.",
+            "prompt": "What colour is the woman's scarf?"
+          },
+          {
+            "examiner": "In my picture, the green number above the plane is 24.",
+            "expected": "In my picture, the number is 57.",
+            "prompt": "What's the number above the plane?"
+          },
+          {
+            "examiner": "In my picture, the man's suitcase has got wheels on it.",
+            "expected": "In my picture, the man's suitcase hasn't got wheels on it.",
+            "prompt": "Are there any wheels on the man's suitcase?"
+          },
+          {
+            "examiner": "In my picture, I can see an ambulance near the skyscrapers.",
+            "expected": "In my picture, I can see a fire engine.",
+            "prompt": "Is there an ambulance near the skyscrapers?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Michael and Emma go to a sports club every week.",
+        "intro": "Michael and Emma go to a sports club every week. I don't know anything about Michael's sports club, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What sport does Michael do there?",
+            "expected": "Tennis."
+          },
+          {
+            "examiner": "Where's Michael's club?",
+            "expected": "In Hill Street."
+          },
+          {
+            "examiner": "What time does Michael go?",
+            "expected": "At half past six."
+          },
+          {
+            "examiner": "Who does Michael go with?",
+            "expected": "His brother."
+          },
+          {
+            "examiner": "Which day does Michael go there?",
+            "expected": "On Monday."
+          }
+        ],
+        "transition": "Now you don't know anything about Emma's sports club, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "where — ?",
+            "expected_question": "Where is Emma's club?",
+            "answer": "In Lake Road."
+          },
+          {
+            "hint": "which day — ?",
+            "expected_question": "Which day does Emma go?",
+            "answer": "On Saturday."
+          },
+          {
+            "hint": "sport — ?",
+            "expected_question": "What sport does Emma do?",
+            "answer": "Sailing."
+          },
+          {
+            "hint": "time — ?",
+            "expected_question": "What time does Emma go?",
+            "answer": "At half past two."
+          },
+          {
+            "hint": "who / with — ?",
+            "expected_question": "Who does Emma go with?",
+            "answer": "Her best friend."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Tom and Betty go to the hospital",
+        "intro": "These pictures tell a story. It's called 'Tom and Betty go to the hospital'. Look at the pictures first.",
+        "pic1": "Tom and Betty's mum is in hospital because she's broken her leg. Tom and Betty and their dad are going to the hospital to visit her.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What's Tom doing?",
+            "sentences": [
+              {
+                "text": "Tom's giving his mum a present.",
+                "hint": "What's Tom doing?"
+              },
+              {
+                "text": "Mum's smiling.",
+                "hint": "How does Mum feel?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What is the present?",
+            "sentences": [
+              {
+                "text": "Mum's opened her present.",
+                "hint": "What has Mum done?"
+              },
+              {
+                "text": "She's got some chocolates.",
+                "hint": "What is the present?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What's Betty doing? And what's Tom doing?",
+            "sentences": [
+              {
+                "text": "Betty's taking the chocolates.",
+                "hint": "What's Betty doing?"
+              },
+              {
+                "text": "Tom's telling his parents but they aren't listening.",
+                "hint": "What's Tom doing?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "Why is Tom angry?",
+            "sentences": [
+              {
+                "text": "Tom's angry because Betty's eaten all the chocolates.",
+                "hint": "Why is Tom angry?"
+              },
+              {
+                "text": "Mum and Dad are laughing.",
+                "hint": "What are Mum and Dad doing?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your school",
+        "intro": "Now let's talk about your school.",
+        "questions": [
+          {
+            "examiner": "How many children are there in your class?",
+            "sample": "Thirty."
+          },
+          {
+            "examiner": "What colour is your classroom?",
+            "sample": "Blue."
+          },
+          {
+            "examiner": "What's your favourite lesson?",
+            "sample": "Maths."
+          },
+          {
+            "examiner": "Where do you eat lunch?",
+            "sample": "At school."
+          },
+          {
+            "examiner": "Tell me about your best friend at school.",
+            "sample": "His name's Tom. He's eleven. We play games together."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Are there thirty children in your class?",
+            "sample": "Yes, there are."
+          },
+          {
+            "examiner": "Is your classroom blue?",
+            "sample": "Yes, it is."
+          },
+          {
+            "examiner": "Do you like maths?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you eat lunch at school?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "What's his/her name?",
+            "sample": "His name's Tom."
+          },
+          {
+            "examiner": "What do you do together?",
+            "sample": "We play games."
+          }
+        ]
+      }
+    },
+    "aep1_1": {
+      "label": "官方真题2018(1) - Test 1",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of an outdoor scene with a car, tent, trees, and lake",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture there are two trees, but in your picture there are three.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the car is blue.",
+            "expected": "In my picture, it's yellow.",
+            "prompt": "What colour is the car?"
+          },
+          {
+            "examiner": "In my picture, there's a bat above the tent.",
+            "expected": "In my picture, there's a butterfly above the tent.",
+            "prompt": "Is there a bat above the tent?"
+          },
+          {
+            "examiner": "In my picture, the girl is wearing white shorts.",
+            "expected": "In my picture, the girl is wearing blue shorts.",
+            "prompt": "Is the girl wearing white shorts?"
+          },
+          {
+            "examiner": "In my picture, the girl's holding a toothbrush.",
+            "expected": "In my picture, she's holding a flag.",
+            "prompt": "What's the girl holding?"
+          },
+          {
+            "examiner": "In my picture, there's a rabbit in the car.",
+            "expected": "In my picture, there isn't a rabbit in the car.",
+            "prompt": "Is there a rabbit in the car?"
+          },
+          {
+            "examiner": "In my picture, the woman's going into the tent.",
+            "expected": "In my picture, the woman's coming out of the tent.",
+            "prompt": "Is the woman going into the tent?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Mary's house and Tom's house are on the same street.",
+        "intro": "Mary's house and Tom's house are on the same street. I don't know anything about Mary's house, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "How many people live in the house?",
+            "expected": "6 people."
+          },
+          {
+            "examiner": "How old is the house?",
+            "expected": "8 years old."
+          },
+          {
+            "examiner": "What colour is the front door?",
+            "expected": "It's red."
+          },
+          {
+            "examiner": "Where does Mary do her homework?",
+            "expected": "In her bedroom."
+          }
+        ],
+        "transition": "Now you don't know anything about Tom's house, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "big or small — ?",
+            "expected_question": "Is Tom's house big or small?",
+            "answer": "It's small."
+          },
+          {
+            "hint": "how old — ?",
+            "expected_question": "How old is the house?",
+            "answer": "100 years old."
+          },
+          {
+            "hint": "homework — where?",
+            "expected_question": "Where does Tom do his homework?",
+            "answer": "In the dining room."
+          },
+          {
+            "hint": "front door — colour?",
+            "expected_question": "What colour is the front door?",
+            "answer": "It's white."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Betty's birthday party",
+        "intro": "These pictures tell a story. It's called 'Betty's birthday party'. Look at the pictures first.",
+        "pic1": "It's Betty's birthday today. Her mother's making a cake. Betty's getting some sugar for the cake. She has to stand on a chair.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What has happened? What has Betty hurt? Why is Betty going to bed?",
+            "sentences": [
+              {
+                "text": "Betty has fallen. She has hurt her leg.",
+                "hint": "What has happened to Betty?"
+              },
+              {
+                "text": "Betty can't walk. She's going to bed.",
+                "hint": "Why is Betty going to bed?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "How is she feeling? What is Betty doing now? Who has come to see her?",
+            "sentences": [
+              {
+                "text": "She's very sad.",
+                "hint": "How is Betty feeling?"
+              },
+              {
+                "text": "Betty's sleeping. Her friends have come to see her.",
+                "hint": "What is Betty doing? Who has come?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What are Betty's friends giving her? What's her mother bringing? Is it a good party?",
+            "sentences": [
+              {
+                "text": "Betty's friends are giving her presents.",
+                "hint": "What are Betty's friends doing?"
+              },
+              {
+                "text": "Her mother's bringing the birthday cake.",
+                "hint": "What's her mother bringing?"
+              },
+              {
+                "text": "Everyone's enjoying the party.",
+                "hint": "Is it a good party?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your school",
+        "intro": "Now let's talk about your school.",
+        "questions": [
+          {
+            "examiner": "What time do you go to school?",
+            "sample": "At 8 o'clock."
+          },
+          {
+            "examiner": "How do you go to school?",
+            "sample": "By bus."
+          },
+          {
+            "examiner": "What's your favourite lesson?",
+            "sample": "English."
+          },
+          {
+            "examiner": "What sports do you play at school?",
+            "sample": "Football."
+          },
+          {
+            "examiner": "Tell me about your best friend at school.",
+            "sample": "His name's Tom. He's tall. He has short hair."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you go to school at 8 o'clock?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go by bus?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like English?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you play football?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "What's his/her name?",
+            "sample": "His name's Tom."
+          },
+          {
+            "examiner": "Is he/she tall? Does he/she have short hair?",
+            "sample": "Yes, he's tall and has short hair."
+          }
+        ]
+      }
+    },
+    "aep1_2": {
+      "label": "官方真题2018(1) - Test 2",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a zoo or outdoor scene with animals, an island, and ice-cream seller",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture the camel's got a short tail, but in your picture it's got a long tail.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, there are stripes on the tent.",
+            "expected": "In my picture, there are spots on the tent.",
+            "prompt": "Are there stripes on the tent?"
+          },
+          {
+            "examiner": "In my picture, there are four planes.",
+            "expected": "In my picture, there are five planes.",
+            "prompt": "How many planes are there?"
+          },
+          {
+            "examiner": "In my picture, I can see a man with a white hat. He's selling ice-cream.",
+            "expected": "In my picture, the man with the white hat is selling burgers.",
+            "prompt": "What's the man with the white hat selling?"
+          },
+          {
+            "examiner": "In my picture, the elephant is behind the trees.",
+            "expected": "In my picture, the elephant is in front of the trees.",
+            "prompt": "Where's the elephant?"
+          },
+          {
+            "examiner": "In my picture, the woman with the umbrella is talking to a girl.",
+            "expected": "In my picture, the woman with the umbrella is talking to a boy.",
+            "prompt": "Who's the woman with the umbrella talking to?"
+          },
+          {
+            "examiner": "In my picture, there's a swan on the island.",
+            "expected": "In my picture, there isn't a swan on the island.",
+            "prompt": "Is there a swan on the island?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Charlie and Emma each get a magazine every week.",
+        "intro": "Charlie and Emma get a magazine every week. I don't know anything about Charlie's magazine, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What day does Charlie get the magazine?",
+            "expected": "On Tuesday."
+          },
+          {
+            "examiner": "What's the name of the magazine?",
+            "expected": "Our Planet."
+          },
+          {
+            "examiner": "Who buys the magazine for Charlie?",
+            "expected": "His mother."
+          },
+          {
+            "examiner": "Is it expensive?",
+            "expected": "Yes."
+          },
+          {
+            "examiner": "What's it about?",
+            "expected": "Animals."
+          }
+        ],
+        "transition": "Now you don't know anything about Emma's magazine, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "name — magazine?",
+            "expected_question": "What's the name of Emma's magazine?",
+            "answer": "New Faces."
+          },
+          {
+            "hint": "about — what?",
+            "expected_question": "What is the magazine about?",
+            "answer": "Music."
+          },
+          {
+            "hint": "expensive — ?",
+            "expected_question": "Is it expensive?",
+            "answer": "No, it isn't."
+          },
+          {
+            "hint": "what day — ?",
+            "expected_question": "What day does Emma get the magazine?",
+            "answer": "On Friday."
+          },
+          {
+            "hint": "who — buys?",
+            "expected_question": "Who buys the magazine for Emma?",
+            "answer": "Her father."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "The key",
+        "intro": "These pictures tell a story. It's called 'The key'. Look at the pictures first.",
+        "pic1": "Sarah and her mum have come home from the shops. Sarah is carrying lots of bags. She drops her door key.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "Can Mum find the key? What's Sarah saying?",
+            "sentences": [
+              {
+                "text": "Mum can't find her key.",
+                "hint": "Can Mum find the key?"
+              },
+              {
+                "text": "Sarah's saying, 'Look! That window's open.'",
+                "hint": "What's Sarah saying?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What's Sarah doing? What's she climbing?",
+            "sentences": [
+              {
+                "text": "Sarah's climbing in the window.",
+                "hint": "What's Sarah doing?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What does Sarah do next? What's she doing at the door?",
+            "sentences": [
+              {
+                "text": "Sarah's opening the door from the inside.",
+                "hint": "What is Sarah doing at the door?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "Where was the key? How do they feel?",
+            "sentences": [
+              {
+                "text": "Mum has found the key. It was in her pocket.",
+                "hint": "Where was the key?"
+              },
+              {
+                "text": "Sarah and her mum are laughing.",
+                "hint": "How do they feel?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Things you do",
+        "intro": "Now let's talk about the things you do.",
+        "questions": [
+          {
+            "examiner": "What do you have for breakfast?",
+            "sample": "I have bread and milk."
+          },
+          {
+            "examiner": "Where do you play after school?",
+            "sample": "In the park."
+          },
+          {
+            "examiner": "What do you like doing at weekends?",
+            "sample": "Shopping."
+          },
+          {
+            "examiner": "What are your hobbies?",
+            "sample": "Computer games."
+          },
+          {
+            "examiner": "Tell me about the things you do in the evenings.",
+            "sample": "I watch TV. I do my homework. I go to bed at nine o'clock."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you have breakfast?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you play in the park?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like shopping?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you play computer games?",
+            "sample": "Yes, sometimes."
+          },
+          {
+            "examiner": "Do you watch TV?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "What time do you go to bed?",
+            "sample": "At nine o'clock."
+          }
+        ]
+      }
+    },
+    "aep1_3": {
+      "label": "官方真题2018(1) - Test 3",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a beach scene with banana trees",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture there are three banana trees, but in your picture there are two.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the man is wearing red shorts.",
+            "expected": "In my picture, the man is wearing white shorts.",
+            "prompt": "What colour are the man's shorts?"
+          },
+          {
+            "examiner": "In my picture, some planes are flying in the sky.",
+            "expected": "In my picture, some butterflies are flying in the sky.",
+            "prompt": "What's flying in the sky?"
+          },
+          {
+            "examiner": "In my picture, the boy in the water has got a hat.",
+            "expected": "In my picture, the boy hasn't got a rucksack on his back.",
+            "prompt": "Has the boy got a rucksack on his back?"
+          },
+          {
+            "examiner": "In my picture, the car doors are closed.",
+            "expected": "In my picture, the car doors are open.",
+            "prompt": "Are the car doors open?"
+          },
+          {
+            "examiner": "In my picture, there's a frog in the girl's pocket.",
+            "expected": "In my picture, there's a mouse in the girl's pocket.",
+            "prompt": "What's in the girl's pocket?"
+          },
+          {
+            "examiner": "In my picture, the woman is wearing a spotted dress.",
+            "expected": "In my picture, she's wearing a striped dress.",
+            "prompt": "Is the woman wearing a spotted dress?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Betty and David go to different schools.",
+        "intro": "Betty and David go to different schools. I don't know anything about Betty's school, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What's the name of Betty's school?",
+            "expected": "Park School."
+          },
+          {
+            "examiner": "What time does school start?",
+            "expected": "At 8:30."
+          },
+          {
+            "examiner": "How many children study there?",
+            "expected": "500."
+          },
+          {
+            "examiner": "What sport does Betty play there?",
+            "expected": "Tennis."
+          },
+          {
+            "examiner": "Where's the school?",
+            "expected": "It's near the post office."
+          }
+        ],
+        "transition": "Now you don't know anything about David's school, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "name — school?",
+            "expected_question": "What's the name of David's school?",
+            "answer": "Greenhill School."
+          },
+          {
+            "hint": "what time — start?",
+            "expected_question": "What time does school start?",
+            "answer": "At 9 o'clock."
+          },
+          {
+            "hint": "how many — children?",
+            "expected_question": "How many children study there?",
+            "answer": "400."
+          },
+          {
+            "hint": "sport — ?",
+            "expected_question": "What sport does David play there?",
+            "answer": "Basketball."
+          },
+          {
+            "hint": "where — school?",
+            "expected_question": "Where's the school?",
+            "answer": "It's near the cinema."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Charlie and the elephant",
+        "intro": "These pictures tell a story. It's called 'Charlie and the elephant'. Look at the pictures first.",
+        "pic1": "Charlie is in the garden with his mother. He's eating some fruit and his mother's reading a book.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What can Charlie see? What is it doing?",
+            "sentences": [
+              {
+                "text": "Charlie can see an elephant. It's coming into the garden.",
+                "hint": "What can Charlie see?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What is Charlie giving the elephant? Who has come?",
+            "sentences": [
+              {
+                "text": "Charlie is giving the elephant a banana. The elephant's eating it.",
+                "hint": "What is Charlie doing?"
+              },
+              {
+                "text": "A man from the circus has come to get the elephant.",
+                "hint": "Who has come to the house?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Where are Charlie and his mother? What are they watching?",
+            "sentences": [
+              {
+                "text": "Charlie and his mother are watching the elephant in the circus.",
+                "hint": "Where are Charlie and his mother?"
+              },
+              {
+                "text": "They're very happy.",
+                "hint": "How do they feel?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your holidays",
+        "intro": "Now let's talk about your holidays.",
+        "questions": [
+          {
+            "examiner": "When do you have holidays?",
+            "sample": "In the summer."
+          },
+          {
+            "examiner": "Where do you like to go on holiday?",
+            "sample": "To the beach."
+          },
+          {
+            "examiner": "What do you like doing on holiday?",
+            "sample": "Swimming."
+          },
+          {
+            "examiner": "Who do you go on holiday with?",
+            "sample": "My family."
+          },
+          {
+            "examiner": "Tell me about your best holiday.",
+            "sample": "We went to the mountains. I went skiing. I had fun."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you have holidays in the summer?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like going to the beach?",
+            "sample": "Yes, I love it."
+          },
+          {
+            "examiner": "Do you like swimming?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go with your family?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Where did you go last holiday? What did you do?",
+            "sample": "We went to the mountains. I went skiing."
+          }
+        ]
+      }
+    },
+    "aep2_1": {
+      "label": "官方真题2018(2) - Test 1",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of an outdoor lake scene with boats, trees, and flowers",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture it's a cloudy day, but in your picture it's a sunny day.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, there are three butterflies near the flowers.",
+            "expected": "In my picture, there are two butterflies near the flowers.",
+            "prompt": "How many butterflies are there?"
+          },
+          {
+            "examiner": "In my picture, a man's getting off the boat.",
+            "expected": "In my picture, he's getting on the boat.",
+            "prompt": "Is the man getting off the boat?"
+          },
+          {
+            "examiner": "In my picture, I can see a swan on the left.",
+            "expected": "In my picture, the swan's on the right.",
+            "prompt": "Is the swan on the left?"
+          },
+          {
+            "examiner": "In my picture, the children are playing with a puppy.",
+            "expected": "In my picture, the children are playing with a kitten.",
+            "prompt": "Are the children playing with a puppy?"
+          },
+          {
+            "examiner": "In my picture, a boy with blond hair is sitting by the water. He's taking a photo.",
+            "expected": "In my picture, he isn't taking a photo.",
+            "prompt": "Is the boy with blond hair taking a photo?"
+          },
+          {
+            "examiner": "In my picture, the leaves on the biggest tree are brown.",
+            "expected": "In my picture, the leaves on the biggest tree are yellow.",
+            "prompt": "What colour are the leaves on the biggest tree?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Oliver and Helen both go to a sports club.",
+        "intro": "Oliver and Helen both go to a sports club. I don't know anything about Oliver's sports club, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "Where's Oliver's sports club?",
+            "expected": "It's in Park Street."
+          },
+          {
+            "examiner": "Who does he go there with?",
+            "expected": "His cousin."
+          },
+          {
+            "examiner": "What does he play there?",
+            "expected": "Golf."
+          },
+          {
+            "examiner": "When does he go there?",
+            "expected": "At weekends."
+          },
+          {
+            "examiner": "Is it expensive?",
+            "expected": "Yes, it is."
+          }
+        ],
+        "transition": "Now you don't know anything about Helen's sports club, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "where — club?",
+            "expected_question": "Where's Helen's sports club?",
+            "answer": "It's in Long Road."
+          },
+          {
+            "hint": "when — go?",
+            "expected_question": "When does she go there?",
+            "answer": "On Monday evenings."
+          },
+          {
+            "hint": "who — with?",
+            "expected_question": "Who does she go with?",
+            "answer": "Her sister."
+          },
+          {
+            "hint": "what — play?",
+            "expected_question": "What does she play?",
+            "answer": "Football."
+          },
+          {
+            "hint": "expensive — ?",
+            "expected_question": "Is it expensive?",
+            "answer": "No, it isn't."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "The aliens go for a ride",
+        "intro": "These pictures tell a story. It's called 'The aliens go for a ride'. Look at the pictures first.",
+        "pic1": "The astronauts want to go home. Some aliens are helping them with their things. Two aliens would like to go with them in their rocket.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What are the astronauts doing? Where are two aliens going?",
+            "sentences": [
+              {
+                "text": "The astronauts are saying goodbye to the aliens. Two aliens are going into the rocket.",
+                "hint": "What are the astronauts doing? Where are the aliens going?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What are the astronauts doing now?",
+            "sentences": [
+              {
+                "text": "Now the rocket is going up into space. The astronauts are waving to the aliens on the ground.",
+                "hint": "What's happening to the rocket?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Where are the astronauts now? What has the boy seen?",
+            "sentences": [
+              {
+                "text": "Now the astronauts are back on their planet. Lots of people have come to see them.",
+                "hint": "Where are the astronauts now?"
+              },
+              {
+                "text": "One boy has seen the aliens inside the rocket.",
+                "hint": "What has the boy seen?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What have the astronauts seen? How do they feel?",
+            "sentences": [
+              {
+                "text": "The astronauts have seen the two aliens. They're very surprised.",
+                "hint": "What have the astronauts seen? How do they feel?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your mornings",
+        "intro": "Now let's talk about your mornings.",
+        "questions": [
+          {
+            "examiner": "What time do you wake up?",
+            "sample": "At 6:30."
+          },
+          {
+            "examiner": "What do you do first?",
+            "sample": "I have a shower."
+          },
+          {
+            "examiner": "What do you have for breakfast?",
+            "sample": "Cereal."
+          },
+          {
+            "examiner": "How do you go to school?",
+            "sample": "By car."
+          },
+          {
+            "examiner": "Tell me about your lunch.",
+            "sample": "I go home for lunch. I have lunch with my mum. I usually have a sandwich and a drink."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you wake up at 6:30?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you have a shower?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you have cereal for breakfast?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go to school by car?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Where do you have lunch?",
+            "sample": "I go home for lunch."
+          },
+          {
+            "examiner": "Who do you have lunch with?",
+            "sample": "My mum."
+          },
+          {
+            "examiner": "What do you usually have to eat?",
+            "sample": "A sandwich and a drink."
+          }
+        ]
+      }
+    },
+    "aep2_2": {
+      "label": "官方真题2018(2) - Test 2",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a room with a table, window, and old man",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture there are two children under the blue table, but in your picture there's only one child.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, there's a boy at the window.",
+            "expected": "In my picture, there's a girl at the window.",
+            "prompt": "Is there a boy at the window?"
+          },
+          {
+            "examiner": "In my picture, there's a photo of a butterfly on the wall.",
+            "expected": "In my picture, there's a photo of a swan on the wall.",
+            "prompt": "Is there a photo of a butterfly on the wall?"
+          },
+          {
+            "examiner": "In my picture, the old man is reading a letter.",
+            "expected": "In my picture, the old man is reading a newspaper.",
+            "prompt": "What's the old man reading?"
+          },
+          {
+            "examiner": "In my picture, there are no knives and forks on the green table.",
+            "expected": "In my picture, there are some knives and forks on the green table.",
+            "prompt": "Are there any knives and forks on the green table?"
+          },
+          {
+            "examiner": "In my picture, I can see some money on the floor.",
+            "expected": "In my picture, there isn't any money on the floor.",
+            "prompt": "Can you see any money on the floor?"
+          },
+          {
+            "examiner": "In my picture, some windows are open.",
+            "expected": "In my picture, all the windows are closed.",
+            "prompt": "Are any windows open?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Jill and Nick go to the same school. They each have a favourite teacher.",
+        "intro": "Jill and Nick go to the same school. I don't know anything about Jill's favourite teacher, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What's Jill's teacher's name?",
+            "expected": "Mr May."
+          },
+          {
+            "examiner": "Where does he live?",
+            "expected": "In West Street."
+          },
+          {
+            "examiner": "Is his hair long or short?",
+            "expected": "Short."
+          },
+          {
+            "examiner": "What's his hobby?",
+            "expected": "Cycling."
+          },
+          {
+            "examiner": "What subject does he teach?",
+            "expected": "History."
+          }
+        ],
+        "transition": "Now you don't know anything about Nick's favourite teacher, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "name — ?",
+            "expected_question": "What's Nick's teacher's name?",
+            "answer": "Miss Cave."
+          },
+          {
+            "hint": "subject — teach?",
+            "expected_question": "What subject does she teach?",
+            "answer": "Geography."
+          },
+          {
+            "hint": "hobby — ?",
+            "expected_question": "What's her hobby?",
+            "answer": "She likes doing puzzles."
+          },
+          {
+            "hint": "where — live?",
+            "expected_question": "Where does she live?",
+            "answer": "In Park Road."
+          },
+          {
+            "hint": "hair — long or short?",
+            "expected_question": "Is her hair long or short?",
+            "answer": "It's long."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "A very good dog",
+        "intro": "These pictures tell a story. It's called 'A very good dog'. Look at the pictures first.",
+        "pic1": "Frank's dad is working in the garden, but he has lost one of his gloves. The dog has found the glove. He's bringing it to Dad.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What's Frank doing? What's the dog bringing him?",
+            "sentences": [
+              {
+                "text": "Frank's putting on his shoes, but he can't find one.",
+                "hint": "What's Frank doing?"
+              },
+              {
+                "text": "The dog's bringing him the shoe.",
+                "hint": "What's the dog bringing him?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What's Mum looking for? What's the dog got?",
+            "sentences": [
+              {
+                "text": "Mum's looking for the newspaper.",
+                "hint": "What's Mum looking for?"
+              },
+              {
+                "text": "The dog's bringing it to her.",
+                "hint": "What's the dog got?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "What's the dog looking for? Who's got the ball?",
+            "sentences": [
+              {
+                "text": "Now the dog's in the garden. He's looking for his ball.",
+                "hint": "What's the dog looking for?"
+              },
+              {
+                "text": "Dad's got the ball.",
+                "hint": "Who's got the ball?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What are the family doing now?",
+            "sentences": [
+              {
+                "text": "The family are all playing ball with the dog.",
+                "hint": "What are the family doing now?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your home",
+        "intro": "Now let's talk about your home.",
+        "questions": [
+          {
+            "examiner": "Where do you live?",
+            "sample": "In ... Street."
+          },
+          {
+            "examiner": "Who do you live with?",
+            "sample": "My parents."
+          },
+          {
+            "examiner": "How many rooms are there in your home?",
+            "sample": "Three."
+          },
+          {
+            "examiner": "Where do you play?",
+            "sample": "In my bedroom."
+          },
+          {
+            "examiner": "Tell me about your living room.",
+            "sample": "It's big. It's white and brown. There's a TV in it."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "What's the name of your street?",
+            "sample": "It's ... Street."
+          },
+          {
+            "examiner": "Do you live with your parents?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Are there three rooms?",
+            "sample": "Yes, there are."
+          },
+          {
+            "examiner": "Do you play in your bedroom?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Is it big or small?",
+            "sample": "It's big."
+          },
+          {
+            "examiner": "What colour is it?",
+            "sample": "White and brown."
+          },
+          {
+            "examiner": "Is there a TV in it?",
+            "sample": "Yes, there is."
+          }
+        ]
+      }
+    },
+    "aep2_3": {
+      "label": "官方真题2018(2) - Test 3",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a waterfall/bridge scene",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture it's sunny, but in your picture it's cloudy.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the bridge is green.",
+            "expected": "In my picture, it's white.",
+            "prompt": "What colour is the bridge?"
+          },
+          {
+            "examiner": "In my picture, there's a man in the boat near the waterfall. He's wearing a striped hat.",
+            "expected": "In my picture, a woman is wearing a striped hat.",
+            "prompt": "Who's wearing the striped hat in the boat near the waterfall?"
+          },
+          {
+            "examiner": "In my picture, I can see three swings.",
+            "expected": "In my picture, I can see two swings.",
+            "prompt": "How many swings are there?"
+          },
+          {
+            "examiner": "In my picture, there are moons on the flags.",
+            "expected": "In my picture, there are stars on the flags.",
+            "prompt": "Are there moons on the flags?"
+          },
+          {
+            "examiner": "In my picture, there's a swan on the left.",
+            "expected": "In my picture, there's a swan on the right.",
+            "prompt": "Is the swan on the left?"
+          },
+          {
+            "examiner": "In my picture, I can see a man under the tree. He's reading a newspaper.",
+            "expected": "In my picture, he isn't reading a newspaper.",
+            "prompt": "Is the man under the tree reading a newspaper?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "William and Sarah both went on holiday last year.",
+        "intro": "William and Sarah both went on holiday last year. I don't know anything about William's holiday, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "Who did William go on holiday with?",
+            "expected": "His grandparents."
+          },
+          {
+            "examiner": "What was the weather like?",
+            "expected": "It was windy."
+          },
+          {
+            "examiner": "When did he go?",
+            "expected": "In August."
+          },
+          {
+            "examiner": "What did he buy on holiday?",
+            "expected": "Trainers."
+          },
+          {
+            "examiner": "Where did he go?",
+            "expected": "To the beach."
+          }
+        ],
+        "transition": "Now you don't know anything about Sarah's holiday, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "where — go?",
+            "expected_question": "Where did Sarah go?",
+            "answer": "She went to the mountains."
+          },
+          {
+            "hint": "who — with?",
+            "expected_question": "Who did she go with?",
+            "answer": "Her cousins."
+          },
+          {
+            "hint": "when — go?",
+            "expected_question": "When did she go?",
+            "answer": "In January."
+          },
+          {
+            "hint": "what — buy?",
+            "expected_question": "What did she buy on holiday?",
+            "answer": "A bracelet."
+          },
+          {
+            "hint": "weather — ?",
+            "expected_question": "What was the weather like?",
+            "answer": "It was sunny."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Grandma and Grandpa come to help",
+        "intro": "These pictures tell a story. It's called 'Grandma and Grandpa come to help'. Look at the pictures first.",
+        "pic1": "David, Emma and their mum and dad are going to have a picnic in the countryside. Grandma and Grandpa are going to stay at home.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "Where are David and Emma? What's Grandma saying?",
+            "sentences": [
+              {
+                "text": "David and Emma are leaving in the car with their parents.",
+                "hint": "Where are David and Emma?"
+              },
+              {
+                "text": "Grandma's saying, 'They have forgotten the picnic!'",
+                "hint": "What's Grandma saying?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What's Mum saying? Is everyone hungry?",
+            "sentences": [
+              {
+                "text": "The family have stopped in a field.",
+                "hint": "Where has the family stopped?"
+              },
+              {
+                "text": "Mum's saying, 'Where's our picnic?' Everyone is hungry.",
+                "hint": "What's Mum saying?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Who's arrived now? What have they brought?",
+            "sentences": [
+              {
+                "text": "Grandma and Grandpa have arrived in their car. They have brought the picnic.",
+                "hint": "Who's arrived? What have they brought?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What are they doing now?",
+            "sentences": [
+              {
+                "text": "Everyone is eating now. They are all happy.",
+                "hint": "What are they doing now?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your city/town/village",
+        "intro": "Now let's talk about your city, town or village.",
+        "questions": [
+          {
+            "examiner": "Where do you live?",
+            "sample": "In a town."
+          },
+          {
+            "examiner": "How do you go to school?",
+            "sample": "By car."
+          },
+          {
+            "examiner": "What's your favourite place in your city/town/village?",
+            "sample": "The park."
+          },
+          {
+            "examiner": "Tell me about what you do at weekends in your city/town/village.",
+            "sample": "I go shopping. I go with my Mum. She buys food and I buy comics."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you live in ...?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go to school by car?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like the park?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Where do you go at weekends?",
+            "sample": "I go shopping."
+          },
+          {
+            "examiner": "Who do you go with?",
+            "sample": "My Mum."
+          },
+          {
+            "examiner": "What do you do there?",
+            "sample": "She buys food and I buy comics."
+          }
+        ]
+      }
+    },
+    "aep3_1": {
+      "label": "官方真题2019 - Test 1",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a winter scene with penguins, snowboard, and eagle",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture two penguins are by the water, but in your picture there is only one penguin by the water.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, there's a tree behind the house. It's smaller than the house.",
+            "expected": "In my picture, the tree is bigger than the house.",
+            "prompt": "Is the tree behind the house small?"
+          },
+          {
+            "examiner": "In my picture, the boy on the snowboard isn't wearing gloves.",
+            "expected": "In my picture, the boy's wearing gloves.",
+            "prompt": "Is the boy on the snowboard wearing gloves?"
+          },
+          {
+            "examiner": "In my picture, the dog is lying in the snow.",
+            "expected": "In my picture, the dog's running in the snow.",
+            "prompt": "What's the dog doing?"
+          },
+          {
+            "examiner": "In my picture, there's some traffic on the road.",
+            "expected": "In my picture, there's no traffic on the road.",
+            "prompt": "Can you see any traffic on the road?"
+          },
+          {
+            "examiner": "In my picture, there's a girl holding a hat. She's wearing boots.",
+            "expected": "In my picture, she's wearing trainers.",
+            "prompt": "What's the girl wearing?"
+          },
+          {
+            "examiner": "In my picture, there's an eagle flying in the sky. It's on the left.",
+            "expected": "In my picture, the eagle's on the right.",
+            "prompt": "Where's the eagle?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "John and Daisy both go to an art class.",
+        "intro": "John and Daisy both go to an art class. I don't know anything about John's art class, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What's the teacher's name?",
+            "expected": "It's Miss Bird."
+          },
+          {
+            "examiner": "When is the class?",
+            "expected": "On Saturday."
+          },
+          {
+            "examiner": "How many students are there in the class?",
+            "expected": "Ten."
+          },
+          {
+            "examiner": "Is John a good artist?",
+            "expected": "Yes, he's very good."
+          },
+          {
+            "examiner": "What does he like painting?",
+            "expected": "He likes painting people."
+          }
+        ],
+        "transition": "Now you don't know anything about Daisy's art class, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "teacher — name?",
+            "expected_question": "What's the teacher's name?",
+            "answer": "Mr Black."
+          },
+          {
+            "hint": "how many — students?",
+            "expected_question": "How many students are there?",
+            "answer": "Eight."
+          },
+          {
+            "hint": "when — class?",
+            "expected_question": "When is the class?",
+            "answer": "On Friday."
+          },
+          {
+            "hint": "what — like painting?",
+            "expected_question": "What does she like painting?",
+            "answer": "Animals."
+          },
+          {
+            "hint": "good artist — ?",
+            "expected_question": "Is she a good artist?",
+            "answer": "She's not bad."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "Vicky's strange day",
+        "intro": "These pictures tell a story. It's called 'Vicky's strange day'. Look at the pictures first.",
+        "pic1": "Vicky's mum is a doctor. She's saying to Vicky, 'I've got to go to work. Be quick! You're late for school!'",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "What is Vicky doing? Why is Vicky crying?",
+            "sentences": [
+              {
+                "text": "Vicky is running to her school.",
+                "hint": "What is Vicky doing?"
+              },
+              {
+                "text": "She's fallen over. She's crying because her leg hurts.",
+                "hint": "Why is Vicky crying?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "Who's coming to help her? Where's Vicky now?",
+            "sentences": [
+              {
+                "text": "A teacher is coming to help her.",
+                "hint": "Who's coming to help her?"
+              },
+              {
+                "text": "Now the teacher is taking Vicky to the hospital.",
+                "hint": "Where's Vicky now?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Who is looking after Vicky? How does Vicky feel now?",
+            "sentences": [
+              {
+                "text": "Now a doctor is looking after Vicky — and the doctor is her mum!",
+                "hint": "Who is looking after Vicky?"
+              },
+              {
+                "text": "Now Vicky feels better and she's smiling.",
+                "hint": "How does Vicky feel now?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your best friend",
+        "intro": "Now let's talk about your best friend.",
+        "questions": [
+          {
+            "examiner": "What's your best friend's name?",
+            "sample": "He's/She's called ..."
+          },
+          {
+            "examiner": "Where do you see him/her?",
+            "sample": "At school."
+          },
+          {
+            "examiner": "Is he/she tall or short?",
+            "sample": "He's/She's tall."
+          },
+          {
+            "examiner": "What do you like doing with your friend?",
+            "sample": "Playing computer games."
+          },
+          {
+            "examiner": "Tell me about your best friend's family.",
+            "sample": "He/She lives with his/her mum and dad. They live in ... They've got two cats."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Is your best friend's name ...?",
+            "sample": "Yes, it is."
+          },
+          {
+            "examiner": "Do you see him/her at school?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Is he/she tall?",
+            "sample": "Yes, he/she is."
+          },
+          {
+            "examiner": "Do you like playing computer games with him/her?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Who does he/she live with?",
+            "sample": "His/Her mum and dad."
+          },
+          {
+            "examiner": "Where do they live?",
+            "sample": "In ..."
+          },
+          {
+            "examiner": "Have they got any pets?",
+            "sample": "Yes, they've got two cats."
+          }
+        ]
+      }
+    },
+    "aep3_2": {
+      "label": "官方真题2019 - Test 2",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a room with drums, guitars, and children playing instruments",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture the smaller drums are green, but in your picture they are red.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the guitars on the wall are different.",
+            "expected": "In my picture, the guitars look the same.",
+            "prompt": "Do the guitars look different?"
+          },
+          {
+            "examiner": "In my picture, the teacher has got a beard.",
+            "expected": "In my picture, he's got a moustache.",
+            "prompt": "Has the teacher got a beard?"
+          },
+          {
+            "examiner": "In my picture, there's a poster of a building on the wall.",
+            "expected": "In my picture, there's a poster of a pop star on the wall.",
+            "prompt": "What can you see on the poster?"
+          },
+          {
+            "examiner": "In my picture, the girl with the violin is wearing a blue belt.",
+            "expected": "In my picture, her belt is yellow.",
+            "prompt": "What colour is the girl's belt?"
+          },
+          {
+            "examiner": "In my picture, there's a laptop on the rug.",
+            "expected": "In my picture, there's a magazine on the rug.",
+            "prompt": "What's on the rug?"
+          },
+          {
+            "examiner": "In my picture, four children are playing instruments.",
+            "expected": "In my picture, five children are playing instruments.",
+            "prompt": "How many children are playing instruments?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Katy and Robert are friends. Their mums have just bought cars.",
+        "intro": "Katy and Robert are friends. Their mums have just bought cars. I don't know anything about Katy's mum's car, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "What colour is the car?",
+            "expected": "It's silver."
+          },
+          {
+            "examiner": "How old is it?",
+            "expected": "Two years old."
+          },
+          {
+            "examiner": "How many doors has it got?",
+            "expected": "Three."
+          },
+          {
+            "examiner": "Where's the car now?",
+            "expected": "At home."
+          },
+          {
+            "examiner": "Was it cheap or expensive?",
+            "expected": "It was cheap."
+          }
+        ],
+        "transition": "Now you don't know anything about Robert's mum's car, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "colour — car?",
+            "expected_question": "What colour is the car?",
+            "answer": "It's black."
+          },
+          {
+            "hint": "how many — doors?",
+            "expected_question": "How many doors has it got?",
+            "answer": "Five."
+          },
+          {
+            "hint": "how old — ?",
+            "expected_question": "How old is it?",
+            "answer": "Six months old."
+          },
+          {
+            "hint": "cheap or expensive — ?",
+            "expected_question": "Was it cheap or expensive?",
+            "answer": "It was expensive."
+          },
+          {
+            "hint": "where — now?",
+            "expected_question": "Where's the car now?",
+            "answer": "At the station."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "The goat and the coconuts",
+        "intro": "These pictures tell a story. It's called 'The goat and the coconuts'. Look at the pictures first.",
+        "pic1": "Alex and Lucy want to get some coconuts. The coconut tree is very tall so Alex is bringing a chair.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "Can Alex get the coconuts now? What's watching Alex?",
+            "sentences": [
+              {
+                "text": "Alex still can't get the coconuts.",
+                "hint": "Can Alex get the coconuts?"
+              },
+              {
+                "text": "A goat's watching him.",
+                "hint": "What's watching Alex?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "What's the goat doing?",
+            "sentences": [
+              {
+                "text": "The goat's hitting the tree with its head. Some coconuts are falling.",
+                "hint": "What's the goat doing?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "How are Alex and Lucy feeling? Why?",
+            "sentences": [
+              {
+                "text": "Now Alex and Lucy have a lot of coconuts. They're very happy.",
+                "hint": "How are Alex and Lucy feeling? Why?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "What are the children doing now?",
+            "sentences": [
+              {
+                "text": "Alex is drinking from a coconut. Lucy's eating some coconut and giving some to the goat.",
+                "hint": "What are the children doing now?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your school",
+        "intro": "Now let's talk about your school.",
+        "questions": [
+          {
+            "examiner": "How many children are there in your class?",
+            "sample": "Thirty."
+          },
+          {
+            "examiner": "What time does school start?",
+            "sample": "At 7:30."
+          },
+          {
+            "examiner": "What subject do you like best?",
+            "sample": "Science."
+          },
+          {
+            "examiner": "What games do you play at school?",
+            "sample": "Football."
+          },
+          {
+            "examiner": "Tell me about your best friend at school.",
+            "sample": "His/Her name's ... He/She sits next to me. He's/She's ten years old."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Are there thirty children in your class?",
+            "sample": "Yes, there are."
+          },
+          {
+            "examiner": "Does school start at 7:30?",
+            "sample": "Yes, it does."
+          },
+          {
+            "examiner": "Do you like science best?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you play football at school?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "What's his/her name?",
+            "sample": "His/Her name's ..."
+          },
+          {
+            "examiner": "Does he/she sit next to you?",
+            "sample": "Yes, he/she does."
+          },
+          {
+            "examiner": "How old is he/she?",
+            "sample": "He's/She's ten."
+          }
+        ]
+      }
+    },
+    "aep3_3": {
+      "label": "官方真题2019 - Test 3",
+      "part1": {
+        "title": "Find the Differences",
+        "scene": "Two pictures of a beach scene with helicopter, towel, and striped chair",
+        "intro": "Here are two pictures. My picture is similar to yours, but there are some differences.",
+        "example": "For example, in my picture the helicopter is on the hill, but in your picture it's in the air.",
+        "instruction": "I will say something about my picture. Can you tell me how your picture is different?",
+        "questions": [
+          {
+            "examiner": "In my picture, the umbrella's green and white.",
+            "expected": "In my picture, the umbrella's red and white.",
+            "prompt": "What colour is the umbrella?"
+          },
+          {
+            "examiner": "In my picture, there's a man lying on a towel. He's wearing sunglasses.",
+            "expected": "In my picture, the man isn't wearing sunglasses.",
+            "prompt": "Is the man on the towel wearing sunglasses?"
+          },
+          {
+            "examiner": "In my picture, there are four steps down to the beach.",
+            "expected": "In my picture, there are three steps.",
+            "prompt": "How many steps are there down to the beach?"
+          },
+          {
+            "examiner": "In my picture, no one is sitting in the striped chair.",
+            "expected": "In my picture, a woman is sitting in the striped chair.",
+            "prompt": "Is someone sitting in the striped chair?"
+          },
+          {
+            "examiner": "In my picture, the bin's empty.",
+            "expected": "In my picture, the bin's full.",
+            "prompt": "Is the bin empty?"
+          },
+          {
+            "examiner": "In my picture, the girl in the white T-shirt is playing with a ball.",
+            "expected": "In my picture, she's making a sand castle.",
+            "prompt": "What's the girl in the white T-shirt doing?"
+          }
+        ]
+      },
+      "part2": {
+        "title": "Information Exchange",
+        "context": "Robert and Emma both live in apartments.",
+        "intro": "Robert and Emma both live in apartments. I don't know anything about Robert's apartment, but you do. So I'm going to ask you some questions.",
+        "phaseA": [
+          {
+            "examiner": "How many bedrooms has Robert's apartment got?",
+            "expected": "Three."
+          },
+          {
+            "examiner": "What colour is the kitchen?",
+            "expected": "It's blue."
+          },
+          {
+            "examiner": "Where is the apartment?",
+            "expected": "In Winter Street."
+          },
+          {
+            "examiner": "Which floor is it on?",
+            "expected": "On the fourth floor."
+          },
+          {
+            "examiner": "Has Robert's apartment got a balcony?",
+            "expected": "Yes, it has."
+          }
+        ],
+        "transition": "Now you don't know anything about Emma's apartment, so you ask me some questions.",
+        "phaseB": [
+          {
+            "hint": "where — apartment?",
+            "expected_question": "Where is Emma's apartment?",
+            "answer": "In River Road."
+          },
+          {
+            "hint": "which floor — ?",
+            "expected_question": "Which floor is it on?",
+            "answer": "On the fifth floor."
+          },
+          {
+            "hint": "how many — bedrooms?",
+            "expected_question": "How many bedrooms has the apartment got?",
+            "answer": "Four."
+          },
+          {
+            "hint": "kitchen — colour?",
+            "expected_question": "What colour is the kitchen?",
+            "answer": "Yellow."
+          },
+          {
+            "hint": "balcony — ?",
+            "expected_question": "Has the apartment got a balcony?",
+            "answer": "No, it hasn't."
+          }
+        ]
+      },
+      "part3": {
+        "title": "Tell the Story",
+        "story_name": "A frog goes to school",
+        "intro": "These pictures tell a story. It's called 'A frog goes to school'. Look at the pictures first.",
+        "pic1": "Charlie is walking to school. He can see a frog. The frog is jumping into his pocket. Charlie is going to take the frog to school.",
+        "instruction": "Now you tell the story.",
+        "pictures": [
+          {
+            "pic": 2,
+            "prompt": "Where's Charlie now? What's the teacher saying?",
+            "sentences": [
+              {
+                "text": "Charlie is in his classroom now. The teacher has seen the frog.",
+                "hint": "Where's Charlie now?"
+              },
+              {
+                "text": "She's saying, 'Put that frog outside!'",
+                "hint": "What's the teacher saying?"
+              }
+            ]
+          },
+          {
+            "pic": 3,
+            "prompt": "Where's the frog now? Why is it sad?",
+            "sentences": [
+              {
+                "text": "The frog's outside the school now. It's sad. It's waiting for Charlie.",
+                "hint": "Where's the frog now? How does it feel?"
+              }
+            ]
+          },
+          {
+            "pic": 4,
+            "prompt": "Has school finished? What's the frog doing?",
+            "sentences": [
+              {
+                "text": "Charlie's coming out of school. The frog's jumping back into his pocket again.",
+                "hint": "Has school finished? What's the frog doing?"
+              }
+            ]
+          },
+          {
+            "pic": 5,
+            "prompt": "Where's Charlie going? What's he saying?",
+            "sentences": [
+              {
+                "text": "Charlie's going home. The frog's on the lake.",
+                "hint": "Where's Charlie going?"
+              },
+              {
+                "text": "Charlie's saying, 'Goodbye, frog!'",
+                "hint": "What's he saying?"
+              }
+            ]
+          }
+        ]
+      },
+      "part4": {
+        "title": "Personal Questions",
+        "topic": "Your holidays",
+        "intro": "Now let's talk about holidays.",
+        "questions": [
+          {
+            "examiner": "When do you have holidays?",
+            "sample": "In the summer."
+          },
+          {
+            "examiner": "Where do you like going on holiday?",
+            "sample": "To the beach."
+          },
+          {
+            "examiner": "Who do you go on holiday with?",
+            "sample": "My family."
+          },
+          {
+            "examiner": "What weather do you like on holiday?",
+            "sample": "Sunny weather."
+          },
+          {
+            "examiner": "Tell me about what you do on holiday.",
+            "sample": "We go swimming. We eat in restaurants. We go shopping."
+          }
+        ],
+        "followups": [
+          {
+            "examiner": "Do you have holidays in the summer?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like going to the beach?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go with your family?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you like sunny weather?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you go swimming?",
+            "sample": "Yes, I do."
+          },
+          {
+            "examiner": "Do you eat in restaurants?",
+            "sample": "Yes, we do."
+          },
+          {
+            "examiner": "Do you go shopping?",
+            "sample": "Yes, we do."
+          }
+        ]
+      }
+    }
+  }
+}

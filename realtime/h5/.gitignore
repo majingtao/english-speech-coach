@@ -25,3 +25,4 @@ stats.html
 # Misc
 .DS_Store
 .history
+.vite

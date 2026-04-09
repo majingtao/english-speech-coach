@@ -1,16 +1,16 @@
 # English Speech Coach — 需求文档
 
-> 状态：v0.3 定稿（待评审）
+> 状态：v0.4 定稿（待评审）
 > 更新日期：2026-04-07
 > 项目代号：kugua（自研模块前缀，yudao 原模块不动）
 
 ## 1. 项目目标
 
-将现有 `realtime/web/index.html`（单页 HTML + Python aiohttp 代理）的 English Speech Coach 改造为可由管理员管理题库、可由学生在 H5 上练习的完整系统。学生群体：剑桥 Flyers（A2，7-12 岁）。
+将现有 `realtime/web/index.html`（单页 HTML + Python aiohttp 代理）的 English Speech Coach 改造为可由管理员管理题库、可由学生在 H5 上练习的完整系统。首批面向剑桥 Flyers（A2，7-12 岁），后续扩展 KET（A2）/ PET（B1）。
 
 两种练习模式保留：
 - **Free Talk**：自由对话 + 实时 ASR + LLM 反馈
-- **Exam Practice**：剑桥 Flyers Speaking 模拟（Part1 找不同 / Part2 信息差 / Part3 看图讲故事 / Part4 个人问题）
+- **Exam Practice**：剑桥口语模拟，**多级别**支持（Flyers 4 部分 / KET 2 部分 / PET 4 部分）
 
 ## 2. 系统组成
 
@@ -53,22 +53,34 @@
 
 ## 3. 已确认需求
 
-### 3.1 题库存储（A1 关系表）
+### 3.1 题库存储（v0.4 重构：Option U 多态 + 全拆 JSON）
 
-题库改为关系型表存储，使用 yudao 自带文件服务（`infra-file`）存放图片资源。
+题库改为关系型表存储，使用 yudao 自带文件服务（`infra-file`）存放图片资源。表前缀统一 `esc_`，与 yudao 共库。详见 `sql/kugua-module-english/esc_init.sql` v2（共 24 张表）。
 
-表前缀统一 `esc_`，与 yudao 共库（同一个 MySQL schema）。设计的表（草案，详细字段见后续 SQL）：
+**核心设计**：
 
-- `esc_exam`：试卷主表（label、来源、version、is_active、tenant_id）
-- `esc_exam_part1_pair`：Part1 找不同图片对子表
-- `esc_exam_part2_card`：Part2 信息差卡片子表（含 phase 枚举）
-- `esc_exam_part2_qa`：Part2 卡片下的 Q&A 子表（平铺，按 phase + order 排序）
-- `esc_exam_part3_frame`：Part3 看图讲故事分镜子表（order、image、text、hint）
-- `esc_exam_part4_question`：Part4 个人问题子表
-- `esc_exam_part4_sample_answer`：Part4 sample answers 子表（一题多个 sample）
-- `esc_exam_image`：图片资源表（关联 infra-file 的 url）
+1. **Option U 多态题型**：一套统一的 part 头表 `esc_exam_part`，用 `part_type` 字段区分子表，避免每加一个级别就新建一组独立表。Flyers / KET / PET 可共享题型（如 `personal_qa` 同时被 Flyers Part4 和 KET Part2 使用）。
+2. **全拆 JSON**：原 v1 设计中的 `differences` / `hint_keywords` / `follow_up_questions` / `score_detail` / `llm_score` 全部拆为结构化字段或子表，便于后台单字段维护。
+3. **级别字典**：`esc_exam_level`（flyers/ket/pet）+ `esc_exam_part_type`（find_diff/info_exchange/tell_story/personal_qa/collab_task/long_turn_photo/general_convo）作为枚举元数据。
+4. **V2 版本化**：`exam_code` 跨版本稳定，`version` 递增，`is_active` 标识当前生效版本。练习记录直接持有 `exam_id`（某行主键）作为快照。
+5. **混合多租户**：`tenant_id=0` 表示公共题库，`>0` 表示租户私有。
 
-**版本控制（V2 方案）**：每个 `esc_exam` 行就是一个版本，编辑等于复制一行 + version+1 + 老版本 `is_active=0`。练习记录直接持有 `exam_id`（具体某行的主键），所以即便公开题目改版，老的练习回放仍然指向当时的快照。前端列表只展示 `is_active=1` 的最新版本。
+**24 张表分组**：
+- 题库公共 (4)：`esc_exam_level` / `esc_exam_part_type` / `esc_exam` / `esc_exam_part`
+- 题型子表 (13)：find_diff (2) / info_exchange (2) / tell_story (1) / personal_qa (2) / collab_task (2) / long_turn_photo (2) / general_convo (2)
+- 班级学生 (3)：`esc_class` / `esc_class_teacher` / `esc_student`
+- 练习记录 (3)：`esc_practice_session` / `esc_practice_part_score` / `esc_practice_answer`
+- 调用日志 (1)：`esc_ai_call_log`
+
+**LLM 评分维度**（剑桥口语标准，所有 part_score / answer 行均含以下列）：
+- `score_grammar_vocab` 语法词汇
+- `score_pronunciation` 发音
+- `score_interaction` 互动
+- `score_discourse` 篇章组织（PET 及以上才打）
+- `score_overall` 综合分
+- `feedback_text` / `corrected_text` / `llm_raw_response`
+
+各维度均可为 NULL，表示该题型 / 该级别不评此项。
 
 ### 3.2 用户体系
 
@@ -99,9 +111,10 @@
 ### 3.5 练习记录
 
 - 学生每次完成 Exam 模式都要存库。Free Talk **不存档**。
-- 存储粒度：
-  - `esc_practice_session`：一次完整考试为一条（exam_id、exam_version、student_id、tenant_id、started_at、finished_at、status）
-  - `esc_practice_answer`：每道题（每个 step）为一条（session_id、part 类型、step 序号、ASR 文本、LLM 评分 JSON、用时）
+- 存储粒度（v0.4 全拆字段）：
+  - `esc_practice_session`：一次完整考试为一条（含 `final_overall_score` / `final_comment`）
+  - `esc_practice_part_score`：每个 part 一条聚合分（5 维分数 + comment）
+  - `esc_practice_answer`：每道题为一条（ASR 文本 + 5 维分数 + feedback/corrected/raw 三列，全部结构化无 JSON）
 - **历史评分先不展示**（先存数据，UI 后期再做）。
 - 不做 LLM judge 评分的统计 / 报表。
 - 不存学生录音文件（只走一次 ASR 就丢，节省存储 + 隐私友好）。
@@ -173,3 +186,4 @@
 - **v0.1** 2026-04-07 草稿，列出 10 个开放问题
 - **v0.2** 2026-04-07 题库结构 / 用户体系 / 配额 / 角色矩阵 / 部署方式 / 学生 H5 模板敲定，剩 3 个开放问题
 - **v0.3** 2026-04-07 Java 包名 / 班级老师关系 / 校管范围敲定，准备进入 SQL 设计和工程骨架阶段
+- **v0.4** 2026-04-07 题库 SQL 重构：Option U 多态题型支持 Flyers/KET/PET 多级别；所有 JSON 字段拆为结构化字段或子表；引入剑桥口语 5 维评分列；24 张表落地于 `sql/kugua-module-english/esc_init.sql`

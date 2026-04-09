@@ -15,13 +15,22 @@ export default ({ mode }: ConfigEnv): UserConfig => {
 
     server: {
       host: true,
-      port: 3000,
+      port: 43000,
+      https: {}, // 启用 HTTPS（手机端 getUserMedia 必须 https），证书由 @vitejs/plugin-basic-ssl 自动生成
       proxy: {
-        '/api': {
-          target: '', // Your backend API base URL
+        // yudao 后端
+        '/admin-api': {
+          target: 'http://localhost:5666',
           ws: false,
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, ''),
+        },
+        // Python 语音代理（LLM / ASR / TTS / 题库）
+        '/py': {
+          target: 'https://localhost:8443',
+          ws: false,
+          changeOrigin: true,
+          secure: false,
+          rewrite: path => path.replace(/^\/py/, ''),
         },
       },
     },
