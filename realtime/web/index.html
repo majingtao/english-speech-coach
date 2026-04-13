@@ -138,6 +138,7 @@
         <label class="toggle"><input type="checkbox" id="ttsToggle" checked /> &#128264; Voice reply</label>
         <label>Engine: <select id="ttsEngine">
           <option value="edge">Edge-TTS</option>
+          <option value="qwen-tts">Qwen3-TTS (Cloud)</option>
           <option value="piper">Piper (Local)</option>
           <option value="vibevoice">VibeVoice (Local)</option>
           <option value="system">System</option>
@@ -199,9 +200,9 @@
 
 <script>
 // ===== Config =====
-const IS_PROXIED = location.port === "8443";
+const IS_PROXIED = location.port === "8443" || location.port === "43000" || location.port === "" || location.port === "443";
 const _origin = location.protocol + "//" + location.host;
-const _base = IS_PROXIED ? _origin : "http://" + location.hostname + ":8443";
+const _base = IS_PROXIED ? _origin : "https://" + location.hostname + ":8443";
 const TTS_URL = _base + "/tts";
 const TTS_VOICES_URL = _base + "/tts/voices";
 const ASR_MODELS_URL = _base + "/asr/models";
@@ -302,7 +303,7 @@ async function loadLlmModels() {
     if (res.ok) llmModels = await res.json();
   } catch (e) { console.warn("Failed to load LLM models:", e); }
   if (llmModels.length === 0) {
-    llmModels = [{ provider: "ollama", model: "qwen2.5:7b", label: "Qwen 2.5 7B (Local)" }];
+    llmModels = [{ provider: "openai", model: "gpt-4o-mini", label: "GPT-4o Mini (fallback)", use_proxy: true }];
   }
   llmModelSelect.innerHTML = "";
   for (const m of llmModels) {
@@ -346,14 +347,15 @@ async function loadAsrModels() {
     console.warn("Failed to load ASR models:", e);
   }
   if (asrModels.length === 0) {
-    asrModels = [{ id: "zipformer-en-2023-06-26", port: 6006, type: "streaming", label: "Default (streaming)" }];
+    asrModels = [{ id: "qwen3-asr-flash", port: 0, type: "online", label: "Qwen3-ASR-Flash (fallback)" }];
   }
   asrModelSelect.innerHTML = "";
+  const preferredAsr = asrModels.find(m => m.id === "qwen3-asr-flash") || asrModels.find(m => m.id === "whisper-medium-en") || asrModels[0];
   for (const m of asrModels) {
     const opt = document.createElement("option");
     opt.value = m.id;
     opt.textContent = m.label;
-    if (m.id === "whisper-medium-en") opt.selected = true;
+    if (m === preferredAsr) opt.selected = true;
     asrModelSelect.appendChild(opt);
   }
   updateAsrMode();
@@ -449,6 +451,20 @@ function updateVoiceDropdown() {
       if (v.name === "en-Carter_man") opt.selected = true;
       voiceSelect.appendChild(opt);
     }
+  } else if (engine === "qwen-tts") {
+    const qwenVoices = [
+      {name: "Chelsie", label: "Chelsie (EN Female)"},
+      {name: "Ethan", label: "Ethan (EN Male)"},
+      {name: "Cherry", label: "Cherry (ZH Female)"},
+      {name: "Serena", label: "Serena (ZH Female)"},
+    ];
+    for (const v of qwenVoices) {
+      const opt = document.createElement("option");
+      opt.value = v.name;
+      opt.textContent = v.label;
+      if (v.name === "Chelsie") opt.selected = true;
+      voiceSelect.appendChild(opt);
+    }
   } else {
     if (systemVoices.length === 0) { voiceSelect.innerHTML = '<option value="">No English voices</option>'; return; }
     for (const v of systemVoices) {
@@ -533,6 +549,8 @@ async function speakWithServer(text, engine) {
   } else if (engine === "vibevoice") {
     body.voice = voiceSelect.value || "en-Carter_man";
     body.cfg_scale = 1.5;
+  } else if (engine === "qwen-tts") {
+    body.voice = voiceSelect.value || "Chelsie";
   }
   _ttsLoadingTimer = setTimeout(_showTtsLoading, 1000);
   try {
@@ -899,7 +917,19 @@ const JUDGE_URL = _base + "/llm/judge";
 
 // Acquire mic + AudioContext once for the whole exam
 async function ensureExamMic() {
-  if (examMediaStream && examMediaStream.getTracks().some(t => t.readyState === "live")) {
+  // Check if existing stream tracks are still alive
+  const tracksAlive = examMediaStream && examMediaStream.getTracks().some(t => t.readyState === "live");
+  if (!tracksAlive && examMediaStream) {
+    // Stream died (iOS background, tab switch, etc.) — release and re-acquire
+    console.warn("[exam] mic tracks ended, re-acquiring...");
+    if (examProcessorNode) { examProcessorNode.disconnect(); examProcessorNode = null; }
+    if (examSourceNode) { examSourceNode.disconnect(); examSourceNode = null; }
+    if (examAudioCtx) { try { examAudioCtx.close(); } catch(e) {} examAudioCtx = null; }
+    examMediaStream.getTracks().forEach(t => t.stop());
+    examMediaStream = null;
+  }
+
+  if (tracksAlive) {
     // AudioContext may have been closed (not just suspended) — recreate if needed
     if (!examAudioCtx || examAudioCtx.state === "closed") {
       examAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -911,6 +941,19 @@ async function ensureExamMic() {
   try {
     examMediaStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } });
     examAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Monitor track ending (iOS suspend, permission revoke, etc.)
+    examMediaStream.getTracks().forEach(t => {
+      t.onended = () => {
+        console.warn("[exam] mic track ended unexpectedly");
+        if (examRecording) {
+          setExamStatus("Mic lost — tap Mic to retry", "error");
+          examRecording = false;
+          examRecordBtn.innerHTML = "&#127908; Mic";
+          examRecordBtn.classList.remove("recording");
+          if (_examRecTimer) { clearInterval(_examRecTimer); _examRecTimer = null; }
+        }
+      };
+    });
     return true;
   } catch (err) {
     setExamStatus("Microphone denied", "error");
@@ -1445,13 +1488,38 @@ examRecordBtn.onclick = async () => {
     if (!micOk) return;
 
     try {
-      if (examAudioCtx.state === "suspended") await examAudioCtx.resume();
+      // Always try to resume AudioContext (iOS may suspend it at any time)
+      if (examAudioCtx.state === "suspended") {
+        await examAudioCtx.resume();
+        console.log("[exam] AudioContext resumed from suspended");
+      }
+      // Verify track is still live right before connecting
+      if (!examMediaStream.getTracks().some(t => t.readyState === "live")) {
+        throw new Error("Mic track ended — please tap Mic again");
+      }
       examSourceNode = examAudioCtx.createMediaStreamSource(examMediaStream);
       examProcessorNode = examAudioCtx.createScriptProcessor(4096, 1, 1);
       examOfflineChunks = [];
+      let _silentFrames = 0;
+      let _silenceWarned = false;
 
       examProcessorNode.onaudioprocess = (e) => {
         const raw = e.inputBuffer.getChannelData(0);
+        // Silence detection: warn user if mic produces no signal
+        let maxVal = 0;
+        for (let i = 0; i < raw.length; i++) { const v = Math.abs(raw[i]); if (v > maxVal) maxVal = v; }
+        if (maxVal < 0.001) {
+          _silentFrames++;
+          // ~3 seconds of silence at 16kHz/4096 buffer ≈ 12 frames
+          if (_silentFrames > 12 && !_silenceWarned) {
+            _silenceWarned = true;
+            console.warn("[exam] mic silent for 3s+, max=" + maxVal);
+            setExamStatus("Recording... (no sound detected!)", "error");
+          }
+        } else {
+          _silentFrames = 0;
+          _silenceWarned = false;
+        }
         examOfflineChunks.push(downsample(raw, examAudioCtx.sampleRate));
       };
       examSourceNode.connect(examProcessorNode);
@@ -1465,7 +1533,12 @@ examRecordBtn.onclick = async () => {
       setExamStatus("Recording... 0s", "connected");
       _examRecTimer = setInterval(() => {
         recSec++;
-        setExamStatus("Recording... " + recSec + "s", "connected");
+        if (examAudioCtx && examAudioCtx.state === "suspended") {
+          examAudioCtx.resume().catch(() => {});
+          setExamStatus("Recording... " + recSec + "s (resuming mic...)", "error");
+        } else {
+          setExamStatus("Recording... " + recSec + "s", "connected");
+        }
       }, 1000);
     } catch (e) {
       console.error("[exam] start-recording error:", e);

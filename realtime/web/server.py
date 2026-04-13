@@ -71,6 +71,20 @@ except ImportError:
     sherpa_onnx = None
     print("[warn] sherpa-onnx not installed, Piper TTS disabled. Run: pip install sherpa-onnx")
 
+try:
+    import dashscope
+    from dashscope.audio.asr import Recognition, RecognitionCallback, RecognitionResult
+    from dashscope import MultiModalConversation
+    from dashscope.audio.qwen_tts_realtime import (
+        QwenTtsRealtime, QwenTtsRealtimeCallback, AudioFormat,
+    )
+except ImportError:
+    dashscope = None
+    Recognition = None
+    MultiModalConversation = None
+    QwenTtsRealtime = None
+    print("[warn] dashscope not installed, Alibaba ASR/TTS disabled. Run: pip install dashscope")
+
 
 try:
     import torch
@@ -152,14 +166,35 @@ VOLC_ASR_APPID = os.environ.get("VOLC_ASR_APPID", "")
 VOLC_ASR_TOKEN = os.environ.get("VOLC_ASR_TOKEN", "")
 VOLC_ASR_CLUSTER = os.environ.get("VOLC_ASR_CLUSTER", "volcengine_input_common")
 
+# 阿里云百炼 ASR（DashScope）
+DASHSCOPE_API_KEY = os.environ.get("DASHSCOPE_API_KEY", "")
+
 # ---------- LLM model registry ----------
 
-LLM_MODELS = [
-    {"provider": "ollama", "model": "qwen3.5:7b", "label": "Qwen 3.5 7B (Local)", "use_proxy": False},
-    {"provider": "ollama", "model": "qwen3.5:4b", "label": "Qwen 3.5 4B (Local)", "use_proxy": False},
-    {"provider": "ollama", "model": "qwen2.5:7b", "label": "Qwen 2.5 7B (Local)", "use_proxy": False},
-    {"provider": "ollama", "model": "qwen2.5:3b", "label": "Qwen 2.5 3B (Local)", "use_proxy": False},
-]
+# Detect Ollama availability at startup
+def _detect_ollama_models():
+    """Query Ollama for available models. Returns list of LLM model entries, or [] if unreachable."""
+    import urllib.request
+    try:
+        req = urllib.request.Request(OLLAMA_BASE + "/api/tags", method="GET")
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            data = json.loads(resp.read())
+            models = []
+            for m in data.get("models", []):
+                name = m.get("name", "")
+                if name:
+                    models.append({"provider": "ollama", "model": name, "label": f"{name} (Local)", "use_proxy": False})
+            return models
+    except Exception:
+        return []
+
+_ollama_models = _detect_ollama_models()
+if _ollama_models:
+    print(f"[ollama] Detected {len(_ollama_models)} models: {', '.join(m['model'] for m in _ollama_models)}")
+else:
+    print("[ollama] Not available — skipping local models")
+
+LLM_MODELS = list(_ollama_models)
 
 if OPENAI_API_KEY:
     LLM_MODELS.extend([
@@ -193,32 +228,32 @@ if OPENROUTER_API_KEY:
 
 # ---------- ASR model registry ----------
 
-ASR_MODELS = [
-    {
-        "id": "zipformer-en-2023-06-26",
-        "port": 6006,
-        "type": "streaming",
-        "label": "Zipformer EN (130MB, streaming)",
-    },
-    {
-        "id": "zipformer-en-2023-06-21",
-        "port": 6007,
-        "type": "streaming",
-        "label": "Zipformer EN Large (300MB, streaming)",
-    },
-    {
-        "id": "whisper-medium-en",
-        "port": 6008,
-        "type": "offline",
-        "label": "Whisper Medium EN (1.5GB, offline)",
-    },
-    {
-        "id": "sensevoice-small",
-        "port": 6009,
-        "type": "offline",
-        "label": "SenseVoice Small (230MB, bilingual, offline)",
-    },
+_LOCAL_ASR_MODELS = [
+    {"id": "zipformer-en-2023-06-26", "port": 6006, "type": "streaming", "label": "Zipformer EN (130MB, streaming)"},
+    {"id": "zipformer-en-2023-06-21", "port": 6007, "type": "streaming", "label": "Zipformer EN Large (300MB, streaming)"},
+    {"id": "whisper-medium-en", "port": 6008, "type": "offline", "label": "Whisper Medium EN (1.5GB, offline)"},
+    {"id": "sensevoice-small", "port": 6009, "type": "offline", "label": "SenseVoice Small (230MB, bilingual, offline)"},
 ]
+
+def _detect_local_asr():
+    """Check if any local ASR port is reachable."""
+    import socket
+    for m in _LOCAL_ASR_MODELS:
+        try:
+            s = socket.create_connection(("localhost", m["port"]), timeout=1)
+            s.close()
+            return True
+        except Exception:
+            continue
+    return False
+
+_has_local_asr = _detect_local_asr()
+if _has_local_asr:
+    print(f"[asr] Local ASR detected (sherpa-rt)")
+    ASR_MODELS = list(_LOCAL_ASR_MODELS)
+else:
+    print("[asr] Local ASR not available — skipping sherpa-onnx models")
+    ASR_MODELS = []
 
 if VOLC_ASR_APPID and VOLC_ASR_TOKEN:
     ASR_MODELS.append({
@@ -226,6 +261,20 @@ if VOLC_ASR_APPID and VOLC_ASR_TOKEN:
         "port": 0,
         "type": "online",
         "label": "Volcano ASR (ByteDance, online)",
+    })
+
+if DASHSCOPE_API_KEY and dashscope is not None:
+    ASR_MODELS.append({
+        "id": "dashscope-asr",
+        "port": 0,
+        "type": "online",
+        "label": "Paraformer v2 (Alibaba, realtime)",
+    })
+    ASR_MODELS.append({
+        "id": "qwen3-asr-flash",
+        "port": 0,
+        "type": "online",
+        "label": "Qwen3-ASR-Flash (Alibaba, online)",
     })
 
 ASR_MODEL_MAP = {m["id"]: m for m in ASR_MODELS}
@@ -575,6 +624,159 @@ async def asr_volcano(session, pcm_float32: bytes, sample_rate: int = 16000):
         return {"error": f"Volcano ASR: {e}"}
 
 
+# ---------- DashScope ASR (阿里云百炼) ----------
+
+async def asr_dashscope(pcm_float32: bytes, sample_rate: int = 16000):
+    """Alibaba DashScope ASR — uses dashscope SDK Recognition class.
+    Input: raw float32 PCM → int16 PCM → feed in chunks → collect text.
+    """
+    import threading
+
+    samples = np.frombuffer(pcm_float32, dtype=np.float32)
+    int16_samples = np.clip(samples * 32767, -32768, 32767).astype(np.int16)
+    audio_bytes = int16_samples.tobytes()
+    duration = len(samples) / sample_rate
+    log.info("[asr] dashscope: %.1fs audio, %d samples", duration, len(samples))
+
+    # Callback collects final sentence texts
+    collected_texts = []
+    error_msg = [None]
+    done_event = threading.Event()
+
+    class _Callback(RecognitionCallback):
+        def on_open(self):
+            log.debug("[asr] dashscope: connection opened")
+
+        def on_close(self):
+            log.debug("[asr] dashscope: connection closed")
+
+        def on_complete(self):
+            log.debug("[asr] dashscope: recognition completed")
+            done_event.set()
+
+        def on_error(self, message):
+            log.error("[asr] dashscope error: %s", message.message if hasattr(message, 'message') else message)
+            error_msg[0] = str(message.message if hasattr(message, 'message') else message)
+            done_event.set()
+
+        def on_event(self, result: RecognitionResult):
+            sentence = result.get_sentence()
+            if sentence and 'text' in sentence:
+                if RecognitionResult.is_sentence_end(sentence):
+                    collected_texts.append(sentence['text'])
+                    log.debug("[asr] dashscope sentence: %s", sentence['text'][:100])
+
+    def _run_recognition():
+        try:
+            dashscope.api_key = DASHSCOPE_API_KEY
+            callback = _Callback()
+            recognition = Recognition(
+                model='paraformer-realtime-v2',
+                format='pcm',
+                sample_rate=sample_rate,
+                semantic_punctuation_enabled=False,
+                callback=callback,
+            )
+            recognition.start()
+
+            # Feed audio in chunks (~200ms each = 3200 samples * 2 bytes)
+            chunk_size = 3200  # 200ms at 16kHz, int16
+            offset = 0
+            while offset < len(audio_bytes):
+                end = min(offset + chunk_size, len(audio_bytes))
+                recognition.send_audio_frame(audio_bytes[offset:end])
+                offset = end
+
+            recognition.stop()
+        except Exception as e:
+            error_msg[0] = str(e)
+            done_event.set()
+
+    # Run SDK in a thread (it's synchronous/callback-based)
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, _run_recognition)
+
+    # Wait for completion (should already be done after stop())
+    done_event.wait(timeout=30)
+
+    if error_msg[0]:
+        return {"error": f"DashScope ASR: {error_msg[0]}"}
+
+    text = " ".join(collected_texts).strip()
+    log.info("[asr] dashscope result: %s", text[:100] if text else "(empty)")
+    return {"text": text}
+
+
+# ---------- Qwen3-ASR-Flash (阿里云百炼) ----------
+
+async def asr_qwen3_flash(pcm_float32: bytes, sample_rate: int = 16000):
+    """Qwen3-ASR-Flash — uses MultiModalConversation.call() with base64 WAV.
+    Input: raw float32 PCM → int16 → WAV bytes → base64 → API call.
+    """
+    # Convert float32 PCM to int16 WAV in memory
+    samples = np.frombuffer(pcm_float32, dtype=np.float32)
+    int16_samples = np.clip(samples * 32767, -32768, 32767).astype(np.int16)
+    duration = len(samples) / sample_rate
+    log.info("[asr] qwen3-asr-flash: %.1fs audio, %d samples", duration, len(samples))
+
+    wav_buf = io.BytesIO()
+    with wave.open(wav_buf, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sample_rate)
+        wf.writeframes(int16_samples.tobytes())
+    wav_bytes = wav_buf.getvalue()
+    audio_b64 = base64.b64encode(wav_bytes).decode("utf-8")
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"audio": f"data:audio/wav;base64,{audio_b64}"},
+            ],
+        }
+    ]
+
+    def _call():
+        dashscope.api_key = DASHSCOPE_API_KEY
+        return MultiModalConversation.call(
+            model="qwen3-asr-flash",
+            messages=messages,
+        )
+
+    try:
+        loop = asyncio.get_event_loop()
+        response = await loop.run_in_executor(None, _call)
+
+        if response.status_code != 200:
+            log.error("[asr] qwen3-asr-flash error: %s %s",
+                      response.status_code, response.message)
+            return {"error": f"Qwen3-ASR-Flash: {response.message}"}
+
+        # Extract text from response
+        text = ""
+        output = response.output
+        if hasattr(output, "choices") and output.choices:
+            choice = output.choices[0]
+            msg = choice.message if hasattr(choice, "message") else choice.get("message", {})
+            content = msg.content if hasattr(msg, "content") else msg.get("content", [])
+            if isinstance(content, str):
+                text = content
+            elif isinstance(content, list):
+                for item in content:
+                    if isinstance(item, dict) and "text" in item:
+                        text += item["text"]
+                    elif isinstance(item, str):
+                        text += item
+
+        log.info("[asr] qwen3-asr-flash result: %s", text.strip()[:100] if text else "(empty)")
+        return {"text": text.strip()}
+
+    except Exception as e:
+        log.error("[asr] qwen3-asr-flash exception: %s", e)
+        return {"error": f"Qwen3-ASR-Flash: {e}"}
+
+
 # ---------- Offline/Online ASR: POST /asr?model=xxx ----------
 
 async def asr_offline(request):
@@ -614,6 +816,10 @@ async def asr_offline(request):
         session = request.app["session"]
         if model_id == "volcano-asr":
             result = await asr_volcano(session, pcm_data, sample_rate)
+        elif model_id == "dashscope-asr":
+            result = await asr_dashscope(pcm_data, sample_rate)
+        elif model_id == "qwen3-asr-flash":
+            result = await asr_qwen3_flash(pcm_data, sample_rate)
         else:
             return web.json_response({"error": f"Unknown online model: {model_id}"}, status=400)
         if "error" in result:
@@ -1114,6 +1320,63 @@ async def _stream_claude(session, response, model, messages, proxy=None):
     await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
 
 
+# ---------- Qwen3-TTS helper (sync, runs in executor) ----------
+
+QWEN_TTS_VOICES = [
+    {"name": "Cherry", "gender": "Female", "locale": "zh-CN"},
+    {"name": "Serena", "gender": "Female", "locale": "zh-CN"},
+    {"name": "Ethan", "gender": "Male", "locale": "en-US"},
+    {"name": "Chelsie", "gender": "Female", "locale": "en-US"},
+]
+
+
+def _qwen_tts_sync(text: str, voice: str = "Cherry") -> bytes:
+    """Blocking call to Qwen3-TTS-Flash-Realtime, returns raw PCM bytes (24kHz 16-bit mono)."""
+    import threading as _th
+
+    pcm_chunks = []
+    done_event = _th.Event()
+    error_holder = [None]
+
+    class _Cb(QwenTtsRealtimeCallback):
+        def on_open(self):
+            pass
+
+        def on_close(self, code, msg):
+            done_event.set()
+
+        def on_event(self, response):
+            try:
+                evt_type = response.get("type", "")
+                if evt_type == "response.audio.delta":
+                    pcm_chunks.append(base64.b64decode(response["delta"]))
+                elif evt_type == "session.finished":
+                    done_event.set()
+            except Exception as exc:
+                error_holder[0] = exc
+                done_event.set()
+
+    dashscope.api_key = DASHSCOPE_API_KEY
+    cb = _Cb()
+    tts = QwenTtsRealtime(
+        model="qwen3-tts-flash-realtime",
+        callback=cb,
+        url="wss://dashscope.aliyuncs.com/api-ws/v1/realtime",
+    )
+    tts.connect()
+    tts.update_session(
+        voice=voice,
+        response_format=AudioFormat.PCM_24000HZ_MONO_16BIT,
+        mode="server_commit",
+    )
+    tts.append_text(text)
+    tts.finish()
+    done_event.wait(timeout=30)
+    if error_holder[0]:
+        raise error_holder[0]
+    return b"".join(pcm_chunks)
+
+
 # ---------- TTS: Edge-TTS + Piper ----------
 
 def _scan_vibevoice_voices():
@@ -1285,6 +1548,33 @@ async def tts_speak(request):
             headers={"Cache-Control": "no-cache"},
         )
 
+    # --- Qwen3-TTS (DashScope Realtime) ---
+    if engine == "qwen-tts":
+        if QwenTtsRealtime is None or not DASHSCOPE_API_KEY:
+            return web.Response(text="Qwen TTS not available (dashscope not installed or DASHSCOPE_API_KEY not set)", status=503)
+        voice = body.get("voice", "Cherry")
+        log.info("[tts/qwen] voice=%s len=%d", voice, len(text))
+        try:
+            audio_bytes = await asyncio.get_event_loop().run_in_executor(
+                None, lambda: _qwen_tts_sync(text, voice)
+            )
+        except Exception as e:
+            log.error("[tts/qwen] Error: %s", e)
+            return web.Response(text=f"Qwen TTS error: {e}", status=500)
+        # Convert raw PCM 24kHz 16-bit mono to WAV
+        buf = io.BytesIO()
+        with wave.open(buf, "wb") as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(24000)
+            wf.writeframes(audio_bytes)
+        buf.seek(0)
+        return web.Response(
+            body=buf.read(),
+            content_type="audio/wav",
+            headers={"Cache-Control": "no-cache"},
+        )
+
     # --- Piper TTS ---
     if engine == "piper":
         piper_tts = request.app.get("piper_tts")
@@ -1438,6 +1728,30 @@ async def init_piper_tts(app):
 
 # ---------- App setup ----------
 
+# ---------- Dictation: save words back to JSON ----------
+
+MY_WORDS_FILE = os.path.join(STATIC_DIR, "my-words.json")
+
+
+async def dictation_save_words(request):
+    """Save word list back to my-words.json."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.Response(text="Invalid JSON", status=400)
+    words = body.get("words")
+    if not isinstance(words, list):
+        return web.Response(text="Missing 'words' array", status=400)
+    try:
+        with open(MY_WORDS_FILE, "w", encoding="utf-8") as f:
+            json.dump(words, f, ensure_ascii=False, indent=2)
+        log.info("[dictation] saved %d words to %s", len(words), MY_WORDS_FILE)
+        return web.json_response({"ok": True, "count": len(words)})
+    except Exception as e:
+        log.error("[dictation] save error: %s", e)
+        return web.json_response({"ok": False, "error": str(e)}, status=500)
+
+
 def create_app():
     app = web.Application()
     app.on_startup.append(create_shared_session)
@@ -1454,6 +1768,7 @@ def create_app():
     app.router.add_route("*", "/api/{path:.*}", ollama_proxy)
     app.router.add_route("GET", "/tts/voices", tts_voices)
     app.router.add_route("POST", "/tts", tts_speak)
+    app.router.add_route("POST", "/dictation/words", dictation_save_words)
     app.router.add_static("/", STATIC_DIR, show_index=True)
     return app
 
@@ -1498,6 +1813,10 @@ def main():
         print(f"    [openrouter] Not configured (set OPENROUTER_API_KEY in .env)")
     if not VOLC_ASR_APPID or not VOLC_ASR_TOKEN:
         print(f"    [volcano-asr] Not configured (set VOLC_ASR_APPID + VOLC_ASR_TOKEN + VOLC_ASR_CLUSTER in .env)")
+    if not DASHSCOPE_API_KEY:
+        print(f"    [dashscope-asr] Not configured (set DASHSCOPE_API_KEY in .env)")
+    elif dashscope is None:
+        print(f"    [dashscope-asr] SDK not installed (pip install dashscope)")
     if HTTP_PROXY:
         print(f"  HTTP Proxy: {HTTP_PROXY}")
     else:

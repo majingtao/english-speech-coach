@@ -1,0 +1,244 @@
+[
+  {
+    "en": "You should",
+    "cn": "v. 应该",
+    "example": "You should eat your vegetables.\n你应该吃你的蔬菜。",
+    "llmDone": true,
+    "forms": "should"
+  },
+  {
+    "en": "Whistle",
+    "cn": "口哨",
+    "example": "The coach blew the whistle to start the game.\n教练吹响口哨开始比赛。",
+    "llmDone": true
+  },
+  {
+    "en": "medicine",
+    "cn": "药",
+    "example": "I took medicine to feel better when I was sick.\n我生病时吃了药感觉好些了。",
+    "llmDone": true
+  },
+  {
+    "en": "belt",
+    "cn": "腰带",
+    "example": "He wears a belt to keep his pants up.\n他戴着腰带来固定裤子。",
+    "llmDone": true
+  },
+  {
+    "en": "torch",
+    "cn": "手电筒",
+    "example": "The explorer used a torch to see in the dark cave.\n探险家用手电筒在黑暗的洞穴里看东西。",
+    "llmDone": true
+  },
+  {
+    "en": "sledge",
+    "cn": "雪橇",
+    "example": "We rode down the snowy hill on a sledge.\n我们坐雪橇从雪山上滑下来。",
+    "llmDone": true
+  },
+  {
+    "en": "biscuits",
+    "cn": "饼干",
+    "example": "I like to eat biscuits with my tea.\n我喜欢和茶一起吃饼干。",
+    "llmDone": true
+  },
+  {
+    "en": "rucksack",
+    "cn": "背包",
+    "example": "Tom carried his books and lunch in a rucksack to school.\n汤姆把书和午餐装在一个背包里带到学校。",
+    "llmDone": true
+  },
+  {
+    "en": "already",
+    "cn": "已经",
+    "example": "She has already finished her homework.\n她已经完成了作业。",
+    "llmDone": true
+  },
+  {
+    "en": "have you seen",
+    "cn": "v. 你见过",
+    "example": "I have a cat.\n我有一只猫。\nThey had lunch at noon.\n他们中午吃了午饭。\nShe has had enough sleep.\n她已经睡够了。\nHe is having breakfast.\n他正在吃早餐。\nI can see the stars.\n我能看到星星。\nShe saw a rainbow.\n她看到了彩虹。\nWe have seen the movie before.\n我们之前看过那部电影。\nThey are seeing their friends.\n他们正在见朋友。",
+    "llmDone": true,
+    "forms": "have → had → having → see → saw → seen → seeing"
+  },
+  {
+    "en": "decided",
+    "cn": "v. 决定",
+    "example": "I can't decide what to eat.\n我不知道吃什么。\nShe decided to go home.\n她决定回家。\nI have decided to study harder.\n我已经决定更加努力学习。\nHe is deciding which book to read.\n他正在决定读哪本书。",
+    "llmDone": true,
+    "forms": "decide → decided → deciding"
+  },
+  {
+    "en": "holiday",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "during",
+    "cn": "prep. 在...期间",
+    "example": "I read a book during the flight.\n我在飞行期间读了一本书。",
+    "llmDone": true,
+    "forms": "during"
+  },
+  {
+    "en": "example",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "one thousand",
+    "cn": "(LLM failed — click to retry)",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "third",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "fourth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "ninth",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "slept",
+    "cn": "v. 睡觉",
+    "example": "I sleep early every night.\n我每晚都早睡。\nShe slept very well last night.\n她昨晚睡得很好。\nI have slept enough today.\n我今天已经睡够了。\nThe baby is sleeping now.\n宝宝正在睡觉。",
+    "llmDone": true,
+    "forms": "sleep → slept → sleeping"
+  },
+  {
+    "en": "tablet",
+    "cn": "n. 平板",
+    "example": "He plays games on his tablet.\n他在平板上玩游戏。\nWe have two tablets in our house.\n我们家有两个平板。",
+    "llmDone": true,
+    "forms": "tablet → tablets"
+  },
+  {
+    "en": "telephone",
+    "cn": "n. 电话",
+    "example": "She called her friend on the telephone.\n她通过电话给朋友打电话。\nMany telephones were ringing in the office.\n办公室里许多电话响着。",
+    "llmDone": true,
+    "forms": "telephone → telephones"
+  },
+  {
+    "en": "phone",
+    "cn": "n. 电话",
+    "example": "I use the phone to call my mom.\n我用电话给妈妈打电话。\nThere are many phones in the store.\n商店里有很多电话。",
+    "llmDone": true,
+    "forms": "phone → phones"
+  },
+  {
+    "en": "iphone",
+    "cn": "n. 苹果手机",
+    "example": "I use my iPhone to play games.\n我用我的苹果手机玩游戏。\nThey both have new iPhones.\n他们都有新的苹果手机。",
+    "llmDone": true,
+    "forms": "iPhone → iPhones"
+  },
+  {
+    "en": "we will the match be",
+    "cn": " ",
+    "example": "",
+    "llmDone": true,
+    "forms": ""
+  },
+  {
+    "en": "match",
+    "cn": "n./v. 火柴/比赛/匹配",
+    "example": "I need a match to light the candle.\n我需要一根火柴来点燃蜡烛。\nThe matches are in the drawer.\n火柴在抽屉里。\nThis shirt and pants match well.\n这件衬衫和裤子很配。\nShe matched the socks after washing.\n她洗完后配对袜子。\nI have matched the puzzle pieces.\n我已经把拼图块配对好了。\nThey are wearing matching outfits.\n他们穿着配套的服装。",
+    "llmDone": true,
+    "forms": "match → matches → matched → matching"
+  },
+  {
+    "en": "easier",
+    "cn": "adj. 更容易",
+    "example": "This puzzle is easy.\n这个拼图很容易。\nMath is easier than science for me.\n对我来说，数学比科学更容易。\nThis game is the easiest to play.\n这个游戏是最容易玩的。",
+    "llmDone": true,
+    "forms": "easy → easier → easiest"
+  },
+  {
+    "en": "largest",
+    "cn": "adj. 最大的",
+    "example": "The elephant is large.\n大象很大。\nThis box is larger than that one.\n这个箱子比那个箱子大。\nHe built the largest sandcastle on the beach.\n他在海滩上建了最大的沙堡。",
+    "llmDone": true,
+    "forms": "large → larger → largest"
+  },
+  {
+    "en": "large",
+    "cn": "adj. 大的",
+    "example": "The elephant is large.\n这头大象很大。\nThe blue whale is larger than the elephant.\n蓝鲸比大象更大。\nThe blue whale is the largest animal.\n蓝鲸是最大的动物。",
+    "llmDone": true,
+    "forms": "large → larger → largest"
+  },
+  {
+    "en": "larger",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "cave",
+    "cn": "n. 洞穴",
+    "example": "The bear lives in a cave.\n熊住在洞穴里。\nThere are many caves in the mountains.\n山里有很多洞穴。",
+    "llmDone": true,
+    "forms": "cave → caves"
+  },
+  {
+    "en": "a meal",
+    "cn": "n. 一顿饭",
+    "example": "I eat breakfast every morning as a meal.\n我每天早上吃早餐作为一顿饭。\nWe have three meals a day.\n我们一天吃三顿饭。",
+    "llmDone": true,
+    "forms": "meal → meals"
+  },
+  {
+    "en": "planet",
+    "cn": "[Error: Server disconnected]",
+    "example": "",
+    "llmDone": true,
+    "forms": ""
+  },
+  {
+    "en": "plant",
+    "cn": "[Error: Server disconnected]",
+    "example": "",
+    "llmDone": true,
+    "forms": ""
+  },
+  {
+    "en": "found",
+    "cn": "v. 发现",
+    "example": "I find the hidden toy.\n我找到了藏起来的玩具。\nShe found a penny on the ground.\n她在地上发现了一枚硬币。\nWe have found the lost cat.\n我们已经找到了丢失的猫。\nHe is finding the answers to his homework.\n他正在找作业的答案。",
+    "llmDone": true,
+    "forms": "find → found → finding"
+  },
+  {
+    "en": "deepest",
+    "cn": "adj. 最深的",
+    "example": "The pool is very deep.\n这个游泳池很深。\nThe lake is deeper than the river.\n湖比河更深。\nThe ocean is the deepest place on Earth.\n海洋是地球上最深的地方。",
+    "llmDone": true,
+    "forms": "deep → deeper → deepest"
+  },
+  {
+    "en": "deep",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  },
+  {
+    "en": "deeper",
+    "cn": "",
+    "example": "",
+    "llmDone": false
+  }
+]

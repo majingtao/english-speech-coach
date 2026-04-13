@@ -181,7 +181,11 @@
 4. 数据迁移脚本：把 `realtime/web/question-bank.json` 17 套题导入 MySQL。
 5. 学生 H5 平移业务（先把 Free Talk + Exam 的 UI 和录音/ASR/LLM/TTS 平移过去，先不重构）。
 
-## 8. 变更历史
+## 8. 待优化项（Tech Debt / TODO）
+
+1. **`esc_part_find_diff_difference.description` 字段拆分**：当前 seed 数据中用 `examiner|expected` 拼接格式存储（如 `In my picture, two boys...|In my picture, two girls...`），前端需按 `|` 拆分。后续应给该表增加 `examiner_text` 和 `expected_text` 两个独立字段，消除拼接约定。（2026-04-13 记录）
+
+## 9. 变更历史
 
 - **v0.1** 2026-04-07 草稿，列出 10 个开放问题
 - **v0.2** 2026-04-07 题库结构 / 用户体系 / 配额 / 角色矩阵 / 部署方式 / 学生 H5 模板敲定，剩 3 个开放问题

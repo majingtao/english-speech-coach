@@ -170,13 +170,14 @@ function convertServerMenuToRouteRecordStringComponent(
     // add by 芋艿：处理 menu.component 中的 query 参数
     // https://doc.vben.pro/guide/essentials/route.html#query
     let query: Record<string, string> | undefined;
-    const queryIndex = menu.component.indexOf('?');
+    const componentStr = menu.component || '';
+    const queryIndex = componentStr.indexOf('?');
     if (queryIndex !== -1) {
       // 提取 query 字符串并解析为对象
-      const queryString = menu.component.slice(queryIndex + 1);
+      const queryString = componentStr.slice(queryIndex + 1);
       query = Object.fromEntries(new URLSearchParams(queryString).entries());
       // 移除 component 中的 query 部分
-      menu.component = menu.component.slice(0, queryIndex);
+      menu.component = componentStr.slice(0, queryIndex);
     }
 
     const buildMenu: RouteRecordStringComponent = {

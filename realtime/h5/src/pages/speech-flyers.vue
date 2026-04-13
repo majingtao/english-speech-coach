@@ -26,7 +26,7 @@ const levelSelections = reactive<Record<LevelId, { test: string, part: string }>
 
 const configSummary = ref('加载中...')
 const ttsEnabled = ref(true)
-const ttsEngine = ref<'edge' | 'piper' | 'vibevoice' | 'system'>('edge')
+const ttsEngine = ref<'edge' | 'qwen-tts' | 'piper' | 'vibevoice' | 'system'>('edge')
 const selectedVoice = ref('')
 const llmProxy = ref(false)
 const llmModels = ref<LlmModel[]>([])
@@ -156,6 +156,7 @@ const pickerMap: Record<string, () => void> = {
     pickerTitle.value = '选择播报引擎'
     pickerColumns.value = [
       { text: 'Edge-TTS', value: 'edge' },
+      { text: 'Qwen3-TTS (Cloud)', value: 'qwen-tts' },
       { text: 'Piper (Local)', value: 'piper' },
       { text: 'VibeVoice', value: 'vibevoice' },
       { text: '系统语音', value: 'system' },
@@ -217,10 +218,11 @@ function handlePickerConfirm(event: { selectedValues: string[], selectedOptions:
   updateConfigSummary()
 }
 const ttsEngineLabel = computed(() => ({
-  edge: 'Edge-TTS',
-  piper: 'Piper (Local)',
-  vibevoice: 'VibeVoice',
-  system: '系统语音',
+  'edge': 'Edge-TTS',
+  'qwen-tts': 'Qwen3-TTS',
+  'piper': 'Piper (Local)',
+  'vibevoice': 'VibeVoice',
+  'system': '系统语音',
 }[ttsEngine.value]))
 
 const voiceLabel = computed(() => selectedVoice.value || '默认')
@@ -369,6 +371,14 @@ function getVoiceOptions(): TtsVoiceInfo[] {
     return edgeVoices.value
   if (ttsEngine.value === 'vibevoice')
     return vibeVoices.value
+  if (ttsEngine.value === 'qwen-tts') {
+    return [
+      { name: 'Chelsie', label: 'Chelsie (EN Female)' },
+      { name: 'Ethan', label: 'Ethan (EN Male)' },
+      { name: 'Cherry', label: 'Cherry (ZH Female)' },
+      { name: 'Serena', label: 'Serena (ZH Female)' },
+    ]
+  }
   if (ttsEngine.value === 'piper')
     return [{ name: 'amy', label: 'Amy (en-US)' }]
   return systemVoices.value.map((v: any) => ({ name: v.name, label: `${v.name} (${v.lang || 'en'})` }))
@@ -508,6 +518,9 @@ async function speakWithServer(text: string, engine: string) {
   else if (engine === 'vibevoice') {
     body.voice = selectedVoice.value || 'en-Carter_man'
     body.cfg_scale = 1.5
+  }
+  else if (engine === 'qwen-tts') {
+    body.voice = selectedVoice.value || 'Chelsie'
   }
   try {
     const res = await fetch(url, {

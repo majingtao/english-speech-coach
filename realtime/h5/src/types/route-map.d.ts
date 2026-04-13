@@ -33,6 +33,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/checkout': RouteRecordInfo<
+      '/checkout',
+      '/checkout',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/dictation/primary': RouteRecordInfo<
       '/dictation/primary',
       '/dictation/primary',
@@ -50,6 +57,13 @@ declare module 'vue-router/auto-routes' {
     '/logout': RouteRecordInfo<
       '/logout',
       '/logout',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/promo': RouteRecordInfo<
+      '/promo',
+      '/promo',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -80,6 +94,12 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/checkout.vue': {
+      routes:
+        | '/checkout'
+      views:
+        | never
+    }
     'src/pages/dictation/primary.vue': {
       routes:
         | '/dictation/primary'
@@ -95,6 +115,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/logout.vue': {
       routes:
         | '/logout'
+      views:
+        | never
+    }
+    'src/pages/promo.vue': {
+      routes:
+        | '/promo'
       views:
         | never
     }

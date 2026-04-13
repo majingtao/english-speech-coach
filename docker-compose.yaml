@@ -1,10 +1,12 @@
 services:
   ollama:
-    image: dockerproxy.com/ollama/ollama:latest
+    image: ollama/ollama:latest
     container_name: ollama
     restart: always
     ports:
       - "11434:11434"
+    volumes:
+      - E:/DockerData/ollama:/root/.ollama
     deploy:
       resources:
         reservations:
@@ -22,7 +24,7 @@ services:
     depends_on:
       - ollama
     volumes:
-      - open-webui:/app/backend/data
+      - E:/DockerData/open-webui:/app/backend/data
       # VibeVoice model snapshot
       - ./audio/VibeVoice-Realtime-0.5B:/workspace/vibevoice-model:ro
       # Voice prompts for realtime presets
@@ -49,5 +51,3 @@ services:
               count: 1
               capabilities: [gpu]
 
-volumes:
-  open-webui:
