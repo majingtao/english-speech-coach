@@ -21,15 +21,18 @@ public interface ErrorCodeConstants {
 
     // ========== 题型子表 - 找不同 1-040-003-000 ==========
     ErrorCode PART_FIND_DIFF_PAIR_NOT_EXISTS       = new ErrorCode(1_040_003_000, "找不同 - 图对不存在");
+    ErrorCode PART_FIND_DIFF_DIFFERENCE_NOT_EXISTS = new ErrorCode(1_040_003_001, "找不同 - 差异点不存在");
 
     // ========== 题型子表 - 信息互换 1-040-004-000 ==========
     ErrorCode PART_INFO_EXCHANGE_CARD_NOT_EXISTS   = new ErrorCode(1_040_004_000, "信息互换 - 卡片不存在");
+    ErrorCode PART_INFO_EXCHANGE_QA_NOT_EXISTS     = new ErrorCode(1_040_004_001, "信息互换 - 问答条目不存在");
 
     // ========== 题型子表 - 讲故事 1-040-005-000 ==========
     ErrorCode PART_TELL_STORY_FRAME_NOT_EXISTS     = new ErrorCode(1_040_005_000, "讲故事 - 单帧不存在");
 
     // ========== 题型子表 - 个人问答 1-040-006-000 ==========
     ErrorCode PART_PERSONAL_QUESTION_NOT_EXISTS    = new ErrorCode(1_040_006_000, "个人问答 - 问题不存在");
+    ErrorCode PART_PERSONAL_QA_SAMPLE_NOT_EXISTS   = new ErrorCode(1_040_006_001, "个人问答 - 示例答案不存在");
 
     // ========== 题型子表 - 协作任务 1-040-007-000 ==========
     ErrorCode PART_COLLAB_TASK_NOT_EXISTS          = new ErrorCode(1_040_007_000, "协作任务 - 主体不存在");

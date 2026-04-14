@@ -170,3 +170,83 @@ A: 确认 LLM 模型选择正确且服务可用。失败后可重新点击单词
 
 **Q: 手机访问页面没声音？**
 A: 移动端浏览器要求用户交互后才能播放音频。先点击任意按钮，之后 TTS 就能正常播放。
+
+## 管理后台实施计划（Refine + Ant Design + Supabase）
+
+### 结论
+采用 `Refine + Ant Design + Supabase`，不再引入 `Ant Design Pro`。
+
+### 目标范围（V1）
+- 后台模块：题库管理、用户管理、机构管理、订阅与订单管理。
+- 权限模型：平台管理员、机构管理员、教师、学生。
+- 数据能力：多租户隔离、审计字段、可追踪的内容变更。
+
+### 分阶段计划
+
+#### Phase 0：项目初始化（1-2 天）
+- 创建 Refine 项目（建议 `Next.js + Ant Design`）。
+- 接入 Supabase（`auth + database + storage`）。
+- 建立基础布局：登录页、Dashboard、左侧菜单、404。
+- 输出开发规范：环境变量、目录结构、命名规则。
+
+#### Phase 1：数据模型与多租户（2-3 天）
+- 设计核心表：`orgs`、`users_profile`、`memberships`、`question_banks`、`questions`、`attempts`、`subscriptions`、`payments`。
+- 所有业务表加入 `org_id`、`created_by`、`created_at`、`updated_at`。
+- 配置 Supabase RLS 策略，确保按 `org_id` 隔离。
+- 增加基础索引与唯一约束，防止重复数据。
+
+#### Phase 2：后台 CRUD 页面（4-6 天）
+- 题库管理：列表、筛选、创建、编辑、发布状态。
+- 用户管理：账号列表、角色变更、机构绑定。
+- 机构管理：机构信息、套餐状态、配额统计。
+- 订单管理：支付记录、状态流转、导出。
+
+#### Phase 3：权限与审计（2-3 天）
+- Refine 路由级权限控制（菜单可见性 + 页面访问）。
+- 操作级权限控制（按钮级：创建/编辑/删除/发布）。
+- 审计日志：关键操作写入 `audit_logs`。
+
+#### Phase 4：AI 业务接入（3-5 天）
+- 后台配置 AI 参数：模型、费用、重试策略、超时。
+- 打通练习记录回流：口语评测结果与题库关联。
+- 增加数据看板：活跃用户、练习次数、机构使用量。
+
+### 建议目录（示例）
+```text
+admin/
+  src/
+    app/
+    pages/
+      question-banks/
+      users/
+      orgs/
+      subscriptions/
+      payments/
+    providers/
+    hooks/
+    utils/
+  .env.local
+```
+
+### 里程碑与验收
+- M1：可登录 + 菜单可用 + Supabase 联通。
+- M2：题库/用户/机构三大 CRUD 跑通。
+- M3：多租户 RLS 生效，跨机构不可见。
+- M4：订单与订阅可追踪，可支持 SaaS 运营。
+
+### 风险与控制
+- 风险：RLS 配置错误导致数据越权。
+- 控制：每张表配套最小权限策略 + 用例验证。
+- 风险：AI 调用成本不可控。
+- 控制：按机构配置预算与限流。
+
+### 下一步协作（请按顺序执行）
+1. 我先为你落地 `Phase 0`：初始化 Refine 管理后台骨架。
+2. 你确认部署方式：`Vercel`（推荐）或自托管。
+3. 我再产出 Supabase 首版建表 SQL + RLS 策略（可直接执行）。
+4. 最后开始做第一批页面：题库、用户、机构。
+
+### Phase 0 落地状态（2026-04-13）
+- 后台骨架已创建：`realtime/admin-new`
+- 技术栈已固定：`Refine + Ant Design + Supabase + Next.js`
+- 运行方式（自托管）：在 `realtime/admin-new` 执行 `npm run dev`（开发）/ `npm run build && npm run start`（生产）

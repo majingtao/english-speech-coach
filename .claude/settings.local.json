@@ -55,7 +55,13 @@
       "Bash(npx vue-tsc:*)",
       "WebFetch(domain:www.volcengine.com)",
       "WebSearch",
-      "Bash(pip show:*)"
+      "Bash(pip show:*)",
+      "WebFetch(domain:help.aliyun.com)",
+      "Bash(docker compose:*)",
+      "Bash(tasklist /FI \"PID eq 2260\" /FO CSV)",
+      "Bash(tasklist /FI \"PID eq 22136\" /FO CSV)",
+      "Bash(]*\\\\`\" /e/project/englishAi/realtime/admin/service/sql/mysql/ruoyi-vue-pro.sql | sort -u)",
+      "Bash(find:*)"
     ]
   }
 }
