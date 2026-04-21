@@ -10,14 +10,25 @@ html {
   color-scheme: light;
 }
 
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 html.dark {
-  background: #222;
-  color-scheme: dark;
+  background: var(--van-gray-1);
+  color-scheme: light;
 }
 
 #app {
-  height: 100%;
+  width: 100%;
+  min-height: 100dvh;
   position: relative;
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {

@@ -23,6 +23,7 @@ import copy
 import io
 import json
 import logging
+import math
 import os
 import ssl
 import struct
@@ -35,11 +36,14 @@ import uuid
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
-# Ensure localhost connections (ASR WebSocket, Ollama) bypass HTTP proxy
-_no_proxy = os.environ.get("NO_PROXY", "")
-if "localhost" not in _no_proxy.lower():
-    os.environ["NO_PROXY"] = ("localhost,127.0.0.1" + ("," + _no_proxy if _no_proxy else ""))
-    os.environ["no_proxy"] = os.environ["NO_PROXY"]
+# Remove proxy env vars so local websocket/HTTP calls (ASR, Ollama) are never proxied.
+# websockets v16+ ignores NO_PROXY and routes through http_proxy, breaking local ASR.
+# External API calls (OpenAI, Claude, etc.) configure proxy explicitly via aiohttp.
+_saved_http_proxy = os.environ.pop("http_proxy", None) or os.environ.pop("HTTP_PROXY", None)
+os.environ.pop("https_proxy", None)
+os.environ.pop("HTTPS_PROXY", None)
+os.environ.pop("all_proxy", None)
+os.environ.pop("ALL_PROXY", None)
 import wave
 from pathlib import Path
 
@@ -129,6 +133,19 @@ ENABLE_VIBEVOICE_TTS = os.environ.get("ENABLE_VIBEVOICE_TTS", "true").lower() no
 
 OLLAMA_BASE = "http://localhost:11434"
 
+# ---------- yudao quota client ----------
+
+from quota_client import consume as quota_consume, QuotaError  # noqa: E402
+
+
+def _quota_rejected_response(err: QuotaError):
+    """统一的业务码响应：HTTP 200 + {code, msg}，H5 按 code 展示提示"""
+    return web.json_response({"code": err.code, "msg": err.msg, "data": None})
+
+
+def _client_authorization(request):
+    return request.headers.get("Authorization") or request.headers.get("authorization")
+
 # ---------- Load .env ----------
 
 def load_dotenv():
@@ -156,7 +173,7 @@ OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.gptsapi.net/v1"
 ANTHROPIC_BASE_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
 MOONSHOT_BASE_URL = os.environ.get("MOONSHOT_BASE_URL", "https://api.moonshot.cn/v1")
 OPENROUTER_BASE_URL = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
-HTTP_PROXY = os.environ.get("HTTP_PROXY", "") or os.environ.get("http_proxy", "")
+HTTP_PROXY = _saved_http_proxy or ""
 
 # 火山引擎 ASR V2（一句话识别 / 流式识别）
 # VOLC_ASR_APPID   = 控制台项目 App ID
@@ -811,6 +828,19 @@ async def asr_offline(request):
             samples = np.frombuffer(raw_pcm, dtype=np.float32)
         pcm_data = samples.astype(np.float32).tobytes()
 
+    # --- 配额扣减：按实际音频秒数（不足 1 秒按 1 秒） ---
+    _samples_for_duration = np.frombuffer(pcm_data, dtype=np.float32)
+    _duration_sec = len(_samples_for_duration) / max(sample_rate, 1)
+    try:
+        await quota_consume(
+            request.app["session"],
+            _client_authorization(request),
+            "asr",
+            max(1, int(math.ceil(_duration_sec))),
+        )
+    except QuotaError as qe:
+        return _quota_rejected_response(qe)
+
     # ---------- 在线 ASR（火山引擎等）----------
     if model["type"] == "online":
         session = request.app["session"]
@@ -932,9 +962,18 @@ async def llm_judge(request):
     question = body.get("question", "")
     expected = body.get("expected", "")
     student = body.get("student", "")
+    # "local" is an alias for ollama (local inference)
+    if provider == "local":
+        provider = "ollama"
 
     if not student:
         return web.json_response({"ok": False, "fb": "No answer provided", "cn": "没有回答", "ans": expected})
+
+    # --- 配额扣减：judge 算 1 次 LLM ---
+    try:
+        await quota_consume(request.app["session"], _client_authorization(request), "llm", 1)
+    except QuotaError as qe:
+        return _quota_rejected_response(qe)
 
     # Build the user message
     parts = []
@@ -968,10 +1007,11 @@ async def llm_judge(request):
             coro = _judge_openai_compat(session, model, messages, OPENROUTER_BASE_URL, OPENROUTER_API_KEY, proxy)
         else:
             return web.json_response({"ok": False, "fb": "Unknown provider", "cn": "未知提供商", "ans": expected})
-        result = await asyncio.wait_for(coro, timeout=25)
+        timeout = 60 if provider == "ollama" else 25
+        result = await asyncio.wait_for(coro, timeout=timeout)
     except asyncio.TimeoutError:
-        log.error("[judge] Timed out after 25s: provider=%s model=%s", provider, model)
-        result = {"ok": False, "fb": "Judge timed out (25s)", "cn": "判分超时", "ans": expected}
+        log.error("[judge] Timed out: provider=%s model=%s", provider, model)
+        result = {"ok": False, "fb": "Judge timed out", "cn": "判分超时", "ans": expected}
     except Exception as e:
         log.error("[judge] Error: %s", e)
         result = {"ok": False, "fb": f"Judge error: {e}", "cn": "判分出错", "ans": expected}
@@ -1123,11 +1163,21 @@ async def llm_chat(request):
     messages = body.get("messages", [])
     use_proxy = body.get("use_proxy", False)
     proxy = HTTP_PROXY if (use_proxy and HTTP_PROXY) else None
+    # "local" is an alias for ollama (local inference)
+    if provider == "local":
+        provider = "ollama"
 
     if not messages:
         return web.Response(text="No messages", status=400)
 
     session = request.app["session"]
+
+    # --- 配额扣减：chat 算 1 次 LLM ---
+    try:
+        await quota_consume(session, _client_authorization(request), "llm", 1)
+    except QuotaError as qe:
+        return _quota_rejected_response(qe)
+
     log.info("[llm] provider=%s model=%s msgs=%d proxy=%s", provider, model, len(messages), bool(proxy))
 
     response = web.StreamResponse(
@@ -1525,6 +1575,17 @@ async def tts_speak(request):
 
     if not text:
         return web.Response(text="No text provided", status=400)
+
+    # --- 配额扣减：按待合成字符数 ---
+    try:
+        await quota_consume(
+            request.app["session"],
+            _client_authorization(request),
+            "tts",
+            len(text),
+        )
+    except QuotaError as qe:
+        return _quota_rejected_response(qe)
 
     if engine == "vibevoice":
         vibevoice_state = request.app.get("vibevoice")

@@ -24,6 +24,9 @@ public class ExamRespVO {
     @Schema(description = "级别编码")
     private String levelCode;
 
+    @Schema(description = "系列编码")
+    private String seriesCode;
+
     @Schema(description = "试卷显示名")
     private String label;
 
@@ -38,6 +41,9 @@ public class ExamRespVO {
 
     @Schema(description = "状态：0=草稿 1=发布 2=下架")
     private Integer status;
+
+    @Schema(description = "试卷完整 JSON")
+    private String contentJson;
 
     @Schema(description = "创建时间")
     private LocalDateTime createTime;

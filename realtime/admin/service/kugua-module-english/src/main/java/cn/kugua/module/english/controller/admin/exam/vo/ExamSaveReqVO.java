@@ -27,6 +27,9 @@ public class ExamSaveReqVO {
     @NotEmpty(message = "级别编码不能为空")
     private String levelCode;
 
+    @Schema(description = "系列编码：go_flyers / flyers_1 / aep_1 ...", example = "go_flyers")
+    private String seriesCode;
+
     @Schema(description = "试卷显示名", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty(message = "试卷名称不能为空")
     private String label;
@@ -42,5 +45,8 @@ public class ExamSaveReqVO {
 
     @Schema(description = "状态：0=草稿 1=发布 2=下架", example = "0")
     private Integer status;
+
+    @Schema(description = "试卷完整 JSON")
+    private String contentJson;
 
 }

@@ -75,6 +75,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/speech-yle': RouteRecordInfo<
+      '/speech-yle',
+      '/speech-yle',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
   }
 
   /**
@@ -127,6 +134,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/speech-flyers.vue': {
       routes:
         | '/speech-flyers'
+      views:
+        | never
+    }
+    'src/pages/speech-yle.vue': {
+      routes:
+        | '/speech-yle'
       views:
         | never
     }

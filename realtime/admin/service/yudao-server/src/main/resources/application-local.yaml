@@ -6,7 +6,7 @@ spring:
   autoconfigure:
     # noinspection SpringBootApplicationYaml
     exclude:
-      - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
+      #- org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration # 默认 local 环境，不开启 Quartz 的自动配置
       - org.springframework.ai.vectorstore.qdrant.autoconfigure.QdrantVectorStoreAutoConfiguration # 禁用 AI 模块的 Qdrant，手动创建
       - org.springframework.ai.vectorstore.milvus.autoconfigure.MilvusVectorStoreAutoConfiguration # 禁用 AI 模块的 Milvus，手动创建
   # 数据源配置项
@@ -221,6 +221,18 @@ wx:
       type: RedisTemplate # 采用 RedisTemplate 操作 Redis，会自动从 Spring 中获取
       key-prefix: wa # Redis Key 的前缀
       http-client-type: HttpClient # 采用 HttpClient 请求微信公众号平台
+
+--- #################### 苦瓜邮件配置 ####################
+
+kugua:
+  mail:
+    from-email: noreply@rmail.kugua.cn  # 发件人邮箱；@后域名必须在 Resend 已验证（当前已验证 rmail.kugua.cn）
+    resend:
+      api-key: re_CXS2mTVP_12nsjQvUg3WWVxXDuMX1PNui                 # Resend API Key，https://resend.com/api-keys
+#    aliyun:                                       # 暂不启用；填好后自动切换为 Resend(主)+阿里云(备) 双通道
+#      access-key-id: LTAI_xxxxxxxxx
+#      access-key-secret: xxxxxxxxx
+#      account-name: noreply@yourdomain.com
 
 --- #################### 芋道相关配置 ####################
 

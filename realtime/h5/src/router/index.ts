@@ -20,11 +20,10 @@ router.beforeEach((to) => {
   NProgress.start()
   const publicPages = ['/login', '/promo']
   if (!isLogin() && !publicPages.includes(to.path)) {
-    return { path: '/promo', query: { redirect: to.fullPath } }
+    return { path: '/login', query: { redirect: to.fullPath } }
   }
   if (isLogin() && to.path === '/login') {
-    const redirect = typeof to.query.redirect === 'string' ? to.query.redirect : '/'
-    return redirect
+    return typeof to.query.redirect === 'string' ? to.query.redirect : '/'
   }
 })
 

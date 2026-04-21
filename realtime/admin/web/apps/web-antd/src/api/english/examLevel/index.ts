@@ -24,6 +24,12 @@ export function getExamLevelPage(params: PageParam) {
   );
 }
 
+/** 全量启用列表（用于级联下拉，pageSize=200） */
+export async function listAllSimpleExamLevel() {
+  const res = await getExamLevelPage({ pageNo: 1, pageSize: 200 } as PageParam);
+  return res.list || [];
+}
+
 /** 查询考试级别字典详情 */
 export function getExamLevel(id: number) {
   return requestClient.get<EnglishExamLevelApi.ExamLevel>(

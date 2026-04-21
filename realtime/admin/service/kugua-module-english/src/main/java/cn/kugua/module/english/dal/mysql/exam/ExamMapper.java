@@ -15,6 +15,7 @@ public interface ExamMapper extends BaseMapperX<ExamDO> {
                 .likeIfPresent(ExamDO::getExamCode, reqVO.getExamCode())
                 .likeIfPresent(ExamDO::getLabel, reqVO.getLabel())
                 .eqIfPresent(ExamDO::getLevelCode, reqVO.getLevelCode())
+                .eqIfPresent(ExamDO::getSeriesCode, reqVO.getSeriesCode())
                 .eqIfPresent(ExamDO::getIsActive, reqVO.getIsActive())
                 .eqIfPresent(ExamDO::getStatus, reqVO.getStatus())
                 .orderByDesc(ExamDO::getId));

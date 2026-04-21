@@ -270,8 +270,9 @@ yudao:
       - ${spring.boot.admin.context-path}/** # 不处理 Spring Boot Admin 的请求
       - ${management.endpoints.web.base-path}/** # 不处理 Actuator 的请求
   security:
-    permit-all_urls:
+    permit-all-urls:
       - /admin-api/mp/open/** # 微信公众号开放平台，微信回调接口，不需要登录
+      - /app-api/member/email-auth/** # H5 邮箱/账号注册登录、唯一性检查，未登录也可调用
   api-encrypt:
     enable: true # 是否开启 API 加密
     algorithm: AES # 加密算法，支持 AES、RSA 等
@@ -317,7 +318,14 @@ yudao:
     ignore-tables:
       # kugua-module-english 跨租户共享的字典表（无 tenant_id 列）
       - esc_exam_level
+      - esc_exam_series
       - esc_exam_part_type
+      # 英语课配额：全局默认是单行配置，跨租户共享
+      - esc_quota_default
+      # 英语课每日用量归档：跨租户报表，按 userId 维度聚合
+      - esc_quota_usage_daily
+      # AI 模型配置：全局共享，无 tenant_id
+      - esc_ai_model
     ignore-caches:
       - user_role_ids
       - permission_menu_ids

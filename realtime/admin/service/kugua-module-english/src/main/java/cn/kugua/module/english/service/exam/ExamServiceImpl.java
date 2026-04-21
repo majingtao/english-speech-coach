@@ -57,6 +57,15 @@ public class ExamServiceImpl implements ExamService {
         return examMapper.selectPage(reqVO);
     }
 
+    @Override
+    public void updateContentJson(Long id, String contentJson) {
+        validateExamExists(id);
+        ExamDO update = new ExamDO();
+        update.setId(id);
+        update.setContentJson(contentJson);
+        examMapper.updateById(update);
+    }
+
     // ========== 校验 ==========
 
     private void validateExamExists(Long id) {

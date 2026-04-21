@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { showNotify, showToast } from 'vant'
 import { fetchQuestionBank } from '@/api/speech'
+import { handleAuthRejection, handleQuotaRejection, pyFetch } from '@/utils/py'
 import type {
   AsrModel,
   ExamMessage,
@@ -13,6 +14,17 @@ import type {
 } from '@/types/speech'
 
 const router = useRouter()
+const route = useRoute()
+
+// 从 /speech-yle 传进来的分类参数，用于按 level+series 过滤题库
+const queryLevelCode = computed(() => {
+  const v = route.query?.levelCode
+  return typeof v === 'string' && v ? v : undefined
+})
+const querySeriesCode = computed(() => {
+  const v = route.query?.seriesCode
+  return typeof v === 'string' && v ? v : undefined
+})
 
 const levels = [
   { id: 'flyers', label: 'Flyers' },
@@ -523,15 +535,24 @@ async function speakWithServer(text: string, engine: string) {
     body.voice = selectedVoice.value || 'Chelsie'
   }
   try {
-    const res = await fetch(url, {
+    const res = await pyFetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       signal: ctrl.signal,
     })
     clearTimeout(timer)
+    if (await handleAuthRejection(res)) {
+      ttsLoading.value = false
+      return
+    }
     if (!res.ok)
       throw new Error(`TTS 请求失败 ${res.status}`)
+    // 配额拒绝：server.py 会返回 HTTP 200 + JSON，这里拦截
+    if (await handleQuotaRejection(res)) {
+      ttsLoading.value = false
+      return
+    }
     const arrayBuf = await res.arrayBuffer()
     if (arrayBuf.byteLength < 256)
       return
@@ -666,7 +687,10 @@ function resetExam() {
 
 async function loadExamBank() {
   try {
-    questionBank.value = await fetchQuestionBank()
+    questionBank.value = await fetchQuestionBank({
+      levelCode: queryLevelCode.value,
+      seriesCode: querySeriesCode.value,
+    })
   }
   catch (error: any) {
     showNotify({ type: 'danger', message: error.message || '题库加载失败' })
@@ -919,7 +943,7 @@ async function callJudge(question: string, expected: string, student: string) {
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), 45000)
   try {
-    const res = await fetch(endpoints.judge(), {
+    const res = await pyFetch(endpoints.judge(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -933,8 +957,12 @@ async function callJudge(question: string, expected: string, student: string) {
       signal: ctrl.signal,
     })
     clearTimeout(timer)
+    if (await handleAuthRejection(res))
+      return { ok: false, authRejected: true, fb: '登录已失效', ans: expected }
     if (!res.ok)
       return { ok: false, fb: `Server error ${res.status}`, ans: expected }
+    if (await handleQuotaRejection(res))
+      return { ok: false, quotaRejected: true, fb: '配额受限', ans: expected }
     return await res.json()
   }
   catch (error: any) {
@@ -1157,11 +1185,23 @@ async function toggleExamRecording() {
         offset += chunk.length
       })
       examOfflineChunks = []
-      const res = await fetch(`${endpoints.asrOffline()}?model=${currentAsrModel.value?.id}`, {
+      const res = await pyFetch(`${endpoints.asrOffline()}?model=${currentAsrModel.value?.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream' },
         body: allSamples.buffer,
       })
+      if (await handleAuthRejection(res)) {
+        setExamStatus('登录已失效', 'error')
+        if (examState.waiting)
+          examRecordDisabled.value = false
+        return
+      }
+      if (await handleQuotaRejection(res)) {
+        setExamStatus('已达额度限制', 'error')
+        if (examState.waiting)
+          examRecordDisabled.value = false
+        return
+      }
       const data = await res.json()
       const text = (data.text || '').trim()
       if (text) {

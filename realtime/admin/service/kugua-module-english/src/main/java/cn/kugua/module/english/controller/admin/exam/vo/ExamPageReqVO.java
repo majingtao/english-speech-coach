@@ -21,6 +21,9 @@ public class ExamPageReqVO extends PageParam {
     @Schema(description = "级别编码：flyers / ket / pet")
     private String levelCode;
 
+    @Schema(description = "系列编码：go_flyers / flyers_1 / aep_1")
+    private String seriesCode;
+
     @Schema(description = "是否当前生效版本：0=否 1=是")
     private Integer isActive;
 

@@ -33,6 +33,9 @@ public class ExamDO extends TenantBaseDO {
     /** 级别编码，引用 esc_exam_level.code：flyers / ket / pet */
     private String levelCode;
 
+    /** 系列编码，引用 esc_exam_series.code：go_flyers / flyers_1 / aep_1 ... */
+    private String seriesCode;
+
     /** 试卷显示名 */
     private String label;
 
@@ -47,5 +50,8 @@ public class ExamDO extends TenantBaseDO {
 
     /** 0=草稿 1=发布 2=下架 */
     private Integer status;
+
+    /** 试卷完整 JSON（H5 题库格式） */
+    private String contentJson;
 
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { showNotify, showToast } from 'vant'
-import { logoutByMock } from '@/api/auth'
+import { logout } from '@/api/auth'
 import { clearToken } from '@/utils/auth'
 
 const router = useRouter()
@@ -9,7 +9,7 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    await logoutByMock()
+    await logout()
     clearToken()
     showToast('已退出登录')
   }

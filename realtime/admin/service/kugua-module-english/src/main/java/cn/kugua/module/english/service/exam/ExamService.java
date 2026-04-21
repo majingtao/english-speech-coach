@@ -21,4 +21,6 @@ public interface ExamService {
 
     PageResult<ExamDO> getExamPage(ExamPageReqVO reqVO);
 
+    void updateContentJson(Long id, String contentJson);
+
 }

@@ -2,11 +2,12 @@ import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, Inte
 import axios from 'axios'
 import { showNotify } from 'vant'
 import { clearToken, getToken } from '@/utils/auth'
+import { redirectToLogin } from '@/utils/loginRedirect'
 
-// 创建 axios 实例：默认指向 yudao /admin-api
+// 创建 axios 实例：URL 需显式带上 /admin-api（后台）或 /app-api（H5 会员）前缀
 // Python 语音代理（/llm /asr /tts）由 index.vue 内部 fetch 直连，不走这里
 const request = axios.create({
-  baseURL: import.meta.env.VITE_APP_API_BASE_URL || '/admin-api',
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL || '',
   timeout: 15000,
 })
 
@@ -24,6 +25,7 @@ function errorHandler(error: RequestError): Promise<any> {
     if (status === 401) {
       clearToken()
       showNotify({ type: 'danger', message: '登录已失效，请重新登录' })
+      redirectToLogin()
     }
     else if (status === 403) {
       showNotify({ type: 'danger', message: data?.msg || statusText || '无权访问' })
@@ -53,6 +55,13 @@ function responseHandler(response: AxiosResponse<YudaoResult>) {
   if (body && typeof body === 'object' && 'code' in body) {
     if (body.code === 0)
       return body.data
+    // yudao 业务码 401 = 未登录 / token 失效
+    if (body.code === 401) {
+      clearToken()
+      showNotify({ type: 'danger', message: body.msg || '登录已失效，请重新登录' })
+      redirectToLogin()
+      return Promise.reject(body)
+    }
     showNotify({ type: 'danger', message: body.msg || '业务异常' })
     return Promise.reject(body)
   }

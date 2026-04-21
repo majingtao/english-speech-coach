@@ -18,9 +18,15 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       port: 43000,
       https: {}, // 启用 HTTPS（手机端 getUserMedia 必须 https），证书由 @vitejs/plugin-basic-ssl 自动生成
       proxy: {
-        // yudao 后端
+        // yudao 后端（后台）
         '/admin-api': {
-          target: 'http://localhost:5666',
+          target: 'http://localhost:48080',
+          ws: false,
+          changeOrigin: true,
+        },
+        // yudao 后端（H5 会员）
+        '/app-api': {
+          target: 'http://localhost:48080',
           ws: false,
           changeOrigin: true,
         },
