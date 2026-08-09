@@ -11,6 +11,7 @@ import {
   MessageCircle,
   Mic,
   PenLine,
+  MessagesSquare,
   RefreshCw,
   Settings,
   Sparkles,
@@ -78,6 +79,16 @@ const sections: AppSection[] = [
       { key: "dict-senior", label: "高中", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-flyers", label: "Flyers", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-ket", label: "KET", icon: <BookOpen className="size-5" />, enabled: false },
+    ],
+  },
+  {
+    key: "expression",
+    title: "表达练习",
+    subtitle: "积累口语与写作常用问句和回答",
+    icon: <MessagesSquare className="size-5" />,
+    items: [
+      { key: "expression-ket", label: "KET 表达", icon: <MessageCircle className="size-5" />, enabled: true, href: "/expression" },
+      { key: "expression-flyers", label: "Flyers 表达", icon: <BookOpen className="size-5" />, enabled: false },
     ],
   },
   {

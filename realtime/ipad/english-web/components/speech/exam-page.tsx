@@ -30,6 +30,7 @@ import { callJudge } from "@/lib/exam/judge"
 import { AsrRecorder } from "@/lib/exam/asr"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 import { ExamAvatar } from "./exam-avatar"
+import { AiSettingsPanel } from "@/components/ai/ai-settings-panel"
 
 const ALL_PART_OPTIONS = [
   { value: "all", label: "全流程" },
@@ -663,47 +664,7 @@ export function ExamPage() {
                 </button>
               </div>
 
-              {/* LLM */}
-              <div className="exam-setting-group">
-                <label className="exam-setting-label">LLM</label>
-                <select className="exam-select" value={config.selectedLlmKey} onChange={(e) => config.setSelectedLlmKey(e.target.value)}>
-                  {config.llmModels.map((m, i) => <option key={`${m.provider}:${m.model}:${i}`} value={`${m.provider}:${m.model}`}>{m.label}</option>)}
-                </select>
-              </div>
-              <div className="exam-setting-row">
-                <span className="exam-setting-label">代理</span>
-                <button type="button" className={`exam-toggle ${config.llmProxy ? "exam-toggle-on" : ""}`} onClick={() => config.setLlmProxy(!config.llmProxy)}>
-                  <span className="exam-toggle-thumb" />
-                </button>
-              </div>
-
-              {/* ASR */}
-              <div className="exam-setting-group">
-                <label className="exam-setting-label">ASR</label>
-                <select className="exam-select" value={config.selectedAsrId} onChange={(e) => config.setSelectedAsrId(e.target.value)}>
-                  {config.asrModels.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
-                </select>
-              </div>
-
-              {/* TTS */}
-              <div className="exam-setting-row">
-                <span className="exam-setting-label">语音播报</span>
-                <button type="button" className={`exam-toggle ${config.ttsEnabled ? "exam-toggle-on" : ""}`} onClick={() => config.setTtsEnabled(!config.ttsEnabled)}>
-                  <span className="exam-toggle-thumb" />
-                </button>
-              </div>
-              <div className="exam-setting-group">
-                <label className="exam-setting-label">播报引擎</label>
-                <select className="exam-select" value={config.ttsEngine} onChange={(e) => config.setTtsEngine(e.target.value)}>
-                  {config.ttsEngines.map((e) => <option key={e.id} value={e.id}>{e.label}</option>)}
-                </select>
-              </div>
-              <div className="exam-setting-group">
-                <label className="exam-setting-label">音色</label>
-                <select className="exam-select" value={config.selectedVoice} onChange={(e) => config.setSelectedVoice(e.target.value)}>
-                  {config.voiceOptions.map((v) => <option key={v.name} value={v.name}>{v.label || v.name}</option>)}
-                </select>
-              </div>
+              <AiSettingsPanel config={config} />
             </div>
           )}
 

@@ -7,7 +7,13 @@ const PY_TARGET = process.env.NEXT_PUBLIC_PY_BASE_URL || "https://127.0.0.1:8443
 const isHttps = PY_TARGET.startsWith("https")
 
 function buildUrl(segments: string[], search: string) {
-  return `${PY_TARGET}/${segments.join("/")}${search}`
+  // ASR/TTS/LLM are mounted at the Python root. Content-practice handlers are
+  // also called directly by Java under /py, so preserve that upstream prefix.
+  const preservePyPrefix = new Set(["expression", "vocab", "grade_sentence"])
+  const upstreamSegments = preservePyPrefix.has(segments[0])
+    ? ["py", ...segments]
+    : segments
+  return `${PY_TARGET}/${upstreamSegments.join("/")}${search}`
 }
 
 function proxy(

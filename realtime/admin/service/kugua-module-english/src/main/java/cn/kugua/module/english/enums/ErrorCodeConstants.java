@@ -80,6 +80,14 @@ public interface ErrorCodeConstants {
     ErrorCode USER_VOCAB_LIST_NOT_OWNER     = new ErrorCode(1_040_070_031, "无权操作该词库");
     ErrorCode USER_VOCAB_LIST_ITEM_DUPLICATE= new ErrorCode(1_040_070_032, "该词已在词库中");
 
+    // ========== 表达练习 1-040-080-000 ==========
+    ErrorCode EXPRESSION_THEME_NOT_EXISTS     = new ErrorCode(1_040_080_000, "表达主题不存在");
+    ErrorCode EXPRESSION_THEME_DUPLICATE      = new ErrorCode(1_040_080_001, "该级别下的表达主题编码已存在");
+    ErrorCode EXPRESSION_THEME_IN_USE         = new ErrorCode(1_040_080_002, "主题下仍有表达练习，不能删除");
+    ErrorCode EXPRESSION_ITEM_NOT_EXISTS      = new ErrorCode(1_040_080_010, "表达练习项不存在");
+    ErrorCode EXPRESSION_ITEM_DUPLICATE       = new ErrorCode(1_040_080_011, "表达练习项编码已存在");
+    ErrorCode EXPRESSION_MODE_INVALID         = new ErrorCode(1_040_080_012, "练习模式必须为 speaking 或 writing");
+
     // ========== 配额（LLM/ASR/TTS）1-040-060-000 ==========
     ErrorCode ESC_QUOTA_DEFAULT_NOT_EXISTS = new ErrorCode(1_040_060_000, "默认配额记录不存在");
     ErrorCode ESC_USER_QUOTA_NOT_EXISTS    = new ErrorCode(1_040_060_001, "用户配额覆盖不存在");

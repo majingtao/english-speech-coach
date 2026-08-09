@@ -1165,7 +1165,7 @@ async def _judge_ollama(session, model, messages):
         message = data.get("message")
         content = _message_content_to_text(message.get("content") if isinstance(message, dict) else "")
         result = _parse_judge_json(content)
-        if result and "ok" in result:
+        if isinstance(result, dict):
             return result
         return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
 
@@ -1193,7 +1193,7 @@ async def _judge_openai(session, model, messages, proxy=None):
             return {"ok": False, "fb": f"OpenAI error: {err[:100]}", "cn": "API错误", "ans": ""}
         content = _first_choice_content(data)
         result = _parse_judge_json(content)
-        if result and "ok" in result:
+        if isinstance(result, dict):
             return result
         return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
 
@@ -1236,7 +1236,7 @@ async def _judge_claude(session, model, messages, proxy=None):
                 elif isinstance(block, dict) and block.get("type") == "text":
                     content += str(block.get("text", ""))
         result = _parse_judge_json(content)
-        if result and "ok" in result:
+        if isinstance(result, dict):
             return result
         return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
 
@@ -1267,7 +1267,7 @@ async def _judge_openai_compat(session, model, messages, base_url, api_key, prox
             return {"ok": False, "fb": f"API error: {err[:100]}", "cn": "API错误", "ans": ""}
         content = _first_choice_content(data)
         result = _parse_judge_json(content)
-        if result and "ok" in result:
+        if isinstance(result, dict):
             return result
         return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
 
@@ -1930,38 +1930,47 @@ MY_WORDS_FILE = os.path.join(STATIC_DIR, "my-words.json")
 
 VOCAB_GENERATE_PROMPT = _load_judge_prompt("vocab_generate.md")
 GRADE_SENTENCE_PROMPT = _load_judge_prompt("grade_sentence.md")
+EXPRESSION_GRADE_PROMPT = _load_judge_prompt("expression_grade.md")
 
 
-def _pick_vocab_llm():
+def _pick_vocab_llm(provider_override="", model_override=""):
     """Pick provider/model/base_url/api_key for vocab LLM calls.
 
     Order: VOCAB_LLM_PROVIDER env override → moonshot (cheapest JSON) → openai → claude.
     Returns (provider, model, base_url, api_key) or None if nothing configured.
     """
-    override = os.environ.get("VOCAB_LLM_PROVIDER", "").strip().lower()
-    candidates = []
-    if override:
-        candidates.append(override)
-    candidates.extend(["moonshot", "openai", "claude"])
+    override = (provider_override or os.environ.get("VOCAB_LLM_PROVIDER", "")).strip().lower()
+    candidates = [override] if override else ["deepseek", "moonshot", "openai", "claude"]
     for p in candidates:
+        if p == "ollama":
+            return ("ollama", model_override or os.environ.get("VOCAB_LLM_MODEL", ""), OLLAMA_BASE, "")
+        if p == "deepseek" and DEEPSEEK_API_KEY:
+            return ("deepseek",
+                    model_override or os.environ.get("VOCAB_LLM_MODEL", "deepseek-v4-flash"),
+                    DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY)
         if p == "moonshot" and MOONSHOT_API_KEY:
             return ("moonshot",
-                    os.environ.get("VOCAB_LLM_MODEL", "moonshot-v1-8k"),
+                    model_override or os.environ.get("VOCAB_LLM_MODEL", "moonshot-v1-8k"),
                     MOONSHOT_BASE_URL, MOONSHOT_API_KEY)
         if p == "openai" and OPENAI_API_KEY:
             return ("openai",
-                    os.environ.get("VOCAB_LLM_MODEL", "gpt-4o-mini"),
+                    model_override or os.environ.get("VOCAB_LLM_MODEL", "gpt-4o-mini"),
                     OPENAI_BASE_URL, OPENAI_API_KEY)
         if p == "claude" and ANTHROPIC_API_KEY:
             return ("claude",
-                    os.environ.get("VOCAB_LLM_MODEL", "claude-3-5-haiku-latest"),
+                    model_override or os.environ.get("VOCAB_LLM_MODEL", "claude-3-5-haiku-latest"),
                     ANTHROPIC_BASE_URL, ANTHROPIC_API_KEY)
+        if p == "openrouter" and OPENROUTER_API_KEY:
+            return ("openrouter",
+                    model_override or os.environ.get("VOCAB_LLM_MODEL", "google/gemini-2.5-flash"),
+                    OPENROUTER_BASE_URL, OPENROUTER_API_KEY)
     return None
 
 
-async def _vocab_llm_json(session, system_prompt, user_msg, timeout=25):
+async def _vocab_llm_json(session, system_prompt, user_msg, timeout=25,
+                          provider_override="", model_override="", use_proxy=False):
     """Call an LLM and return parsed JSON dict (or None on failure)."""
-    pick = _pick_vocab_llm()
+    pick = _pick_vocab_llm(provider_override, model_override)
     if not pick:
         log.error("[vocab] no LLM provider configured (set OPENAI/MOONSHOT/ANTHROPIC API KEY)")
         return None
@@ -1971,10 +1980,13 @@ async def _vocab_llm_json(session, system_prompt, user_msg, timeout=25):
         {"role": "user", "content": user_msg},
     ]
     try:
-        if provider == "claude":
-            coro = _judge_claude(session, model, messages)
+        proxy = HTTP_PROXY if (use_proxy and HTTP_PROXY) else None
+        if provider == "ollama":
+            coro = _judge_ollama(session, model, messages)
+        elif provider == "claude":
+            coro = _judge_claude(session, model, messages, proxy)
         else:
-            coro = _judge_openai_compat(session, model, messages, base_url, api_key)
+            coro = _judge_openai_compat(session, model, messages, base_url, api_key, proxy)
         return await asyncio.wait_for(coro, timeout=timeout)
     except asyncio.TimeoutError:
         log.error("[vocab] LLM timeout provider=%s model=%s", provider, model)
@@ -2142,6 +2154,85 @@ async def grade_sentence_handler(request):
     return web.json_response(data)
 
 
+async def expression_grade_handler(request):
+    """POST /py/expression/grade - structured speaking/writing feedback."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+
+    prompt = (body.get("prompt") or "").strip()
+    response_text = (body.get("response_text") or "").strip()
+    mode = (body.get("practice_mode") or "speaking").strip().lower()
+    if not prompt or not response_text:
+        return web.json_response({"error": "prompt and response_text required"}, status=400)
+    if mode not in ("speaking", "writing"):
+        return web.json_response({"error": "practice_mode must be speaking or writing"}, status=400)
+
+    auth = _client_authorization(request)
+    if auth:
+        try:
+            await quota_consume(request.app["session"], auth, "llm", 1)
+        except QuotaError as qe:
+            return _quota_rejected_response(qe)
+
+    answer_json = body.get("answer_json") or {}
+    if isinstance(answer_json, str):
+        try:
+            answer_json = json.loads(answer_json)
+        except json.JSONDecodeError:
+            answer_json = {}
+    user_msg = json.dumps({
+        "level": body.get("level") or "ket",
+        "practice_mode": mode,
+        "question": prompt,
+        "sample_answer_config": answer_json,
+        "learner_response": response_text,
+    }, ensure_ascii=False)
+    data = await _vocab_llm_json(
+        request.app["session"],
+        EXPRESSION_GRADE_PROMPT,
+        user_msg,
+        timeout=25,
+        provider_override=body.get("provider") or "",
+        model_override=body.get("model") or "",
+        use_proxy=bool(body.get("use_proxy")),
+    )
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM grading failed"}, status=502)
+
+    dimensions = data.get("dimensions")
+    required_dimensions = ("content", "grammar", "vocabulary", "delivery")
+    if not isinstance(dimensions, dict) or not all(
+            key in dimensions for key in required_dimensions):
+        detail = data.get("fb") or data.get("cn") or data.get("error")
+        log.error(
+            "[expression] invalid LLM response provider=%s model=%s data=%s",
+            body.get("provider") or "default",
+            body.get("model") or "default",
+            data,
+        )
+        return web.json_response({
+            "error": detail or "LLM returned an incomplete grading response",
+        }, status=502)
+
+    try:
+        score = max(0, min(100, int(data.get("score", 0))))
+    except (TypeError, ValueError):
+        score = 0
+    data["score"] = score
+    data["passed"] = score >= 60
+    for key in required_dimensions:
+        try:
+            dimensions[key] = max(0, min(100, int(dimensions[key])))
+        except (TypeError, ValueError):
+            dimensions[key] = 0
+    data["strengths"] = data.get("strengths") if isinstance(data.get("strengths"), list) else []
+    data["improvements"] = data.get("improvements") if isinstance(data.get("improvements"), list) else []
+    log.info("[expression] graded mode=%s score=%d", mode, score)
+    return web.json_response(data)
+
+
 async def dictation_save_words(request):
     """Save word list back to my-words.json."""
     try:
@@ -2162,7 +2253,9 @@ async def dictation_save_words(request):
 
 
 def create_app():
-    app = web.Application()
+    # Float32 16 kHz mono audio uses about 64 KB/s. Ten MB supports roughly
+    # 160 seconds while still bounding request memory usage.
+    app = web.Application(client_max_size=10 * 1024 * 1024)
     app.on_startup.append(create_shared_session)
     app.on_startup.append(init_piper_tts)
     app.on_startup.append(init_vibevoice_tts)
@@ -2182,6 +2275,7 @@ def create_app():
     app.router.add_route("GET",  "/py/vocab/ipa", vocab_ipa_handler)
     app.router.add_route("POST", "/py/vocab/tts", vocab_tts_handler)
     app.router.add_route("POST", "/py/grade_sentence", grade_sentence_handler)
+    app.router.add_route("POST", "/py/expression/grade", expression_grade_handler)
     app.router.add_static("/", STATIC_DIR, show_index=True)
     return app
 

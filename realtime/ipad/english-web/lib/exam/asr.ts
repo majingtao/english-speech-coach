@@ -105,7 +105,16 @@ export class AsrRecorder {
       })
       if (await handleAuthRejection(res)) return { error: "登录已失效" }
       if (await handleQuotaRejection(res)) return { error: "已达额度限制" }
-      const data = await res.json()
+      const raw = await res.text()
+      let data: { error?: string; text?: string } = {}
+      try {
+        data = raw ? JSON.parse(raw) as { error?: string; text?: string } : {}
+      } catch {
+        if (res.status === 413 || raw.startsWith("Maximum request body size")) {
+          return { error: "录音过长，音频上传超过服务限制" }
+        }
+        return { error: raw.trim() || `ASR ${res.status}` }
+      }
       if (data.error) return { error: data.error }
       if (!res.ok) return { error: `ASR ${res.status}` }
       const text = (data.text || "").trim()

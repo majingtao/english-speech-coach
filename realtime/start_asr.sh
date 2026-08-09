@@ -31,6 +31,7 @@ python3 $REPO/non_streaming_server.py \
   --whisper-encoder=$MODELS/sherpa-onnx-whisper-medium.en/medium.en-encoder.onnx \
   --whisper-decoder=$MODELS/sherpa-onnx-whisper-medium.en/medium.en-decoder.onnx \
   --tokens=$MODELS/sherpa-onnx-whisper-medium.en/medium.en-tokens.txt \
+  --max-message-size 16777216 \
   --port 6008 --doc-root $DOC_ROOT &
 echo "  [6008] Whisper medium.en (offline)"
 
@@ -38,6 +39,7 @@ echo "  [6008] Whisper medium.en (offline)"
 python3 $REPO/non_streaming_server.py \
   --sense-voice=$MODELS/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/model.int8.onnx \
   --tokens=$MODELS/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/tokens.txt \
+  --max-message-size 16777216 \
   --port 6009 --doc-root $DOC_ROOT &
 echo "  [6009] SenseVoice-small (offline)"
 

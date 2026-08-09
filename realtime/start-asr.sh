@@ -100,6 +100,7 @@ MSYS_NO_PATHCONV=1 docker exec -d "${CONTAINER_NAME}" \
     --whisper-encoder=${WHISPER}/medium.en-encoder.onnx \
     --whisper-decoder=${WHISPER}/medium.en-decoder.onnx \
     --tokens=${WHISPER}/medium.en-tokens.txt \
+    --max-message-size 16777216 \
     --port 6008 \
     --provider ${PROVIDER} \
     --doc-root ${SERVER_DIR}/web
@@ -110,6 +111,7 @@ MSYS_NO_PATHCONV=1 docker exec -d "${CONTAINER_NAME}" \
     python3 ${SERVER_DIR}/non_streaming_server.py \
     --sense-voice=${SENSEVOICE}/model.int8.onnx \
     --tokens=${SENSEVOICE}/tokens.txt \
+    --max-message-size 16777216 \
     --port 6009 \
     --provider ${PROVIDER} \
     --doc-root ${SERVER_DIR}/web
