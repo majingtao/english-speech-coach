@@ -68,6 +68,18 @@ public interface ErrorCodeConstants {
     ErrorCode DICTATION_WORD_DUPLICATE      = new ErrorCode(1_040_040_001, "单词已存在");
     ErrorCode DICTATION_WORDLIST_NOT_EXISTS = new ErrorCode(1_040_040_010, "词书不存在");
 
+    // ========== 词汇 1-040-070-000 ==========
+    ErrorCode VOCAB_NOT_EXISTS              = new ErrorCode(1_040_070_000, "词条不存在");
+    ErrorCode VOCAB_DUPLICATE               = new ErrorCode(1_040_070_001, "该级别下已有同单词");
+    ErrorCode VOCAB_THEME_NOT_EXISTS        = new ErrorCode(1_040_070_010, "词汇主题不存在");
+    ErrorCode VOCAB_THEME_CODE_DUPLICATE    = new ErrorCode(1_040_070_011, "主题编码已存在");
+    ErrorCode VOCAB_GENERATE_FAILED         = new ErrorCode(1_040_070_020, "词条内容生成失败");
+    ErrorCode VOCAB_AUDIO_GENERATE_FAILED   = new ErrorCode(1_040_070_021, "词条发音生成失败");
+    ErrorCode VOCAB_AUDIO_ACCENT_INVALID    = new ErrorCode(1_040_070_022, "发音口音参数非法（应为 uk/us）");
+    ErrorCode USER_VOCAB_LIST_NOT_EXISTS    = new ErrorCode(1_040_070_030, "用户词库不存在");
+    ErrorCode USER_VOCAB_LIST_NOT_OWNER     = new ErrorCode(1_040_070_031, "无权操作该词库");
+    ErrorCode USER_VOCAB_LIST_ITEM_DUPLICATE= new ErrorCode(1_040_070_032, "该词已在词库中");
+
     // ========== 配额（LLM/ASR/TTS）1-040-060-000 ==========
     ErrorCode ESC_QUOTA_DEFAULT_NOT_EXISTS = new ErrorCode(1_040_060_000, "默认配额记录不存在");
     ErrorCode ESC_USER_QUOTA_NOT_EXISTS    = new ErrorCode(1_040_060_001, "用户配额覆盖不存在");

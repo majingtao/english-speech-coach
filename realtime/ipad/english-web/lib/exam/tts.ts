@@ -7,6 +7,7 @@ let ttsAudioUnlocked = false
 let _ttsAudioCtx: AudioContext | null = null
 let _ttsSourceNode: AudioBufferSourceNode | null = null
 let _ttsResolve: (() => void) | null = null
+let _ttsObjectUrl: string | null = null
 
 const ttsAudio = typeof window !== "undefined" ? new Audio() : null
 if (ttsAudio) {
@@ -24,6 +25,13 @@ function _getTtsAudioCtx() {
 
 export function unlockAudio() {
   if (typeof window === "undefined") return
+  const ctx = _getTtsAudioCtx()
+  try {
+    const src = ctx.createBufferSource()
+    src.buffer = ctx.createBuffer(1, 1, ctx.sampleRate)
+    src.connect(ctx.destination)
+    src.start(0)
+  } catch {}
   if (!ttsUnlocked && "speechSynthesis" in window) {
     const utter = new SpeechSynthesisUtterance("")
     utter.volume = 0
@@ -73,6 +81,10 @@ export function stopTts() {
     ttsAudio.pause()
     ttsAudio.currentTime = 0
   }
+  if (_ttsObjectUrl) {
+    URL.revokeObjectURL(_ttsObjectUrl)
+    _ttsObjectUrl = null
+  }
   if (_ttsSourceNode) {
     try { _ttsSourceNode.stop() } catch {}
     try { _ttsSourceNode.disconnect() } catch {}
@@ -82,6 +94,37 @@ export function stopTts() {
     _ttsResolve()
     _ttsResolve = null
   }
+}
+
+async function playWithHtmlAudio(arrayBuf: ArrayBuffer, contentType: string) {
+  if (!ttsAudio) throw new Error("HTMLAudio is not available")
+  if (_ttsObjectUrl) URL.revokeObjectURL(_ttsObjectUrl)
+  _ttsObjectUrl = URL.createObjectURL(new Blob([arrayBuf], { type: contentType || "audio/mpeg" }))
+  await new Promise<void>((resolve, reject) => {
+    _ttsResolve = resolve
+    const done = () => {
+      ttsAudio.removeEventListener("ended", done)
+      ttsAudio.removeEventListener("error", fail)
+      if (_ttsObjectUrl) {
+        URL.revokeObjectURL(_ttsObjectUrl)
+        _ttsObjectUrl = null
+      }
+      if (_ttsResolve === resolve) _ttsResolve = null
+      resolve()
+    }
+    const fail = () => {
+      ttsAudio.removeEventListener("ended", done)
+      ttsAudio.removeEventListener("error", fail)
+      if (_ttsResolve === resolve) _ttsResolve = null
+      reject(new Error("HTMLAudio playback failed"))
+    }
+    ttsAudio.addEventListener("ended", done, { once: true })
+    ttsAudio.addEventListener("error", fail, { once: true })
+    ttsAudio.src = _ttsObjectUrl!
+    ttsAudio.volume = 1
+    ttsAudio.currentTime = 0
+    ttsAudio.play().catch(fail)
+  })
 }
 
 export async function speakWithSystem(text: string, voiceName: string) {
@@ -147,24 +190,41 @@ export async function speakWithServer(
     const arrayBuf = await res.arrayBuffer()
     if (arrayBuf.byteLength < 256) return
     const ctx = _getTtsAudioCtx()
+    if (ctx.state === "suspended") await ctx.resume()
+    if (ctx.state === "suspended") {
+      callbacks.onLoadingChange(false)
+      callbacks.onSpeakingChange(true)
+      await playWithHtmlAudio(arrayBuf, res.headers.get("content-type") || "audio/mpeg")
+      callbacks.onSpeakingChange(false)
+      return
+    }
     const audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0))
     callbacks.onLoadingChange(false)
-    await new Promise<void>((resolve) => {
-      _ttsResolve = resolve
-      const done = () => {
-        _ttsSourceNode = null
-        callbacks.onSpeakingChange(false)
-        if (_ttsResolve === resolve) _ttsResolve = null
-        resolve()
-      }
-      const src = ctx.createBufferSource()
-      src.buffer = audioBuf
-      src.connect(ctx.destination)
-      src.onended = done
-      _ttsSourceNode = src
+    try {
+      await new Promise<void>((resolve) => {
+        _ttsResolve = resolve
+        const done = () => {
+          _ttsSourceNode = null
+          callbacks.onSpeakingChange(false)
+          if (_ttsResolve === resolve) _ttsResolve = null
+          resolve()
+        }
+        const src = ctx.createBufferSource()
+        src.buffer = audioBuf
+        src.connect(ctx.destination)
+        src.onended = done
+        _ttsSourceNode = src
+        callbacks.onSpeakingChange(true)
+        src.start()
+      })
+    } catch {
       callbacks.onSpeakingChange(true)
-      src.start()
-    })
+      await playWithHtmlAudio(arrayBuf, res.headers.get("content-type") || "audio/mpeg")
+      callbacks.onSpeakingChange(false)
+    }
+  } catch (err) {
+    console.warn("[tts] playback failed", err)
+    throw err
   } finally {
     clearTimeout(timer)
     callbacks.onLoadingChange(false)

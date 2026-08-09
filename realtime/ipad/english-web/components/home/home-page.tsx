@@ -46,7 +46,7 @@ const sections: AppSection[] = [
     icon: <Mic className="size-5" />,
     items: [
       { key: "yle", label: "YLE 剑桥少儿", icon: <Sparkles className="size-5" />, enabled: true, href: "/speech/yle" },
-      { key: "ket", label: "KET", icon: <MessageCircle className="size-5" />, enabled: false },
+      { key: "ket", label: "KET", icon: <MessageCircle className="size-5" />, enabled: true, href: "/speech/ket" },
       { key: "pet", label: "PET", icon: <MessageCircle className="size-5" />, enabled: false },
       { key: "fce", label: "FCE", icon: <MessageCircle className="size-5" />, enabled: false },
       { key: "ielts", label: "IELTS 雅思", icon: <MessageCircle className="size-5" />, enabled: false },
@@ -78,6 +78,17 @@ const sections: AppSection[] = [
       { key: "dict-senior", label: "高中", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-flyers", label: "Flyers", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-ket", label: "KET", icon: <BookOpen className="size-5" />, enabled: false },
+    ],
+  },
+  {
+    key: "vocab",
+    title: "词汇练习",
+    subtitle: "SRS 抽认卡 / 主题测验 / 造句",
+    icon: <BookOpen className="size-5" />,
+    items: [
+      { key: "vocab-ket", label: "KET 词汇", icon: <Sparkles className="size-5" />, enabled: true, href: "/vocab" },
+      { key: "vocab-flyers", label: "Flyers 词汇", icon: <BookOpen className="size-5" />, enabled: false },
+      { key: "vocab-pet", label: "PET 词汇", icon: <BookOpen className="size-5" />, enabled: false },
     ],
   },
 ]

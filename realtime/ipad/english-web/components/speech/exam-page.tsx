@@ -9,14 +9,20 @@ import {
   Loader2,
   Mic,
   MicOff,
-  Pause,
   Play,
   Send,
   Settings,
   Square,
   Volume2,
 } from "lucide-react"
-import type { ExamMessage, ExamMessageRole, ExamStep, LlmModel } from "@/lib/types/speech"
+import type {
+  CandidateSeat,
+  ExamMessage,
+  ExamMessageRole,
+  ExamStep,
+  KetOption,
+  PartnerInfo,
+} from "@/lib/types/speech"
 import type { AvatarState } from "./exam-avatar"
 import { useExamConfig } from "@/lib/exam/use-exam-config"
 import { buildSteps } from "@/lib/exam/build-steps"
@@ -25,7 +31,7 @@ import { AsrRecorder } from "@/lib/exam/asr"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 import { ExamAvatar } from "./exam-avatar"
 
-const PART_OPTIONS = [
+const ALL_PART_OPTIONS = [
   { value: "all", label: "全流程" },
   { value: "1", label: "Part 1" },
   { value: "2", label: "Part 2" },
@@ -52,6 +58,7 @@ export function ExamPage() {
 
   const [selectedTest, setSelectedTest] = useState("")
   const [selectedPart, setSelectedPart] = useState("all")
+  const [userSeat, setUserSeat] = useState<CandidateSeat>("A")
   const [settingsOpen, setSettingsOpen] = useState(true)
 
   const [examStatus, setExamStatus] = useState("未开始")
@@ -67,7 +74,18 @@ export function ExamPage() {
   const [ttsSpeaking, setTtsSpeaking] = useState(false)
   const [avatarState, setAvatarState] = useState<AvatarState>("idle")
   const [avatarLabel, setAvatarLabel] = useState("")
+  const [activeRole, setActiveRole] = useState<"examiner" | "candidateA" | "candidateB" | null>(null)
   const [testMode, setTestMode] = useState(false)
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null)
+  const [currentImages, setCurrentImages] = useState<string[]>([])
+  const [currentOptions, setCurrentOptions] = useState<KetOption[]>([])
+  const [avatarSeeds, setAvatarSeeds] = useState({
+    examiner: "ex-0",
+    student: "st-0",
+    partner: "pt-0",
+    candidateA: "ca-0",
+    candidateB: "cb-0",
+  })
 
   const chatRef = useRef<HTMLDivElement>(null)
   const asrRef = useRef(new AsrRecorder())
@@ -89,9 +107,46 @@ export function ExamPage() {
 
   useEffect(() => {
     if (testOptions.length > 0 && !selectedTest) {
-      setSelectedTest(testOptions[0].value)
+      const firstTestId = testOptions[0].value
+      setSelectedTest(firstTestId)
+      const firstTest = config.questionBank?.tests[firstTestId]
+      if (firstTest?.format === "ket") {
+        setUserSeat(firstTest.defaultUserSeat === "B" ? "B" : "A")
+      }
     }
-  }, [testOptions, selectedTest])
+  }, [testOptions, selectedTest, config.questionBank])
+
+  const currentTest = useMemo(() => {
+    if (!config.questionBank || !selectedTest) return undefined
+    return config.questionBank.tests[selectedTest] as Record<string, unknown> | undefined
+  }, [config.questionBank, selectedTest])
+
+  const isKet = levelCode === "ket" || currentTest?.format === "ket"
+
+  const partnerInfo = useMemo<PartnerInfo | undefined>(() => {
+    if (!currentTest) return undefined
+    if (isKet && currentTest.candidateProfiles) {
+      const profiles = currentTest.candidateProfiles as Partial<Record<CandidateSeat, PartnerInfo>>
+      return profiles[userSeat === "A" ? "B" : "A"] || currentTest.virtualCandidate as PartnerInfo | undefined
+    }
+    return (currentTest.virtualCandidate || currentTest.partner) as PartnerInfo | undefined
+  }, [currentTest, isKet, userSeat])
+
+  const partOptions = useMemo(() => {
+    if (!currentTest) return ALL_PART_OPTIONS
+    const hasPart = (n: string) => !!currentTest[`part${n}`]
+    const available = ["1", "2", "3", "4"].filter(hasPart)
+    return [
+      { value: "all", label: "全流程" },
+      ...available.map((n) => ({ value: n, label: `Part ${n}` })),
+    ]
+  }, [currentTest])
+
+  useEffect(() => {
+    if (!partOptions.some((p) => p.value === selectedPart)) {
+      setSelectedPart("all")
+    }
+  }, [partOptions, selectedPart])
 
   const examProgress = useMemo(() => {
     const step = stepsRef.current[stepIdxRef.current] as Record<string, unknown> | undefined
@@ -105,9 +160,11 @@ export function ExamPage() {
 
   function addMsg(role: ExamMessageRole, text: string, replay?: string) {
     setMessages((prev) => [...prev, { id: ++msgIdCounter, role, text, replay }])
-    setTimeout(() => {
-      chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" })
-    }, 50)
+    if (!isKet) {
+      setTimeout(() => {
+        chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" })
+      }, 50)
+    }
   }
 
   function setStatus(text: string, type: "default" | "success" | "error" = "default") {
@@ -115,16 +172,17 @@ export function ExamPage() {
     setExamStatusType(type)
   }
 
-  const speakText = useCallback(async (text: string) => {
+  const speakText = useCallback(async (text: string, voiceOverride?: string) => {
     if (!config.ttsEnabled) return
     unlockAudio()
     setAvatarState("talking")
     setAvatarLabel("")
+    const voice = voiceOverride || config.selectedVoice
     try {
       if (config.ttsEngine === "system") {
-        await speakWithSystem(text, config.selectedVoice)
+        await speakWithSystem(text, voice)
       } else {
-        await speakWithServer(text, config.ttsEngine, config.selectedVoice, {
+        await speakWithServer(text, config.ttsEngine, voice, {
           onLoadingChange: setTtsLoading,
           onSpeakingChange: setTtsSpeaking,
         })
@@ -146,11 +204,34 @@ export function ExamPage() {
 
     if (step.type === "show-image") {
       setCurrentImages(step.images as string[])
+      setCurrentOptions([])
+      stepIdxRef.current++
+      await runExamStep()
+    } else if (step.type === "show-ket-material") {
+      setCurrentImages(step.image ? [step.image as string] : [])
+      setCurrentOptions((step.options as KetOption[]) || [])
       stepIdxRef.current++
       await runExamStep()
     } else if (step.type === "speak") {
+      setActiveRole("examiner")
       addMsg("examiner", step.text as string, step.text as string)
       await speakText(step.text as string)
+      stepIdxRef.current++
+      await runExamStep()
+    } else if (step.type === "candidate-speak") {
+      const seat = step.seat as CandidateSeat
+      const role = seat === "A" ? "candidateA" : "candidateB"
+      setActiveRole(role)
+      addMsg(role, step.text as string, step.text as string)
+      await speakText(step.text as string, partnerInfo?.voice)
+      stepIdxRef.current++
+      await runExamStep()
+    } else if (step.type === "partner-speak") {
+      addMsg("partner", step.text as string, step.text as string)
+      await speakText(step.text as string, partnerInfo?.voice)
+      stepIdxRef.current++
+      await runExamStep()
+    } else if (step.type === "partner-turn") {
       stepIdxRef.current++
       await runExamStep()
     } else if (step.type === "show-hint") {
@@ -176,19 +257,21 @@ export function ExamPage() {
       setInputText("")
       setAvatarState("listening")
       setAvatarLabel("轮到你回答了")
+      setActiveRole(isKet ? (userSeat === "A" ? "candidateA" : "candidateB") : null)
       setStatus("轮到你回答了", "success")
     } else if (step.type === "end") {
       const s = scoreRef.current
       addMsg("system", `考试结束 ✅ ${s.correct} 正确 | 🔄 ${s.retry} 重试 | 📖 ${s.showAnswer} 看答案`)
       setAvatarState("idle")
       setAvatarLabel("考试结束")
+      setActiveRole(null)
       setStatus("已完成", "success")
       stepIdxRef.current = stepsRef.current.length
       setStartDisabled(false)
       setSendDisabled(true)
       setRecordDisabled(true)
     }
-  }, [speakText])
+  }, [speakText, partnerInfo, isKet, userSeat])
 
   const submitAnswer = useCallback(async (text: string) => {
     if (!waitingRef.current) return
@@ -197,7 +280,7 @@ export function ExamPage() {
     setRecordDisabled(true)
     setAvatarState("idle")
     setAvatarLabel("判分中…")
-    addMsg("student", text)
+    addMsg(isKet ? (userSeat === "A" ? "candidateA" : "candidateB") : "student", text)
 
     try {
       if (requireRepeatRef.current) {
@@ -242,7 +325,13 @@ export function ExamPage() {
       const expected = isQ ? (step.expected_question as string) : ((step.expected as string) || "")
       const sample = (step.sample as string) || ""
       const judgeExpected = expected || (sample ? `(open-ended, sample: ${sample})` : "")
-      const result = await callJudge(question, judgeExpected, text, config.currentLlm, config.llmProxy)
+      const format = (currentTest?.format as string | undefined) || "flyers"
+      const kind = (step.kind as string | undefined) || undefined
+      const result = await callJudge(question, judgeExpected, text, config.currentLlm, config.llmProxy, {
+        format,
+        kind,
+        sample,
+      })
 
       if (result.ok) {
         addMsg("judge-ok", "✅ Correct!")
@@ -269,20 +358,26 @@ export function ExamPage() {
       addMsg("judge-fail", `❌ ${fbText}`, fbText)
       await safeTtsSpeak("Not quite.")
       if (result.cn) addMsg("hint", `🇨🇳 ${result.cn}`)
-      const correctText = result.ans || expected || sample || ""
-      if (correctText) await safeTtsSpeak(correctText)
+
+      const aiAns = result.ans || ""
+      if (aiAns) addMsg("hint", `🗣️ AI 示范: ${aiAns}`, aiAns)
+      const refText = sample || expected || ""
+      if (refText && refText !== aiAns) {
+        const label = sample ? "💡 Sample" : "📖 Answer"
+        addMsg("hint", `${label}: ${refText}`, refText)
+      }
+      const toSpeak = aiAns || refText
+      if (toSpeak) await safeTtsSpeak(toSpeak)
 
       const openEnded = !!(step.open_ended)
       if (openEnded) {
         if (retriesRef.current >= 3) {
-          if (sample) addMsg("hint", `💡 Sample: ${sample}`, sample)
           addMsg("system", "Let's move on.")
           scoreRef.current.showAnswer++
           retriesRef.current = 0
           stepIdxRef.current++
           setTimeout(() => runExamStep(), 1000)
         } else {
-          if (sample) addMsg("hint", `💡 Sample: ${sample}`, sample)
           addMsg("hint", "Try again.")
           scoreRef.current.retry++
           waitingRef.current = true
@@ -294,7 +389,6 @@ export function ExamPage() {
         const ans = expected || ""
         if (retriesRef.current >= 3) {
           if (ans) {
-            addMsg("hint", `📖 Answer: ${ans}`, ans)
             addMsg("hint", "👉 Please type the correct answer to continue.")
             scoreRef.current.showAnswer++
             requireRepeatRef.current = ans
@@ -307,7 +401,6 @@ export function ExamPage() {
             return
           }
         } else {
-          if (ans) addMsg("hint", `💡 Hint: ${ans}`, ans)
           addMsg("hint", "Try again.")
           scoreRef.current.retry++
           setStatus("请再试一次", "error")
@@ -323,16 +416,28 @@ export function ExamPage() {
       setRecordDisabled(false)
       setStatus("出错了，请重试", "error")
     }
-  }, [config.currentLlm, config.llmProxy, runExamStep, safeTtsSpeak, testMode])
+  }, [config.currentLlm, config.llmProxy, runExamStep, safeTtsSpeak, testMode, currentTest, isKet, userSeat])
 
   function startExam() {
     if (!selectedTest || !config.questionBank) return
     setMessages([])
     setCurrentImages([])
+    setCurrentOptions([])
     const rand = () => Math.random().toString(36).slice(2, 8)
-    setAvatarSeeds({ examiner: `ex-${rand()}`, student: `st-${rand()}` })
-    const steps = buildSteps(config.questionBank, selectedTest, selectedPart)
-    if (!steps.length) return
+    const studentSeed = `st-${rand()}`
+    const partnerSeed = partnerInfo?.avatarSeed || `pt-${rand()}`
+    setAvatarSeeds({
+      examiner: `ex-${rand()}`,
+      student: studentSeed,
+      partner: partnerSeed,
+      candidateA: userSeat === "A" ? studentSeed : partnerSeed,
+      candidateB: userSeat === "B" ? studentSeed : partnerSeed,
+    })
+    const steps = buildSteps(config.questionBank, selectedTest, selectedPart, { userSeat })
+    if (!steps.length) {
+      setStatus(isKet ? "KET 题库必须使用 schemaVersion 2" : "试卷没有可用题目", "error")
+      return
+    }
     stepsRef.current = steps
     stepIdxRef.current = 0
     retriesRef.current = 0
@@ -343,6 +448,7 @@ export function ExamPage() {
     setSendDisabled(true)
     setRecordDisabled(true)
     setSettingsOpen(false)
+    setActiveRole(null)
     setStatus("考试中", "success")
     runExamStep()
   }
@@ -393,23 +499,82 @@ export function ExamPage() {
     : examStatusType === "error" ? "text-red-600 bg-red-50 border-red-200"
     : "text-blue-600 bg-blue-50 border-blue-200"
 
-  const [currentImages, setCurrentImages] = useState<string[]>([])
-  const [avatarSeeds, setAvatarSeeds] = useState({ examiner: "ex-0", student: "st-0" })
-
   const [replayBusyId, setReplayBusyId] = useState<number | null>(null)
-  async function replayMessage(msg: ExamMessage) {
+  async function replayMessage(msg: ExamMessage, voiceOverride?: string) {
     const target = msg.replay || msg.text
     if (!target || replayBusyId !== null) return
     setReplayBusyId(msg.id)
-    try { await speakText(target) } catch {}
+    try { await speakText(target, voiceOverride) } catch {}
     setReplayBusyId(null)
   }
+
+  function renderKetRolePanel(role: "examiner" | "candidateA" | "candidateB") {
+    const seat = role === "candidateA" ? "A" : role === "candidateB" ? "B" : null
+    const isUser = seat === userSeat
+    const name = role === "examiner"
+      ? "Examiner"
+      : `Candidate ${seat} · ${isUser ? "你" : (partnerInfo?.name || "虚拟搭档")}`
+    const seed = role === "examiner"
+      ? avatarSeeds.examiner
+      : role === "candidateA" ? avatarSeeds.candidateA : avatarSeeds.candidateB
+    const roleMessages = messages.filter((msg) => msg.role === role).slice(-4)
+    const isActive = activeRole === role
+    const status = isActive
+      ? role === "examiner" ? "正在提问" : isUser ? "轮到你回答" : "正在发言"
+      : "等待"
+    const replayVoice = seat && !isUser ? partnerInfo?.voice : undefined
+
+    return (
+      <section className={`exam-ket-role exam-ket-role-${role} ${isActive ? "exam-ket-role-active" : ""}`}>
+        <div className="exam-ket-role-header">
+          <img
+            src={`https://api.dicebear.com/9.x/fun-emoji/svg?seed=${seed}`}
+            alt=""
+            className="exam-ket-role-avatar"
+          />
+          <div className="exam-ket-role-title">
+            <strong>{name}</strong>
+            <span>{status}</span>
+          </div>
+          {isActive && <span className="exam-ket-speaking-dot" aria-label={status} />}
+        </div>
+        <div className="exam-ket-role-history">
+          {roleMessages.length === 0 ? (
+            <p className="exam-ket-role-empty">等待考试开始</p>
+          ) : roleMessages.map((msg, index) => (
+            <div key={msg.id} className={`exam-ket-line ${index === roleMessages.length - 1 ? "exam-ket-line-latest" : ""}`}>
+              <span>{msg.text}</span>
+              {msg.replay && (
+                <button
+                  type="button"
+                  className="exam-replay-btn"
+                  disabled={replayBusyId !== null && replayBusyId !== msg.id}
+                  onClick={() => replayMessage(msg, replayVoice)}
+                  title="重播"
+                >
+                  {replayBusyId === msg.id ? <Loader2 className="size-3 animate-spin" /> : <Volume2 className="size-3" />}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  const ketFeedback = messages
+    .filter((msg) => msg.role === "judge-ok" || msg.role === "judge-fail" || msg.role === "hint" || msg.role === "system")
+    .slice(-2)
 
   return (
     <div className="exam-shell">
       {/* Header */}
       <header className="exam-header">
-        <button type="button" className="yle-back" onClick={() => router.push("/speech/yle")}>
+        <button
+          type="button"
+          className="yle-back"
+          onClick={() => router.push(levelCode === "ket" ? "/speech/ket" : "/speech/yle")}
+        >
           <ArrowLeft className="size-[18px]" />
           <span>返回</span>
         </button>
@@ -437,16 +602,46 @@ export function ExamPage() {
               {/* Test & Part */}
               <div className="exam-setting-group">
                 <label className="exam-setting-label">试卷</label>
-                <select className="exam-select" value={selectedTest} onChange={(e) => setSelectedTest(e.target.value)}>
+                <select
+                  className="exam-select"
+                  value={selectedTest}
+                  onChange={(e) => {
+                    const testId = e.target.value
+                    setSelectedTest(testId)
+                    const test = config.questionBank?.tests[testId]
+                    if (test?.format === "ket") {
+                      setUserSeat(test.defaultUserSeat === "B" ? "B" : "A")
+                    }
+                  }}
+                >
                   {testOptions.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
               <div className="exam-setting-group">
                 <label className="exam-setting-label">起始部分</label>
                 <select className="exam-select" value={selectedPart} onChange={(e) => setSelectedPart(e.target.value)}>
-                  {PART_OPTIONS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+                  {partOptions.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
                 </select>
               </div>
+              {isKet && (
+                <div className="exam-setting-group">
+                  <label className="exam-setting-label">你的考生位置</label>
+                  <div className="exam-seat-control" role="group" aria-label="选择考生位置">
+                    {(["A", "B"] as CandidateSeat[]).map((seat) => (
+                      <button
+                        key={seat}
+                        type="button"
+                        className={`exam-seat-option ${userSeat === seat ? "exam-seat-option-active" : ""}`}
+                        disabled={startDisabled}
+                        onClick={() => setUserSeat(seat)}
+                      >
+                        Candidate {seat}
+                        <span>{userSeat === seat ? "你" : partnerInfo?.name || "搭档"}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Toggles */}
               <div className="exam-setting-row">
@@ -534,15 +729,62 @@ export function ExamPage() {
 
         {/* Right Panel - Chat / Avatar */}
         <main className="exam-right">
-          {currentImages.length > 0 && (
+          {!isKet && currentImages.length > 0 && (
             <div className={`exam-images ${currentImages.length === 1 ? "exam-images-single" : "exam-images-pair"}`}>
               {currentImages.map((src, i) => (
-                <img key={`${src}-${i}`} src={src} alt={`Exam image ${i + 1}`} className="exam-image" />
+                <img
+                  key={`${src}-${i}`}
+                  src={src}
+                  alt={`Exam image ${i + 1}`}
+                  className="exam-image exam-image-clickable"
+                  onClick={() => setZoomedImage(src)}
+                />
               ))}
             </div>
           )}
 
-          {config.hideChat ? (
+          {isKet && !config.hideChat ? (
+            <div className="exam-ket-room" ref={chatRef}>
+              {renderKetRolePanel("examiner")}
+
+              {(currentImages.length > 0 || currentOptions.length > 0) && (
+                <section className="exam-ket-material" aria-label="Part 2 讨论材料">
+                  {currentImages[0] && (
+                    <img
+                      src={currentImages[0]}
+                      alt="Part 2 discussion material"
+                      className="exam-ket-material-image"
+                      onClick={() => setZoomedImage(currentImages[0])}
+                    />
+                  )}
+                  {currentOptions.length > 0 && (
+                    <div className="exam-ket-options">
+                      {currentOptions.map((option, index) => (
+                        <div key={option.id} className="exam-ket-option">
+                          <span>{index + 1}</span>
+                          {option.image && <img src={option.image} alt="" />}
+                          <strong>{option.label}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              )}
+
+              <div className="exam-ket-candidates">
+                {renderKetRolePanel("candidateA")}
+                {renderKetRolePanel("candidateB")}
+              </div>
+
+              {ketFeedback.length > 0 && (
+                <div className="exam-ket-feedback" aria-live="polite">
+                  {ketFeedback.map((msg) => (
+                    <span key={msg.id} className={`exam-ket-feedback-${msg.role}`}>{msg.text}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : config.hideChat ? (
             /* Avatar mode — animated character instead of chat */
             <div className="exam-avatar-container">
               <ExamAvatar state={avatarState} label={avatarLabel} />
@@ -559,8 +801,13 @@ export function ExamPage() {
                 </div>
               ) : (
                 messages.map((msg) => {
-                  const hasAvatar = msg.role === "examiner" || msg.role === "student"
-                  const avatarSeed = msg.role === "examiner" ? avatarSeeds.examiner : avatarSeeds.student
+                  const hasAvatar = msg.role === "examiner" || msg.role === "student" || msg.role === "partner"
+                  const avatarSeed =
+                    msg.role === "examiner" ? avatarSeeds.examiner
+                    : msg.role === "partner" ? avatarSeeds.partner
+                    : avatarSeeds.student
+                  const partnerName = msg.role === "partner" ? partnerInfo?.name : null
+                  const replayVoice = msg.role === "partner" ? partnerInfo?.voice : undefined
                   return (
                     <div key={msg.id} className={`exam-msg exam-msg-${msg.role}`}>
                       {hasAvatar && (
@@ -571,13 +818,14 @@ export function ExamPage() {
                         />
                       )}
                       <div className="exam-msg-body">
+                        {partnerName && <span className="exam-msg-sender">{partnerName}</span>}
                         <span className="exam-msg-text">{msg.text}</span>
                         {msg.replay && (
                           <button
                             type="button"
                             className="exam-replay-btn"
                             disabled={replayBusyId !== null && replayBusyId !== msg.id}
-                            onClick={() => replayMessage(msg)}
+                            onClick={() => replayMessage(msg, replayVoice)}
                           >
                             {replayBusyId === msg.id ? <Loader2 className="size-3 animate-spin" /> : <Volume2 className="size-3" />}
                           </button>
@@ -621,6 +869,15 @@ export function ExamPage() {
           )}
         </main>
       </div>
+
+      {zoomedImage && (
+        <div className="exam-image-zoom" onClick={() => setZoomedImage(null)}>
+          <img src={zoomedImage} alt="Zoomed" className="exam-image-zoom-img" />
+          <button type="button" className="exam-image-zoom-close" onClick={() => setZoomedImage(null)}>
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   )
 }

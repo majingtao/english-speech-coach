@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 2,
+  "format": "ket",
+  "label": "KET Practice - Different Holidays",
+  "candidateCount": 2,
+  "defaultUserSeat": "A",
+  "examiner": {
+    "primary": {
+      "name": "Cynthia Thomas",
+      "role": "interlocutor",
+      "voice": "en-GB-SoniaNeural"
+    },
+    "assessor": {
+      "name": "Sherry Wimmer",
+      "role": "assessor",
+      "speaks": false
+    }
+  },
+  "candidateProfiles": {
+    "A": {
+      "name": "Janson",
+      "avatarSeed": "ket-janson-a",
+      "voice": "en-GB-RyanNeural"
+    },
+    "B": {
+      "name": "Wensley",
+      "avatarSeed": "ket-wensley-b",
+      "voice": "en-GB-ThomasNeural"
+    }
+  },
+  "virtualCandidate": {
+    "name": "Wensley",
+    "avatarSeed": "ket-wensley-b",
+    "voice": "en-GB-ThomasNeural",
+    "level": "a2",
+    "personality": "thoughtful"
+  },
+  "part1": {
+    "title": "Personal Information and Topic-based Interview",
+    "intro": "Good morning. Can I have your mark sheets, please? I'm Cynthia Thomas and this is Sherry Wimmer.",
+    "turns": [
+      {
+        "id": "p1-name-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "What's your name?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm Janson.",
+          "criteria": ["states a name clearly"]
+        },
+        "virtualAnswer": "I'm Janson."
+      },
+      {
+        "id": "p1-name-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And what's your name?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm Wensley.",
+          "criteria": ["states a name clearly"]
+        },
+        "virtualAnswer": "I'm Wensley."
+      },
+      {
+        "id": "p1-age-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "Wensley, how old are you?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm 10, and I'm going to be 11 soon.",
+          "criteria": ["states an age"]
+        },
+        "virtualAnswer": "I'm 10, and I'm going to be 11 soon."
+      },
+      {
+        "id": "p1-live-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "Where do you live?",
+        "response": {
+          "kind": "basic",
+          "sample": "I live in USJ 23.",
+          "criteria": ["states where the candidate lives"]
+        },
+        "virtualAnswer": "I live in USJ 23."
+      },
+      {
+        "id": "p1-age-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Thank you. Janson, how old are you?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm 11 years old.",
+          "criteria": ["states an age"]
+        },
+        "virtualAnswer": "I'm 11 years old."
+      },
+      {
+        "id": "p1-live-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Where do you live?",
+        "response": {
+          "kind": "basic",
+          "sample": "I live in USJ 6.",
+          "criteria": ["states where the candidate lives"]
+        },
+        "virtualAnswer": "I live in USJ 6."
+      }
+    ],
+    "topics": [
+      {
+        "id": "music",
+        "title": "Music",
+        "intro": "Thank you. Now, let's talk about music.",
+        "turns": [
+          {
+            "id": "p1-music-a1",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "Janson, how often do you listen to music?",
+            "response": {
+              "kind": "extended",
+              "sample": "I listen to music once a week.",
+              "criteria": ["states how often"]
+            },
+            "virtualAnswer": "I listen to music once a week."
+          },
+          {
+            "id": "p1-music-a2",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "What music do you like best?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like pop music best.",
+              "criteria": ["names a type of music"]
+            },
+            "virtualAnswer": "I like pop music best."
+          },
+          {
+            "id": "p1-music-b1",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Wensley, what is your favourite instrument?",
+            "response": {
+              "kind": "extended",
+              "sample": "My favourite instrument is the piano.",
+              "criteria": ["names a musical instrument"]
+            },
+            "virtualAnswer": "My favourite instrument is the piano."
+          },
+          {
+            "id": "p1-music-b2",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Where do you like listening to music?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like listening to music at home.",
+              "criteria": ["states a place"]
+            },
+            "virtualAnswer": "I like listening to music at home."
+          },
+          {
+            "id": "p1-music-a3",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "Now, Janson, please tell me something about your favourite singer or group.",
+            "response": {
+              "kind": "tell_me_about",
+              "sample": "My favourite singer is Justin Bieber. I like his pop songs and his voice.",
+              "criteria": ["names a singer or group", "adds a relevant detail"]
+            },
+            "virtualAnswer": "My favourite singer is Justin Bieber. I like his pop songs and his voice."
+          }
+        ]
+      },
+      {
+        "id": "shopping",
+        "title": "Shopping",
+        "intro": "Thank you. Now, let's talk about shopping.",
+        "turns": [
+          {
+            "id": "p1-shopping-b1",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Wensley, where do you like to go shopping?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like going shopping at Main Place.",
+              "criteria": ["states a place to shop"]
+            },
+            "virtualAnswer": "I like going shopping at Main Place."
+          },
+          {
+            "id": "p1-shopping-b2",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "What do you like to buy with your money?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like buying electronic goods and gadgets.",
+              "criteria": ["mentions one or more things to buy"]
+            },
+            "virtualAnswer": "I like buying electronic goods and gadgets."
+          },
+          {
+            "id": "p1-shopping-a1",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "Janson, who do you like to go shopping with?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like going shopping with my friends.",
+              "criteria": ["states who the candidate shops with"]
+            },
+            "virtualAnswer": "I like going shopping with my friends."
+          },
+          {
+            "id": "p1-shopping-a2",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "What can you buy near your house?",
+            "response": {
+              "kind": "extended",
+              "sample": "I can buy video games near my house.",
+              "criteria": ["mentions something available near home"]
+            },
+            "virtualAnswer": "I can buy video games near my house."
+          },
+          {
+            "id": "p1-shopping-b3",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Now, Wensley, please tell me something about presents you buy for your friends.",
+            "response": {
+              "kind": "tell_me_about",
+              "sample": "I like buying mechanical toys and electronic items for my friends because they are interesting.",
+              "criteria": ["mentions presents for friends", "adds a relevant detail or reason"]
+            },
+            "virtualAnswer": "I like buying mechanical toys and electronic items for my friends because they are interesting."
+          }
+        ]
+      }
+    ]
+  },
+  "part2": {
+    "title": "Collaborative Task - Different Holidays",
+    "examinerSetup": "Now, in this part of the test, you are going to talk together. Here are some pictures that show different holidays. Do you like these different holidays? Say why or why not. I'll say that again. Do you like these different holidays? Say why or why not. Alright, now talk together.",
+    "material": {
+      "image": "",
+      "options": [
+        {"id": "camping", "label": "a camping holiday"},
+        {"id": "beach", "label": "a beach holiday"},
+        {"id": "hiking", "label": "a hiking holiday"},
+        {"id": "mountains", "label": "a mountain or skiing holiday"},
+        {"id": "city", "label": "a city holiday"}
+      ]
+    },
+    "conversation": {
+      "starter": "A",
+      "turns": [
+        {
+          "speaker": "A",
+          "goal": "ask the other candidate whether they like camping",
+          "virtualFallback": "Do you like camping?",
+          "responseKind": "partner_opening",
+          "criteria": ["asks about camping", "invites a response"]
+        },
+        {
+          "speaker": "B",
+          "goal": "answer the camping question and give a reason",
+          "virtualFallback": "No, I don't, because I might get bitten by mosquitoes.",
+          "responseKind": "discussion",
+          "criteria": ["answers the question", "gives a reason"]
+        },
+        {
+          "speaker": "A",
+          "goal": "respond about camping and ask about beach holidays",
+          "virtualFallback": "I agree because useful things are not always easy to find when camping. Do you like beach holidays?",
+          "responseKind": "discussion",
+          "criteria": ["responds about camping", "gives a reason", "asks about beach holidays"]
+        },
+        {
+          "speaker": "B",
+          "goal": "answer about beach holidays and invite a response",
+          "virtualFallback": "Yes, I like beach holidays unless the beach is crowded. What about you?",
+          "responseKind": "discussion",
+          "criteria": ["answers about the beach", "invites a response"]
+        },
+        {
+          "speaker": "A",
+          "goal": "give an opinion about hiking holidays",
+          "virtualFallback": "I like hiking best because I get to spend time with my family.",
+          "responseKind": "discussion",
+          "criteria": ["mentions hiking", "gives a reason"]
+        },
+        {
+          "speaker": "B",
+          "goal": "ask whether beach holidays are fun",
+          "virtualFallback": "Do you think beach holidays are fun?",
+          "responseKind": "discussion",
+          "criteria": ["asks for an opinion about beach holidays"]
+        },
+        {
+          "speaker": "A",
+          "goal": "answer about beach holidays and ask for the partner's opinion",
+          "virtualFallback": "I only like beach holidays when the beach is not crowded. What do you think?",
+          "responseKind": "discussion",
+          "criteria": ["answers the partner", "gives a condition or reason", "invites a response"]
+        },
+        {
+          "speaker": "B",
+          "goal": "respond about beach holidays and ask about mountain holidays",
+          "virtualFallback": "Yes, because I get to go swimming. Do you think holidays in the mountains are boring?",
+          "responseKind": "discussion",
+          "criteria": ["responds about the beach", "asks about mountain holidays"]
+        },
+        {
+          "speaker": "A",
+          "goal": "give a short initial answer about mountain holidays",
+          "virtualFallback": "Yes, they can be boring sometimes.",
+          "responseKind": "discussion",
+          "criteria": ["answers the question about mountain holidays"]
+        },
+        {
+          "speaker": "B",
+          "goal": "explain a disadvantage of mountain holidays and ask for an opinion",
+          "virtualFallback": "You need to climb and find your own supplies, even though the air is fresh. What do you think?",
+          "responseKind": "discussion",
+          "criteria": ["explains an opinion", "invites a response"]
+        },
+        {
+          "speaker": "A",
+          "goal": "respond with a positive reason for mountain holidays",
+          "virtualFallback": "I don't think they are boring because you can play in the snow with your friends.",
+          "responseKind": "discussion",
+          "criteria": ["responds directly", "gives a positive reason"]
+        }
+      ]
+    },
+    "followups": [
+      {
+        "id": "p2-best-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "So, Janson, which of these holidays do you like best?",
+        "response": {
+          "kind": "followup",
+          "sample": "I like mountain and skiing holidays best because I can play in the snow and ski.",
+          "criteria": ["chooses one holiday", "gives a reason"]
+        },
+        "virtualAnswer": "I like mountain and skiing holidays best because I can play in the snow and ski."
+      },
+      {
+        "id": "p2-best-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "Thank you. And you, Wensley, which of these holidays do you like best?",
+        "response": {
+          "kind": "followup",
+          "sample": "I like city holidays best because everything is convenient.",
+          "criteria": ["chooses one holiday", "gives a reason"]
+        },
+        "virtualAnswer": "I like city holidays best because everything is convenient."
+      },
+      {
+        "id": "p2-company-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "Do you prefer to go on holidays with your friends or with your family, Wensley?",
+        "response": {
+          "kind": "followup",
+          "sample": "I would like to go with both my friends and my family.",
+          "criteria": ["chooses friends, family or both"]
+        },
+        "virtualAnswer": "I would like to go with both my friends and my family."
+      },
+      {
+        "id": "p2-company-why-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "Why?",
+        "response": {
+          "kind": "followup",
+          "sample": "Because we could get to know one another and our families better.",
+          "criteria": ["gives a relevant reason for the previous choice"]
+        },
+        "virtualAnswer": "Because we could get to know one another and our families better."
+      },
+      {
+        "id": "p2-company-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "And what about you, Janson?",
+        "response": {
+          "kind": "followup",
+          "sample": "I would like to go on holiday with my friends because I can play with them.",
+          "criteria": ["answers the same preference question", "gives a reason"]
+        },
+        "virtualAnswer": "I would like to go on holiday with my friends because I can play with them."
+      },
+      {
+        "id": "p2-country-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Which country would you like to visit in the future, Janson?",
+        "response": {
+          "kind": "followup",
+          "sample": "I would like to visit Japan because I want to try the food there.",
+          "criteria": ["names a country", "gives a reason"]
+        },
+        "virtualAnswer": "I would like to visit Japan because I want to try the food there."
+      },
+      {
+        "id": "p2-country-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And you, Wensley?",
+        "response": {
+          "kind": "followup",
+          "sample": "I would also like to visit Japan because it is famous for many interesting things.",
+          "criteria": ["names a country", "gives a reason"]
+        },
+        "virtualAnswer": "I would also like to visit Japan because it is famous for many interesting things."
+      }
+    ]
+  },
+  "closing": "Thank you. That is the end of the test."
+}

@@ -91,3 +91,4 @@ realtime/admin/service/sql/
 *.bak
 *.old
 *~
+realtime/admin-new

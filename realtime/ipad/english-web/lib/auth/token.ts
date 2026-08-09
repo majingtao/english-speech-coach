@@ -15,6 +15,8 @@ export function getTokenFromStorage() {
   }
 }
 
+const TOKEN_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30
+
 export function setTokenToStorage(token: string) {
   if (!canUseStorage()) {
     return
@@ -22,7 +24,7 @@ export function setTokenToStorage(token: string) {
   try {
     window.localStorage.setItem(TOKEN_STORAGE_KEY, token)
     const encoded = encodeURIComponent(token)
-    document.cookie = `${TOKEN_COOKIE_KEY}=${encoded}; Path=/; SameSite=Lax`
+    document.cookie = `${TOKEN_COOKIE_KEY}=${encoded}; Path=/; Max-Age=${TOKEN_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`
   } catch {
     // Ignore storage failure in strict/private browser modes.
   }

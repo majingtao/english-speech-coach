@@ -20,6 +20,7 @@ Usage:
 import asyncio
 import base64
 import copy
+import datetime
 import io
 import json
 import logging
@@ -107,7 +108,10 @@ try:
     from vibevoice.processor.vibevoice_streaming_processor import (
         VibeVoiceStreamingProcessor,
     )
-except ImportError:
+except Exception as _vv_err:
+    # Catch broad Exception (not just ImportError) because transformers / numpy
+    # version mismatches surface as RuntimeError during module load.
+    print(f"[vibevoice] disabled: {_vv_err.__class__.__name__}: {_vv_err}")
     VibeVoiceStreamingForConditionalGenerationInference = None
     VibeVoiceStreamingProcessor = None
 
@@ -168,11 +172,13 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 MOONSHOT_API_KEY = os.environ.get("MOONSHOT_API_KEY", "")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 #OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
 OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "https://api.gptsapi.net/v1") #openai 中转
 ANTHROPIC_BASE_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
 MOONSHOT_BASE_URL = os.environ.get("MOONSHOT_BASE_URL", "https://api.moonshot.cn/v1")
 OPENROUTER_BASE_URL = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+DEEPSEEK_BASE_URL = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 HTTP_PROXY = _saved_http_proxy or ""
 
 # 火山引擎 ASR V2（一句话识别 / 流式识别）
@@ -231,6 +237,12 @@ if MOONSHOT_API_KEY:
     LLM_MODELS.extend([
         {"provider": "moonshot", "model": "kimi-k2.5", "label": "Kimi K2.5", "use_proxy": False},
         {"provider": "moonshot", "model": "kimi-k2-thinking", "label": "Kimi K2 Thinking", "use_proxy": False},
+    ])
+
+if DEEPSEEK_API_KEY:
+    LLM_MODELS.extend([
+        {"provider": "deepseek", "model": "deepseek-v4-flash", "label": "DeepSeek V4 Flash (Official)", "use_proxy": False},
+        {"provider": "deepseek", "model": "deepseek-v4-pro", "label": "DeepSeek V4 Pro (Official)", "use_proxy": False},
     ])
 
 if OPENROUTER_API_KEY:
@@ -933,7 +945,7 @@ async def llm_models_handler(request):
     return web.json_response(LLM_MODELS)
 
 
-JUDGE_SYSTEM_PROMPT = """You are a strict English exam judge for children (A2 level, age 7-12).
+_JUDGE_PROMPT_FALLBACK = """You are a strict English exam judge for children (A2 level, age 7-12).
 Reply ONLY with this JSON, nothing else:
 {"ok":true} or {"ok":false,"fb":"brief feedback in English","cn":"简短中文提示","ans":"correct answer"}
 
@@ -946,6 +958,26 @@ Rules:
 - If the expected answer starts with "(open-ended", only judge grammar and relevance to the question. Accept any grammatically correct answer that addresses the question. Do NOT require specific content or length. The "sample" is just a reference, not the required answer.
 - The "ans" field in your response must be a SHORT corrected version of the student's answer, never include the question text
 - Do NOT explain, do NOT teach, do NOT add any text outside the JSON"""
+
+
+def _load_judge_prompt(filename: str) -> str:
+    path = os.path.join(STATIC_DIR, "prompts", filename)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            text = f.read().strip()
+            if text:
+                return text
+    except FileNotFoundError:
+        log.warning("[judge] prompt file not found: %s — using fallback", path)
+    except Exception as e:
+        log.warning("[judge] failed to read %s: %s — using fallback", path, e)
+    return _JUDGE_PROMPT_FALLBACK
+
+
+JUDGE_PROMPTS = {
+    "flyers": _load_judge_prompt("judge_flyers.md"),
+    "ket": _load_judge_prompt("judge_ket.md"),
+}
 
 
 async def llm_judge(request):
@@ -962,6 +994,9 @@ async def llm_judge(request):
     question = body.get("question", "")
     expected = body.get("expected", "")
     student = body.get("student", "")
+    fmt = (body.get("format") or "flyers").lower()
+    kind = body.get("kind") or ""
+    sample = body.get("sample") or ""
     # "local" is an alias for ollama (local inference)
     if provider == "local":
         provider = "ollama"
@@ -975,22 +1010,28 @@ async def llm_judge(request):
     except QuotaError as qe:
         return _quota_rejected_response(qe)
 
+    system_prompt = JUDGE_PROMPTS.get(fmt) or JUDGE_PROMPTS.get("flyers") or _JUDGE_PROMPT_FALLBACK
+
     # Build the user message
     parts = []
     if question:
         parts.append(f'Examiner: "{question}"')
     if expected:
         parts.append(f'Expected answer: "{expected}"')
+    if sample:
+        parts.append(f'Sample answer (reference only): "{sample}"')
+    if kind:
+        parts.append(f'kind: {kind}')
     parts.append(f'Student said: "{student}"')
     parts.append("Judge:")
     user_msg = "\n".join(parts)
 
     messages = [
-        {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_msg},
     ]
 
-    log.info("[judge] provider=%s model=%s q=%s student=%s", provider, model, question[:50], student[:50])
+    log.info("[judge] fmt=%s kind=%s provider=%s model=%s q=%s student=%s", fmt, kind, provider, model, question[:50], student[:50])
 
     session = request.app["session"]
 
@@ -1005,6 +1046,11 @@ async def llm_judge(request):
             coro = _judge_openai_compat(session, model, messages, MOONSHOT_BASE_URL, MOONSHOT_API_KEY, proxy)
         elif provider == "openrouter":
             coro = _judge_openai_compat(session, model, messages, OPENROUTER_BASE_URL, OPENROUTER_API_KEY, proxy)
+        elif provider == "deepseek":
+            coro = _judge_openai_compat(
+                session, model, messages, DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, proxy,
+                extra_body={"thinking": {"type": "disabled"}},
+            )
         else:
             return web.json_response({"ok": False, "fb": "Unknown provider", "cn": "未知提供商", "ans": expected})
         timeout = 60 if provider == "ollama" else 25
@@ -1022,6 +1068,8 @@ async def llm_judge(request):
 
 def _parse_judge_json(text):
     """Try to parse JSON from LLM response, with fallback."""
+    if not isinstance(text, str):
+        text = json.dumps(text, ensure_ascii=False)
     text = text.strip()
     # Try direct parse
     try:
@@ -1039,6 +1087,70 @@ def _parse_judge_json(text):
     return None
 
 
+def _error_message(data):
+    """Extract an API error message from dict/list/string responses."""
+    if isinstance(data, str):
+        return data
+    if isinstance(data, dict):
+        err = data.get("error")
+        if isinstance(err, dict):
+            return str(err.get("message") or err.get("type") or err)
+        if isinstance(err, str):
+            return err
+        msg = data.get("message") or data.get("msg")
+        if isinstance(msg, str):
+            return msg
+        return json.dumps(data, ensure_ascii=False)
+    return str(data)
+
+
+async def _read_json_or_text(resp):
+    """Read an API response as JSON when possible, otherwise as plain text."""
+    try:
+        return await resp.json(content_type=None)
+    except Exception:
+        try:
+            return await resp.text()
+        except Exception as e:
+            return f"{e.__class__.__name__}: {e}"
+
+
+def _message_content_to_text(content):
+    """Normalize OpenAI-compatible/Anthropic content into plain text."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        text = ""
+        for item in content:
+            if isinstance(item, str):
+                text += item
+            elif isinstance(item, dict):
+                value = item.get("text")
+                if value is None:
+                    value = item.get("content")
+                if value is not None:
+                    text += str(value)
+        return text
+    if content is None:
+        return ""
+    return str(content)
+
+
+def _first_choice_content(data):
+    if not isinstance(data, dict):
+        return ""
+    choices = data.get("choices")
+    if not isinstance(choices, list) or not choices:
+        return ""
+    choice = choices[0]
+    if not isinstance(choice, dict):
+        return ""
+    msg = choice.get("message")
+    if isinstance(msg, dict):
+        return _message_content_to_text(msg.get("content"))
+    return _message_content_to_text(choice.get("text") or choice.get("content"))
+
+
 async def _judge_ollama(session, model, messages):
     """Non-streaming Ollama judge call."""
     payload = json.dumps({"model": model, "messages": messages, "stream": False, "format": "json"})
@@ -1047,8 +1159,11 @@ async def _judge_ollama(session, model, messages):
         data=payload,
         headers={"Content-Type": "application/json"},
     ) as resp:
-        data = await resp.json()
-        content = data.get("message", {}).get("content", "")
+        data = await _read_json_or_text(resp)
+        if not isinstance(data, dict):
+            return {"ok": False, "fb": f"Ollama error: {_error_message(data)[:100]}", "cn": "API错误", "ans": ""}
+        message = data.get("message")
+        content = _message_content_to_text(message.get("content") if isinstance(message, dict) else "")
         result = _parse_judge_json(content)
         if result and "ok" in result:
             return result
@@ -1072,11 +1187,11 @@ async def _judge_openai(session, model, messages, proxy=None):
     if proxy:
         kwargs["proxy"] = proxy
     async with session.post(url, **kwargs) as resp:
-        data = await resp.json()
+        data = await _read_json_or_text(resp)
         if resp.status != 200:
-            err = data.get("error", {}).get("message", str(data))
+            err = _error_message(data)
             return {"ok": False, "fb": f"OpenAI error: {err[:100]}", "cn": "API错误", "ans": ""}
-        content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        content = _first_choice_content(data)
         result = _parse_judge_json(content)
         if result and "ok" in result:
             return result
@@ -1109,26 +1224,32 @@ async def _judge_claude(session, model, messages, proxy=None):
     if proxy:
         kwargs["proxy"] = proxy
     async with session.post(url, **kwargs) as resp:
-        data = await resp.json()
+        data = await _read_json_or_text(resp)
         if resp.status != 200:
-            err = data.get("error", {}).get("message", str(data))
+            err = _error_message(data)
             return {"ok": False, "fb": f"Claude error: {err[:100]}", "cn": "API错误", "ans": ""}
         content = ""
-        for block in data.get("content", []):
-            if block.get("type") == "text":
-                content += block.get("text", "")
+        if isinstance(data, dict):
+            for block in data.get("content", []):
+                if isinstance(block, str):
+                    content += block
+                elif isinstance(block, dict) and block.get("type") == "text":
+                    content += str(block.get("text", ""))
         result = _parse_judge_json(content)
         if result and "ok" in result:
             return result
         return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
 
 
-async def _judge_openai_compat(session, model, messages, base_url, api_key, proxy=None):
+async def _judge_openai_compat(session, model, messages, base_url, api_key, proxy=None, extra_body=None):
     """Non-streaming OpenAI-compatible judge call (Moonshot etc.)."""
-    payload = json.dumps({
+    body = {
         "model": model, "messages": messages, "stream": False,
         "response_format": {"type": "json_object"},
-    })
+    }
+    if extra_body:
+        body.update(extra_body)
+    payload = json.dumps(body)
     url = base_url.rstrip("/") + "/chat/completions"
     kwargs = {
         "data": payload,
@@ -1140,11 +1261,11 @@ async def _judge_openai_compat(session, model, messages, base_url, api_key, prox
     if proxy:
         kwargs["proxy"] = proxy
     async with session.post(url, **kwargs) as resp:
-        data = await resp.json()
+        data = await _read_json_or_text(resp)
         if resp.status != 200:
-            err = data.get("error", {}).get("message", str(data))
+            err = _error_message(data)
             return {"ok": False, "fb": f"API error: {err[:100]}", "cn": "API错误", "ans": ""}
-        content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        content = _first_choice_content(data)
         result = _parse_judge_json(content)
         if result and "ok" in result:
             return result
@@ -1199,6 +1320,12 @@ async def llm_chat(request):
         elif provider == "openrouter":
             await _stream_openai_compat(session, response, model, messages,
                                         OPENROUTER_BASE_URL, OPENROUTER_API_KEY, "OpenRouter", proxy)
+        elif provider == "deepseek":
+            await _stream_openai_compat(
+                session, response, model, messages,
+                DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, "DeepSeek", proxy,
+                extra_body={"thinking": {"type": "disabled"}},
+            )
         else:
             await response.write(json.dumps({"content": "Unknown provider: " + provider, "done": True}).encode() + b"\n")
     except (ConnectionResetError, asyncio.CancelledError):
@@ -1277,9 +1404,14 @@ async def _stream_openai(session, response, model, messages, proxy=None):
     await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
 
 
-async def _stream_openai_compat(session, response, model, messages, base_url, api_key, name="API", proxy=None):
+async def _stream_openai_compat(
+    session, response, model, messages, base_url, api_key, name="API", proxy=None, extra_body=None,
+):
     """Call any OpenAI-compatible API (Moonshot, etc.) and convert to unified format."""
-    payload = json.dumps({"model": model, "messages": messages, "stream": True})
+    body = {"model": model, "messages": messages, "stream": True}
+    if extra_body:
+        body.update(extra_body)
+    payload = json.dumps(body)
     url = base_url.rstrip("/") + "/chat/completions"
     kwargs = {
         "data": payload,
@@ -1794,6 +1926,222 @@ async def init_piper_tts(app):
 MY_WORDS_FILE = os.path.join(STATIC_DIR, "my-words.json")
 
 
+# ---------- Vocabulary endpoints (for admin-side PyVocabClient) ----------
+
+VOCAB_GENERATE_PROMPT = _load_judge_prompt("vocab_generate.md")
+GRADE_SENTENCE_PROMPT = _load_judge_prompt("grade_sentence.md")
+
+
+def _pick_vocab_llm():
+    """Pick provider/model/base_url/api_key for vocab LLM calls.
+
+    Order: VOCAB_LLM_PROVIDER env override → moonshot (cheapest JSON) → openai → claude.
+    Returns (provider, model, base_url, api_key) or None if nothing configured.
+    """
+    override = os.environ.get("VOCAB_LLM_PROVIDER", "").strip().lower()
+    candidates = []
+    if override:
+        candidates.append(override)
+    candidates.extend(["moonshot", "openai", "claude"])
+    for p in candidates:
+        if p == "moonshot" and MOONSHOT_API_KEY:
+            return ("moonshot",
+                    os.environ.get("VOCAB_LLM_MODEL", "moonshot-v1-8k"),
+                    MOONSHOT_BASE_URL, MOONSHOT_API_KEY)
+        if p == "openai" and OPENAI_API_KEY:
+            return ("openai",
+                    os.environ.get("VOCAB_LLM_MODEL", "gpt-4o-mini"),
+                    OPENAI_BASE_URL, OPENAI_API_KEY)
+        if p == "claude" and ANTHROPIC_API_KEY:
+            return ("claude",
+                    os.environ.get("VOCAB_LLM_MODEL", "claude-3-5-haiku-latest"),
+                    ANTHROPIC_BASE_URL, ANTHROPIC_API_KEY)
+    return None
+
+
+async def _vocab_llm_json(session, system_prompt, user_msg, timeout=25):
+    """Call an LLM and return parsed JSON dict (or None on failure)."""
+    pick = _pick_vocab_llm()
+    if not pick:
+        log.error("[vocab] no LLM provider configured (set OPENAI/MOONSHOT/ANTHROPIC API KEY)")
+        return None
+    provider, model, base_url, api_key = pick
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_msg},
+    ]
+    try:
+        if provider == "claude":
+            coro = _judge_claude(session, model, messages)
+        else:
+            coro = _judge_openai_compat(session, model, messages, base_url, api_key)
+        return await asyncio.wait_for(coro, timeout=timeout)
+    except asyncio.TimeoutError:
+        log.error("[vocab] LLM timeout provider=%s model=%s", provider, model)
+        return None
+    except Exception as e:
+        log.error("[vocab] LLM error: %s", e)
+        return None
+
+
+# In-memory IPA cache (proc-local LRU-ish; DB content_json is authoritative).
+_IPA_CACHE: dict[str, str | None] = {}
+_IPA_CACHE_MAX = 10000
+
+
+async def vocab_generate_handler(request):
+    """POST /py/vocab/generate — generate vocab card JSON for one word."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+    word = (body.get("word") or "").strip()
+    if not word:
+        return web.json_response({"error": "word required"}, status=400)
+    level = body.get("level") or "ket"
+    pos_hint = body.get("pos_hint") or ""
+    theme_hints = body.get("theme_hints") or []
+
+    user_parts = [f"word: {word}", f"level: {level}"]
+    if pos_hint:
+        user_parts.append(f"pos_hint: {pos_hint}")
+    if theme_hints:
+        user_parts.append(f"theme_hints: {', '.join(theme_hints)}")
+    user_msg = "\n".join(user_parts)
+
+    session = request.app["session"]
+    data = await _vocab_llm_json(session, VOCAB_GENERATE_PROMPT, user_msg, timeout=30)
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM generation failed"}, status=502)
+
+    if not data.get("ipa"):
+        ipa = await _lookup_ipa(session, word)
+        if ipa:
+            data["ipa"] = ipa
+
+    data["gen_at"] = datetime.datetime.utcnow().isoformat() + "Z"
+    pick = _pick_vocab_llm()
+    if pick:
+        data["model_used"] = f"{pick[0]}:{pick[1]}"
+
+    log.info("[vocab] generated word=%s ipa=%s examples=%d", word, data.get("ipa", ""), len(data.get("examples", []) or []))
+    return web.json_response(data)
+
+
+async def _lookup_ipa(session, word: str) -> str | None:
+    """Proxy dictionaryapi.dev with LRU. Returns IPA string or None."""
+    key = word.lower().strip()
+    if not key:
+        return None
+    if key in _IPA_CACHE:
+        return _IPA_CACHE[key]
+    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{key}"
+    try:
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=8)) as resp:
+            if resp.status != 200:
+                _IPA_CACHE[key] = None
+                return None
+            entries = await resp.json()
+    except Exception as e:
+        log.warning("[vocab] IPA lookup failed for %s: %s", key, e)
+        return None
+    ipa = None
+    for entry in entries if isinstance(entries, list) else []:
+        for p in entry.get("phonetics", []) or []:
+            text = p.get("text")
+            if text:
+                ipa = text
+                break
+        if ipa:
+            break
+    if len(_IPA_CACHE) > _IPA_CACHE_MAX:
+        _IPA_CACHE.clear()
+    _IPA_CACHE[key] = ipa
+    return ipa
+
+
+async def vocab_ipa_handler(request):
+    """GET /py/vocab/ipa?word=xxx"""
+    word = (request.query.get("word") or "").strip()
+    if not word:
+        return web.json_response({"ipa": None})
+    ipa = await _lookup_ipa(request.app["session"], word)
+    return web.json_response({"ipa": ipa})
+
+
+# Edge-TTS voices for word-level vocab pronunciation. Service-internal — no quota_consume.
+_VOCAB_TTS_VOICES = {
+    "uk": "en-GB-LibbyNeural",
+    "us": "en-US-AnaNeural",
+}
+
+
+async def vocab_tts_handler(request):
+    """POST /py/vocab/tts — return single-word MP3 bytes for vocab audio caching.
+
+    Body: {"word": "...", "accent": "uk"|"us", "rate"?: "-10%"}.
+    Used by Java backend to generate-and-cache, not directly by the student app.
+    Returns the full MP3 in one Response (Java HttpClient.ofByteArray friendly).
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        return web.Response(text="invalid json", status=400)
+    word = (body.get("word") or "").strip()
+    accent = (body.get("accent") or "uk").lower()
+    if not word:
+        return web.Response(text="word required", status=400)
+    voice = _VOCAB_TTS_VOICES.get(accent, _VOCAB_TTS_VOICES["uk"])
+    rate = body.get("rate", "-10%")
+
+    try:
+        communicate = edge_tts.Communicate(word, voice, rate=rate)
+        chunks: list[bytes] = []
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                chunks.append(chunk["data"])
+        if not chunks:
+            return web.Response(text="empty audio", status=502)
+        audio = b"".join(chunks)
+    except Exception as e:
+        log.error("[vocab/tts] error word=%s accent=%s err=%s", word, accent, e)
+        return web.Response(text=f"tts error: {e}", status=500)
+
+    log.info("[vocab/tts] word=%s accent=%s bytes=%d", word, accent, len(audio))
+    return web.Response(
+        body=audio,
+        content_type="audio/mpeg",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+async def grade_sentence_handler(request):
+    """POST /py/grade_sentence — AI grading for vocab sentence practice."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+    word = (body.get("word") or "").strip()
+    sentence = (body.get("sentence") or "").strip()
+    if not word or not sentence:
+        return web.json_response({"error": "word and sentence required"}, status=400)
+    level = body.get("level") or "ket"
+
+    auth = _client_authorization(request)
+    if auth:
+        try:
+            await quota_consume(request.app["session"], auth, "llm", 1)
+        except QuotaError as qe:
+            return _quota_rejected_response(qe)
+
+    user_msg = f"target word: {word}\nlevel: {level}\nstudent sentence: {sentence}"
+    data = await _vocab_llm_json(request.app["session"], GRADE_SENTENCE_PROMPT, user_msg, timeout=20)
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM grading failed"}, status=502)
+    log.info("[vocab] graded word=%s ok=%s", word, data.get("ok"))
+    return web.json_response(data)
+
+
 async def dictation_save_words(request):
     """Save word list back to my-words.json."""
     try:
@@ -1830,6 +2178,10 @@ def create_app():
     app.router.add_route("GET", "/tts/voices", tts_voices)
     app.router.add_route("POST", "/tts", tts_speak)
     app.router.add_route("POST", "/dictation/words", dictation_save_words)
+    app.router.add_route("POST", "/py/vocab/generate", vocab_generate_handler)
+    app.router.add_route("GET",  "/py/vocab/ipa", vocab_ipa_handler)
+    app.router.add_route("POST", "/py/vocab/tts", vocab_tts_handler)
+    app.router.add_route("POST", "/py/grade_sentence", grade_sentence_handler)
     app.router.add_static("/", STATIC_DIR, show_index=True)
     return app
 
@@ -1872,6 +2224,8 @@ def main():
         print(f"    [moonshot] Not configured (set MOONSHOT_API_KEY in .env)")
     if not OPENROUTER_API_KEY:
         print(f"    [openrouter] Not configured (set OPENROUTER_API_KEY in .env)")
+    if not DEEPSEEK_API_KEY:
+        print(f"    [deepseek] Not configured (set DEEPSEEK_API_KEY in .env)")
     if not VOLC_ASR_APPID or not VOLC_ASR_TOKEN:
         print(f"    [volcano-asr] Not configured (set VOLC_ASR_APPID + VOLC_ASR_TOKEN + VOLC_ASR_CLUSTER in .env)")
     if not DASHSCOPE_API_KEY:

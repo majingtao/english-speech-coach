@@ -12,12 +12,19 @@ export interface JudgeResult {
   quotaRejected?: boolean
 }
 
+export interface JudgeContext {
+  format?: string
+  kind?: string
+  sample?: string
+}
+
 export async function callJudge(
   question: string,
   expected: string,
   student: string,
   llm: LlmModel | null,
   useProxy: boolean,
+  context: JudgeContext = {},
 ): Promise<JudgeResult> {
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), 45000)
@@ -32,6 +39,9 @@ export async function callJudge(
         question,
         expected,
         student,
+        format: context.format,
+        kind: context.kind,
+        sample: context.sample,
       }),
       signal: ctrl.signal,
     })

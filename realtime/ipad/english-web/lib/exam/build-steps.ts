@@ -1,13 +1,26 @@
-import type { ExamStep, QuestionBank } from "@/lib/types/speech"
+import type {
+  CandidateSeat,
+  ExamStep,
+  KetExaminerTurn,
+  KetPart1V2,
+  KetPart2V2,
+  QuestionBank,
+} from "@/lib/types/speech"
 
 export function buildSteps(
   bank: QuestionBank,
   testId: string,
   startPart: string,
+  options: { userSeat?: CandidateSeat } = {},
 ): ExamStep[] {
-  const steps: ExamStep[] = []
   const test = bank.tests[testId] as Record<string, unknown> | undefined
-  if (!test) return steps
+  if (!test) return []
+
+  if (test.format === "ket") {
+    return buildKetSteps(test, startPart, options.userSeat || "A")
+  }
+
+  const steps: ExamStep[] = []
 
   const doWarmup = startPart === "all"
   const parts = startPart === "all" ? ["1", "2", "3", "4"] : [startPart]
@@ -108,6 +121,103 @@ export function buildSteps(
         const label = `Part 4+: ${i + 1}/${fups.length}`
         steps.push({ type: "speak", text: q.examiner, label })
         steps.push({ type: "judge", question: q.examiner, expected: "", sample: q.sample || "", open_ended: true, label })
+      })
+    }
+  }
+
+  steps.push({ type: "speak", text: "OK. Thank you. Goodbye.", label: "End" })
+  steps.push({ type: "end" })
+  return steps
+}
+
+function buildKetSteps(test: Record<string, unknown>, startPart: string, userSeat: CandidateSeat): ExamStep[] {
+  const steps: ExamStep[] = []
+  const parts = startPart === "all" ? ["1", "2"] : [startPart]
+
+  if (test.schemaVersion !== 2) {
+    return []
+  }
+
+  const addExaminerTurn = (turn: KetExaminerTurn, label: string) => {
+    steps.push({ type: "speak", text: turn.text, target: turn.target, label })
+    if (turn.target === userSeat) {
+      const criteria = turn.response.criteria?.length
+        ? ` Communication goals: ${turn.response.criteria.join("; ")}.`
+        : ""
+      steps.push({
+        type: "judge",
+        question: `${turn.text}${criteria}`,
+        expected: "",
+        sample: turn.response.sample || "",
+        open_ended: true,
+        kind: turn.response.kind,
+        target: turn.target,
+        label,
+      })
+    } else {
+      steps.push({ type: "candidate-speak", seat: turn.target, text: turn.virtualAnswer, label })
+    }
+  }
+
+  for (const pn of parts) {
+    if (pn === "1") {
+      const part1 = test.part1 as KetPart1V2 | undefined
+      if (!part1) continue
+
+      if (part1.intro) {
+        steps.push({ type: "speak", text: part1.intro, label: "Part 1 — Interview" })
+      }
+      part1.turns.forEach((turn, i) => {
+        addExaminerTurn(turn, `Part 1 Phase 1: ${i + 1}/${part1.turns.length}`)
+      })
+      part1.topics.forEach((topic) => {
+        const topicLabel = `Part 1 Phase 2 — ${topic.title}`
+        if (topic.intro) {
+          steps.push({ type: "speak", text: topic.intro, label: topicLabel })
+        }
+        topic.turns.forEach((turn, i) => {
+          addExaminerTurn(turn, `${topicLabel} (${i + 1}/${topic.turns.length})`)
+        })
+      })
+    }
+
+    if (pn === "2") {
+      const part2 = test.part2 as KetPart2V2 | undefined
+      if (!part2) continue
+
+      steps.push({
+        type: "show-ket-material",
+        image: part2.material.image,
+        options: part2.material.options,
+        label: "Part 2",
+      })
+      steps.push({
+        type: "speak",
+        text: part2.examinerSetup,
+        label: `Part 2 — ${part2.title || "Collaborative Task"}`,
+      })
+
+      part2.conversation.turns.forEach((turn, i) => {
+        const label = `Part 2 discussion ${i + 1}/${part2.conversation.turns.length}`
+        if (turn.speaker === userSeat) {
+          const criteria = turn.criteria?.length ? ` Criteria: ${turn.criteria.join("; ")}.` : ""
+          steps.push({
+            type: "judge",
+            question: `${part2.examinerSetup} Your communication goal: ${turn.goal}.${criteria}`,
+            expected: "",
+            sample: "",
+            open_ended: true,
+            kind: turn.responseKind,
+            target: turn.speaker,
+            label,
+          })
+        } else {
+          steps.push({ type: "candidate-speak", seat: turn.speaker, text: turn.virtualFallback, label })
+        }
+      })
+
+      part2.followups.forEach((turn, i) => {
+        addExaminerTurn(turn, `Part 2 follow-up ${i + 1}/${part2.followups.length}`)
       })
     }
   }

@@ -1,0 +1,632 @@
+{
+  "schemaVersion": 2,
+  "format": "ket",
+  "label": "KET Three-candidate Practice - Places to Eat",
+  "candidateCount": 3,
+  "defaultUserSeat": "A",
+  "examiner": {
+    "primary": {
+      "name": "Sarah",
+      "role": "interlocutor",
+      "voice": "en-GB-SoniaNeural"
+    },
+    "assessor": {
+      "name": "Catherine",
+      "role": "assessor",
+      "speaks": false
+    }
+  },
+  "candidateProfiles": {
+    "A": {
+      "name": "Ume",
+      "avatarSeed": "ket-ume-a",
+      "voice": "en-GB-LibbyNeural",
+      "sourceNote": "The source subtitles also show the name as Mai."
+    },
+    "B": {
+      "name": "Noah",
+      "avatarSeed": "ket-noah-b",
+      "voice": "en-GB-RyanNeural"
+    },
+    "C": {
+      "name": "Luca",
+      "avatarSeed": "ket-luca-c",
+      "voice": "en-GB-ThomasNeural"
+    }
+  },
+  "virtualCandidate": {
+    "name": "Noah",
+    "avatarSeed": "ket-noah-b",
+    "voice": "en-GB-RyanNeural",
+    "level": "a2",
+    "personality": "friendly"
+  },
+  "part1": {
+    "title": "Personal Information and Topic-based Interview",
+    "intro": "Good morning. Can I have your mark sheets, please? So, I'm Sarah and this is Catherine.",
+    "turns": [
+      {
+        "id": "p1-name-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "What's your name?",
+        "response": {
+          "kind": "basic",
+          "sample": "My name is Ume.",
+          "criteria": ["states a name clearly"]
+        },
+        "virtualAnswer": "My name is Ume."
+      },
+      {
+        "id": "p1-name-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And what's your name?",
+        "response": {
+          "kind": "basic",
+          "sample": "My name is Noah.",
+          "criteria": ["states a name clearly"]
+        },
+        "virtualAnswer": "My name is Noah."
+      },
+      {
+        "id": "p1-name-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "And what's your name?",
+        "response": {
+          "kind": "basic",
+          "sample": "My name is Luca.",
+          "criteria": ["states a name clearly"]
+        },
+        "virtualAnswer": "My name is Luca."
+      },
+      {
+        "id": "p1-age-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Ume, how old are you?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm 12 years old.",
+          "criteria": ["states an age"]
+        },
+        "virtualAnswer": "I'm 12 years old."
+      },
+      {
+        "id": "p1-live-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "And where do you live?",
+        "response": {
+          "kind": "basic",
+          "sample": "I live in Blagnac.",
+          "criteria": ["states where the candidate lives"]
+        },
+        "virtualAnswer": "I live in Blagnac."
+      },
+      {
+        "id": "p1-age-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And Noah, how old are you?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm 16 years old.",
+          "criteria": ["states an age"]
+        },
+        "virtualAnswer": "I'm 16 years old."
+      },
+      {
+        "id": "p1-live-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And where do you live?",
+        "response": {
+          "kind": "basic",
+          "sample": "I live in Orson.",
+          "criteria": ["states where the candidate lives"]
+        },
+        "virtualAnswer": "I live in Orson."
+      },
+      {
+        "id": "p1-age-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "And Luca, how old are you?",
+        "response": {
+          "kind": "basic",
+          "sample": "I'm 15 years old.",
+          "criteria": ["states an age"]
+        },
+        "virtualAnswer": "I'm 15 years old."
+      },
+      {
+        "id": "p1-live-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "And where do you live?",
+        "response": {
+          "kind": "basic",
+          "sample": "I live in Columbine.",
+          "criteria": ["states where the candidate lives"]
+        },
+        "virtualAnswer": "I live in Columbine."
+      }
+    ],
+    "topics": [
+      {
+        "id": "friends",
+        "title": "Friends",
+        "intro": "Now, let's talk about friends.",
+        "turns": [
+          {
+            "id": "p1-friends-a1",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "Ume, how often do you see your friends?",
+            "response": {
+              "kind": "extended",
+              "sample": "I see my friends every day.",
+              "criteria": ["states how often"]
+            },
+            "virtualAnswer": "I see my friends every day."
+          },
+          {
+            "id": "p1-friends-a2",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "And what do you like doing with your friends?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like singing, dancing and chatting with my friends.",
+              "criteria": ["mentions one or more activities"]
+            },
+            "virtualAnswer": "I like singing, dancing and chatting with my friends."
+          },
+          {
+            "id": "p1-friends-b1",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "And Noah, where do your friends live?",
+            "response": {
+              "kind": "extended",
+              "sample": "My friends live near my home.",
+              "criteria": ["states where the friends live"]
+            },
+            "virtualAnswer": "My friends live near my home."
+          },
+          {
+            "id": "p1-friends-b2",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "And when do you see your friends?",
+            "response": {
+              "kind": "extended",
+              "sample": "I see my friends at the weekends.",
+              "criteria": ["states when the candidate sees friends"]
+            },
+            "virtualAnswer": "I see my friends at the weekends."
+          },
+          {
+            "id": "p1-friends-a3",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "Now, Ume, please tell me something about one of your friends.",
+            "response": {
+              "kind": "tell_me_about",
+              "sample": "My friend Camille lives in Brazil. She is 12 years old, has one brother and one sister, and wants to be an actress.",
+              "criteria": ["talks about one friend", "gives at least two relevant details"]
+            },
+            "virtualAnswer": "My friend Camille lives in Brazil. She is 12 years old, has one brother and one sister, and wants to be an actress."
+          }
+        ]
+      },
+      {
+        "id": "home",
+        "title": "Home",
+        "intro": "Thank you. Now, let's talk about home.",
+        "turns": [
+          {
+            "id": "p1-home-b1",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Noah, who do you live with?",
+            "response": {
+              "kind": "extended",
+              "sample": "I live with my mother, father, brother and sister.",
+              "criteria": ["states who the candidate lives with"]
+            },
+            "virtualAnswer": "I live with my mother, father, brother and sister."
+          },
+          {
+            "id": "p1-home-b2",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "And how many bedrooms are there in your house?",
+            "response": {
+              "kind": "extended",
+              "sample": "There are four bedrooms in my house.",
+              "criteria": ["states the number of bedrooms"]
+            },
+            "virtualAnswer": "There are four bedrooms in my house."
+          },
+          {
+            "id": "p1-home-b3",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Where do you watch TV at home?",
+            "response": {
+              "kind": "extended",
+              "sample": "I don't have a TV in my house.",
+              "criteria": ["answers where TV is watched or explains that there is no TV"]
+            },
+            "virtualAnswer": "I don't have a TV in my house."
+          },
+          {
+            "id": "p1-home-b4",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "What's your favourite room in your house?",
+            "response": {
+              "kind": "extended",
+              "sample": "My favourite room is my bedroom because I can relax and listen to music there.",
+              "criteria": ["names a room", "gives a reason"]
+            },
+            "virtualAnswer": "My favourite room is my bedroom because I can relax and listen to music there."
+          },
+          {
+            "id": "p1-home-b5",
+            "speaker": "examiner",
+            "target": "B",
+            "text": "Now, Noah, please tell me something about the things you like doing at home at the weekend.",
+            "response": {
+              "kind": "tell_me_about",
+              "sample": "At home, I like relaxing in my bedroom, swimming in the pool and playing with friends.",
+              "criteria": ["mentions weekend activities at home", "gives at least two details"]
+            },
+            "virtualAnswer": "At home, I like relaxing in my bedroom, swimming in the pool and playing with friends."
+          }
+        ]
+      },
+      {
+        "id": "music",
+        "title": "Music",
+        "intro": "Thank you. Now, let's talk about music.",
+        "turns": [
+          {
+            "id": "p1-music-c1",
+            "speaker": "examiner",
+            "target": "C",
+            "text": "Luca, how often do you listen to music?",
+            "response": {
+              "kind": "extended",
+              "sample": "I listen to music every day.",
+              "criteria": ["states how often"]
+            },
+            "virtualAnswer": "I listen to music every day."
+          },
+          {
+            "id": "p1-music-c2",
+            "speaker": "examiner",
+            "target": "C",
+            "text": "And what music do you like best?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like American rock best.",
+              "criteria": ["names a type of music"]
+            },
+            "virtualAnswer": "I like American rock best."
+          },
+          {
+            "id": "p1-music-a1",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "And Ume, what is your favourite instrument?",
+            "response": {
+              "kind": "extended",
+              "sample": "My favourite instrument is the piano.",
+              "criteria": ["names a musical instrument"]
+            },
+            "virtualAnswer": "My favourite instrument is the piano."
+          },
+          {
+            "id": "p1-music-a2",
+            "speaker": "examiner",
+            "target": "A",
+            "text": "Where do you like listening to music?",
+            "response": {
+              "kind": "extended",
+              "sample": "I like listening to music in my bedroom and in the park with my friends.",
+              "criteria": ["states one or more places"]
+            },
+            "virtualAnswer": "I like listening to music in my bedroom and in the park with my friends."
+          },
+          {
+            "id": "p1-music-c3",
+            "speaker": "examiner",
+            "target": "C",
+            "text": "Now, Luca, please tell me something about your favourite singer or group.",
+            "response": {
+              "kind": "tell_me_about",
+              "sample": "My favourite rapper is Expensive. I love his music because I can relate to it.",
+              "criteria": ["names a singer or group", "gives a reason"]
+            },
+            "virtualAnswer": "My favourite rapper is Expensive. I love his music because I can relate to it."
+          }
+        ]
+      }
+    ]
+  },
+  "part2": {
+    "title": "Collaborative Task - Places to Eat",
+    "examinerSetup": "Now, in this part of the test, you are going to talk together. Here are some pictures that show different places to eat. Do you like these different places to eat? Say why or why not. I'll say that again. Do you like these different places to eat? Say why or why not. Okay? Now, talk together.",
+    "material": {
+      "image": "",
+      "options": [
+        {"id": "home", "label": "at home"},
+        {"id": "park", "label": "in the park"},
+        {"id": "beach", "label": "on the beach"},
+        {"id": "restaurant", "label": "at a restaurant"},
+        {"id": "school", "label": "at school"}
+      ]
+    },
+    "conversation": {
+      "starter": "C",
+      "turns": [
+        {
+          "speaker": "C",
+          "goal": "ask the other candidates whether they like eating at home",
+          "virtualFallback": "Do you like eating at home?",
+          "responseKind": "partner_opening",
+          "criteria": ["asks about eating at home", "invites the others to respond"]
+        },
+        {
+          "speaker": "A",
+          "goal": "answer the question about eating at home and give a reason",
+          "virtualFallback": "Yes, because it is fun.",
+          "responseKind": "discussion",
+          "criteria": ["answers the question", "gives a reason"]
+        },
+        {
+          "speaker": "B",
+          "goal": "add an opinion about eating at home",
+          "virtualFallback": "Yes, I like it because I can talk with my family.",
+          "responseKind": "discussion",
+          "criteria": ["responds to the topic", "gives a reason"]
+        },
+        {
+          "speaker": "C",
+          "goal": "ask the other candidates about eating in the park",
+          "virtualFallback": "Do you like eating in the park?",
+          "responseKind": "discussion",
+          "criteria": ["asks about eating in the park"]
+        },
+        {
+          "speaker": "B",
+          "goal": "answer about the park and mention conditions",
+          "virtualFallback": "Yes, I like it, but it depends on the weather and who I am with.",
+          "responseKind": "discussion",
+          "criteria": ["answers about the park", "gives a condition or reason"]
+        },
+        {
+          "speaker": "A",
+          "goal": "add an opinion about eating in the park",
+          "virtualFallback": "Yes, I like it because it is fun, but it depends on the weather.",
+          "responseKind": "discussion",
+          "criteria": ["responds about the park", "gives a reason"]
+        },
+        {
+          "speaker": "C",
+          "goal": "ask the other candidates about eating on the beach",
+          "virtualFallback": "Do you like eating on the beach?",
+          "responseKind": "discussion",
+          "criteria": ["asks about eating on the beach"]
+        },
+        {
+          "speaker": "A",
+          "goal": "answer about the beach and give a reason",
+          "virtualFallback": "Yes, because we can talk with friends and do sports.",
+          "responseKind": "discussion",
+          "criteria": ["answers about the beach", "gives a reason"]
+        },
+        {
+          "speaker": "B",
+          "goal": "add an opinion about eating on the beach",
+          "virtualFallback": "Yes, because we can eat after swimming.",
+          "responseKind": "discussion",
+          "criteria": ["responds about the beach", "gives a reason"]
+        },
+        {
+          "speaker": "C",
+          "goal": "ask the other candidates about eating at a restaurant",
+          "virtualFallback": "Do you like eating at a restaurant?",
+          "responseKind": "discussion",
+          "criteria": ["asks about eating at a restaurant"]
+        },
+        {
+          "speaker": "A",
+          "goal": "answer about restaurants",
+          "virtualFallback": "Yes, I usually love it, but sometimes I don't.",
+          "responseKind": "discussion",
+          "criteria": ["answers about restaurants", "adds an opinion"]
+        },
+        {
+          "speaker": "B",
+          "goal": "add an opinion about restaurants",
+          "virtualFallback": "Yes, I like eating at restaurants because it is nice.",
+          "responseKind": "discussion",
+          "criteria": ["responds about restaurants"]
+        },
+        {
+          "speaker": "C",
+          "goal": "ask the other candidates about eating at school",
+          "virtualFallback": "Do you like eating at school?",
+          "responseKind": "discussion",
+          "criteria": ["asks about eating at school"]
+        },
+        {
+          "speaker": "A",
+          "goal": "answer about eating at school and give a reason",
+          "virtualFallback": "No, I don't like it because there are a lot of people.",
+          "responseKind": "discussion",
+          "criteria": ["answers about school", "gives a reason"]
+        },
+        {
+          "speaker": "B",
+          "goal": "add an opinion about eating at school",
+          "virtualFallback": "No, because the food is not very good.",
+          "responseKind": "discussion",
+          "criteria": ["responds about school", "gives a reason"]
+        }
+      ]
+    },
+    "followups": [
+      {
+        "id": "p2-expensive-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Okay, thank you. So, Ume, do you think eating in restaurants is expensive?",
+        "response": {
+          "kind": "followup",
+          "sample": "It depends on the restaurant. Some restaurants are expensive and some are cheaper.",
+          "criteria": ["answers the question", "explains the opinion"]
+        },
+        "virtualAnswer": "It depends on the restaurant. Some restaurants are expensive and some are cheaper."
+      },
+      {
+        "id": "p2-boring-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And Noah, do you think eating at home is boring?",
+        "response": {
+          "kind": "followup",
+          "sample": "No, because I can talk with my family when we eat together.",
+          "criteria": ["answers yes or no", "gives a reason"]
+        },
+        "virtualAnswer": "No, because I can talk with my family when we eat together."
+      },
+      {
+        "id": "p2-park-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "And Luca, do you think eating in the park is nice?",
+        "response": {
+          "kind": "followup",
+          "sample": "Yes, it is nice when the weather is good, especially when I am with my friends.",
+          "criteria": ["answers the question", "gives a reason or condition"]
+        },
+        "virtualAnswer": "Yes, it is nice when the weather is good, especially when I am with my friends."
+      },
+      {
+        "id": "p2-best-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "So, Ume, which of these places to eat do you like best?",
+        "response": {
+          "kind": "followup",
+          "sample": "My favourite place to eat is the beach because I can swim and eat there.",
+          "criteria": ["chooses one place", "gives a reason"]
+        },
+        "virtualAnswer": "My favourite place to eat is the beach because I can swim and eat there."
+      },
+      {
+        "id": "p2-best-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And you, Noah, which of these places to eat do you like best?",
+        "response": {
+          "kind": "followup",
+          "sample": "I like eating at a restaurant best because the food is good.",
+          "criteria": ["chooses one place", "gives a reason"]
+        },
+        "virtualAnswer": "I like eating at a restaurant best because the food is good."
+      },
+      {
+        "id": "p2-best-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "And you, Luca, which of these places to eat do you like best?",
+        "response": {
+          "kind": "followup",
+          "sample": "I like the beach best because I love swimming after eating, especially when the beach is clean.",
+          "criteria": ["chooses one place", "gives a reason"]
+        },
+        "virtualAnswer": "I like the beach best because I love swimming after eating, especially when the beach is clean."
+      },
+      {
+        "id": "p2-friends-family-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "Thank you. Do you prefer eating with friends or family, Noah?",
+        "response": {
+          "kind": "followup",
+          "sample": "I prefer eating with my friends because it is fun and we can talk about everything.",
+          "criteria": ["chooses friends or family", "gives a reason"]
+        },
+        "virtualAnswer": "I prefer eating with my friends because it is fun and we can talk about everything."
+      },
+      {
+        "id": "p2-friends-family-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "And what about you, Luca? Do you prefer eating with friends or family?",
+        "response": {
+          "kind": "followup",
+          "sample": "I prefer eating with friends because I can relax and be myself with them.",
+          "criteria": ["chooses friends or family", "gives a reason"]
+        },
+        "virtualAnswer": "I prefer eating with friends because I can relax and be myself with them."
+      },
+      {
+        "id": "p2-home-restaurant-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Okay. And do you prefer eating at home or in a restaurant, Ume?",
+        "response": {
+          "kind": "followup",
+          "sample": "I prefer eating in a restaurant because the food is nice.",
+          "criteria": ["chooses home or a restaurant", "gives a reason"]
+        },
+        "virtualAnswer": "I prefer eating in a restaurant because the food is nice."
+      },
+      {
+        "id": "p2-home-restaurant-b",
+        "speaker": "examiner",
+        "target": "B",
+        "text": "And you, Noah?",
+        "response": {
+          "kind": "followup",
+          "sample": "I prefer eating at home because I am with my family there.",
+          "criteria": ["answers the same preference question", "gives a reason"]
+        },
+        "virtualAnswer": "I prefer eating at home because I am with my family there."
+      },
+      {
+        "id": "p2-breakfast-lunch-c",
+        "speaker": "examiner",
+        "target": "C",
+        "text": "Do you prefer breakfast or lunch, Luca?",
+        "response": {
+          "kind": "followup",
+          "sample": "I prefer breakfast because I love cereal and I am always hungry when I wake up.",
+          "criteria": ["chooses breakfast or lunch", "gives a reason"]
+        },
+        "virtualAnswer": "I prefer breakfast because I love cereal and I am always hungry when I wake up."
+      },
+      {
+        "id": "p2-breakfast-lunch-a",
+        "speaker": "examiner",
+        "target": "A",
+        "text": "Okay. And you, Ume?",
+        "response": {
+          "kind": "followup",
+          "sample": "I prefer lunch because there are more things to eat and I am hungrier then.",
+          "criteria": ["answers the same preference question", "gives a reason"]
+        },
+        "virtualAnswer": "I prefer lunch because there are more things to eat and I am hungrier then."
+      }
+    ]
+  },
+  "closing": "Thank you. That is the end of the test."
+}

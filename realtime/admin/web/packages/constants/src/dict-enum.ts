@@ -173,12 +173,19 @@ const IOT_DICT = {
   IOT_VALIDATE_TYPE: 'iot_validate_type', // IOT 数据校验级别
 } as const;
 
+/** ========== ENGLISH - 英语口语模块 ========== */
+const ENGLISH_DICT = {
+  ENGLISH_VOCAB_DIFFICULTY: 'english_vocab_difficulty', // 词汇难度（A2 必备 / B1 延展）
+  ENGLISH_VOCAB_MASTERY: 'english_vocab_mastery', // 词汇能力要求（三会 / 四会）
+} as const;
+
 /** 字典类型枚举 - 统一导出 */
 const DICT_TYPE = {
   ...AI_DICT,
   ...BPM_DICT,
   ...CRM_DICT,
   ...ERP_DICT,
+  ...ENGLISH_DICT,
   ...INFRA_DICT,
   ...IOT_DICT,
   ...MEMBER_DICT,

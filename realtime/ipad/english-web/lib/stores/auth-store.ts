@@ -23,6 +23,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   hydrate: () => {
     try {
       const token = getTokenFromStorage()
+      if (token) {
+        setTokenToStorage(token)
+      }
       set({
         token,
         isHydrated: true,
