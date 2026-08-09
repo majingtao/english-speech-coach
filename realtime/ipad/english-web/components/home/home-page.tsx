@@ -88,6 +88,7 @@ const sections: AppSection[] = [
     icon: <MessagesSquare className="size-5" />,
     items: [
       { key: "expression-ket", label: "KET 表达", icon: <MessageCircle className="size-5" />, enabled: true, href: "/expression" },
+      { key: "reading-ket", label: "自由跟读", icon: <Headphones className="size-5" />, enabled: true, href: "/reading" },
       { key: "expression-flyers", label: "Flyers 表达", icon: <BookOpen className="size-5" />, enabled: false },
     ],
   },
@@ -154,7 +155,8 @@ export function HomePage() {
   }, [])
 
   useEffect(() => {
-    loadQuota()
+    const timer = window.setTimeout(loadQuota, 0)
+    return () => window.clearTimeout(timer)
   }, [loadQuota])
 
   async function onLogout() {

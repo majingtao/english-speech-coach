@@ -88,6 +88,10 @@ public interface ErrorCodeConstants {
     ErrorCode EXPRESSION_ITEM_DUPLICATE       = new ErrorCode(1_040_080_011, "表达练习项编码已存在");
     ErrorCode EXPRESSION_MODE_INVALID         = new ErrorCode(1_040_080_012, "练习模式必须为 speaking 或 writing");
 
+    // ========== 自由跟读 1-040-090-000 ==========
+    ErrorCode READING_MATERIAL_NOT_EXISTS     = new ErrorCode(1_040_090_000, "自由跟读素材不存在");
+    ErrorCode READING_MATERIAL_DUPLICATE      = new ErrorCode(1_040_090_001, "该级别下已有相同英文素材");
+
     // ========== 配额（LLM/ASR/TTS）1-040-060-000 ==========
     ErrorCode ESC_QUOTA_DEFAULT_NOT_EXISTS = new ErrorCode(1_040_060_000, "默认配额记录不存在");
     ErrorCode ESC_USER_QUOTA_NOT_EXISTS    = new ErrorCode(1_040_060_001, "用户配额覆盖不存在");

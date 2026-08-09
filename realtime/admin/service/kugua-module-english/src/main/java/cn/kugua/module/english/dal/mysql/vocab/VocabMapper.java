@@ -37,4 +37,11 @@ public interface VocabMapper extends BaseMapperX<VocabDO> {
                 .eq(VocabDO::getWord, word));
     }
 
+    default VocabDO selectPublishedByLevelAndWord(String levelCode, String word) {
+        return selectOne(new LambdaQueryWrapperX<VocabDO>()
+                .eq(VocabDO::getLevelCode, levelCode)
+                .eq(VocabDO::getWord, word)
+                .eq(VocabDO::getStatus, 1));
+    }
+
 }
