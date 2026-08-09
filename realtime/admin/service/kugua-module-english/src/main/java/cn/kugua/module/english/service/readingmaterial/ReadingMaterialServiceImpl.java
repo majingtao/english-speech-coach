@@ -58,23 +58,38 @@ public class ReadingMaterialServiceImpl implements ReadingMaterialService {
     @Override
     public PageResult<ReadingMaterialDO> getMaterialPage(ReadingMaterialPageReqVO reqVO) {
         return materialMapper.selectPage(reqVO, reqVO.getText(), reqVO.getMaterialType(),
-                reqVO.getPartOfSpeech(), reqVO.getLevelCode(), reqVO.getTag(), reqVO.getStatus());
+                reqVO.getPartOfSpeech(), reqVO.getLevelCode(), reqVO.getTag(), reqVO.getPriority(), reqVO.getStatus());
     }
 
     @Override
     public java.util.List<ReadingMaterialDO> getPublishedMaterials(String levelCode, String materialType, String tag) {
-        return materialMapper.selectPublished(levelCode, materialType, tag);
+        return getPublishedMaterials(levelCode, materialType, tag, null);
+    }
+
+    @Override
+    public java.util.List<ReadingMaterialDO> getPublishedMaterials(String levelCode, String materialType, String tag,
+                                                                   String priority) {
+        return materialMapper.selectPublished(levelCode, materialType, tag, priority);
+    }
+
+    @Override
+    public PageResult<ReadingMaterialDO> getPublishedMaterialPage(String levelCode, String materialType, String tag,
+                                                                  String priority,
+                                                                  cn.iocoder.yudao.framework.common.pojo.PageParam page) {
+        return materialMapper.selectPublishedPage(page, levelCode, materialType, tag, priority);
     }
 
     private void applyDefaults(ReadingMaterialDO material) {
         if (material.getTextCn() == null) material.setTextCn("");
         if (material.getDescription() == null) material.setDescription("");
-        if (material.getMaterialType() == null || material.getMaterialType().isBlank()) material.setMaterialType("word");
-        if (material.getPartOfSpeech() == null || material.getPartOfSpeech().isBlank()) material.setPartOfSpeech("unknown");
-        if (material.getLevelCode() == null || material.getLevelCode().isBlank()) material.setLevelCode("ket");
-        if (material.getTagsJson() == null || material.getTagsJson().isBlank()) material.setTagsJson("[]");
-        if (material.getExamplesJson() == null || material.getExamplesJson().isBlank()) material.setExamplesJson("[]");
-        if (material.getWordFormsJson() == null || material.getWordFormsJson().isBlank()) material.setWordFormsJson("{}");
+        if (isBlank(material.getMaterialType())) material.setMaterialType("word");
+        if (isBlank(material.getPartOfSpeech())) material.setPartOfSpeech("unknown");
+        if (isBlank(material.getLevelCode())) material.setLevelCode("ket");
+        if (isBlank(material.getTagsJson())) material.setTagsJson("[]");
+        if (isBlank(material.getExamplesJson())) material.setExamplesJson("[]");
+        if (isBlank(material.getWordFormsJson())) material.setWordFormsJson("{}");
+        if (material.getMustKnow() == null) material.setMustKnow(0);
+        if (material.getHighFrequency() == null) material.setHighFrequency(0);
         if (material.getSort() == null) material.setSort(0);
         if (material.getStatus() == null) material.setStatus(0);
         material.setTextEn(material.getTextEn().trim());
@@ -87,7 +102,7 @@ public class ReadingMaterialServiceImpl implements ReadingMaterialService {
     }
 
     private void validateJson(String value, boolean array, String message) {
-        if (value == null || value.isBlank()) return;
+        if (isBlank(value)) return;
         try {
             JsonNode node = objectMapper.readTree(value);
             if ((array && !node.isArray()) || (!array && !node.isObject())) {
@@ -103,12 +118,16 @@ public class ReadingMaterialServiceImpl implements ReadingMaterialService {
     }
 
     private void validateUnique(Long id, String levelCode, String textEn) {
-        String level = (levelCode == null || levelCode.isBlank()) ? "ket" : levelCode;
+        String level = isBlank(levelCode) ? "ket" : levelCode;
         ReadingMaterialDO existing = materialMapper.selectOne(new LambdaQueryWrapperX<ReadingMaterialDO>()
                 .eq(ReadingMaterialDO::getLevelCode, level)
                 .eq(ReadingMaterialDO::getTextEn, textEn == null ? "" : textEn.trim()));
         if (existing != null && (id == null || !id.equals(existing.getId()))) {
             throw exception(READING_MATERIAL_DUPLICATE);
         }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }

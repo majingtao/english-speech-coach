@@ -18,6 +18,11 @@ export const partOfSpeechOptions = [
   { label: '未知', value: 'unknown' },
 ];
 
+export const priorityOptions = [
+  { label: '必会', value: 'mustKnow' },
+  { label: '高频', value: 'highFrequency' },
+];
+
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -43,6 +48,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '标签',
       component: 'Input',
       componentProps: { allowClear: true },
+    },
+    {
+      fieldName: 'priority',
+      label: '重点',
+      component: 'Select',
+      componentProps: { allowClear: true, options: priorityOptions },
     },
     {
       fieldName: 'status',
@@ -140,6 +151,34 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'mustKnow',
+      label: '必会',
+      component: 'RadioGroup',
+      defaultValue: 0,
+      componentProps: {
+        optionType: 'button',
+        buttonStyle: 'solid',
+        options: [
+          { label: '否', value: 0 },
+          { label: '是', value: 1 },
+        ],
+      },
+    },
+    {
+      fieldName: 'highFrequency',
+      label: '高频',
+      component: 'RadioGroup',
+      defaultValue: 0,
+      componentProps: {
+        optionType: 'button',
+        buttonStyle: 'solid',
+        options: [
+          { label: '否', value: 0 },
+          { label: '是', value: 1 },
+        ],
+      },
+    },
+    {
       fieldName: 'sort',
       label: '排序',
       component: 'InputNumber',
@@ -178,6 +217,12 @@ export function useGridColumns(): VxeTableGridOptions<EnglishReadingMaterialApi.
       slots: { default: 'materialType' },
     },
     { field: 'partOfSpeech', title: '词性', width: 100 },
+    {
+      field: 'priority',
+      title: '重点',
+      width: 120,
+      slots: { default: 'priority' },
+    },
     {
       field: 'tagsJson',
       title: '标签',

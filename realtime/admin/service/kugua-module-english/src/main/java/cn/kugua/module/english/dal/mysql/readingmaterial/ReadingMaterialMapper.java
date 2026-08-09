@@ -14,25 +14,50 @@ public interface ReadingMaterialMapper extends BaseMapperX<ReadingMaterialDO> {
 
     default PageResult<ReadingMaterialDO> selectPage(PageParam page, String text, String materialType,
                                                      String partOfSpeech, String levelCode, String tag,
-                                                     Integer status) {
-        return selectPage(page, new LambdaQueryWrapperX<ReadingMaterialDO>()
+                                                     String priority, Integer status) {
+        LambdaQueryWrapperX<ReadingMaterialDO> wrapper = new LambdaQueryWrapperX<ReadingMaterialDO>()
                 .likeIfPresent(ReadingMaterialDO::getTextEn, text)
                 .eqIfPresent(ReadingMaterialDO::getMaterialType, materialType)
                 .eqIfPresent(ReadingMaterialDO::getPartOfSpeech, partOfSpeech)
                 .eqIfPresent(ReadingMaterialDO::getLevelCode, levelCode)
                 .likeIfPresent(ReadingMaterialDO::getTagsJson, tag)
-                .eqIfPresent(ReadingMaterialDO::getStatus, status)
+                .eqIfPresent(ReadingMaterialDO::getStatus, status);
+        applyPriority(wrapper, priority);
+        return selectPage(page, wrapper
                 .orderByAsc(ReadingMaterialDO::getSort)
                 .orderByDesc(ReadingMaterialDO::getId));
     }
 
-    default List<ReadingMaterialDO> selectPublished(String levelCode, String materialType, String tag) {
-        return selectList(new LambdaQueryWrapperX<ReadingMaterialDO>()
+    default List<ReadingMaterialDO> selectPublished(String levelCode, String materialType, String tag, String priority) {
+        LambdaQueryWrapperX<ReadingMaterialDO> wrapper = new LambdaQueryWrapperX<ReadingMaterialDO>()
                 .eqIfPresent(ReadingMaterialDO::getLevelCode, levelCode)
                 .eqIfPresent(ReadingMaterialDO::getMaterialType, materialType)
                 .likeIfPresent(ReadingMaterialDO::getTagsJson, tag)
-                .eq(ReadingMaterialDO::getStatus, 1)
+                .eq(ReadingMaterialDO::getStatus, 1);
+        applyPriority(wrapper, priority);
+        return selectList(wrapper
                 .orderByAsc(ReadingMaterialDO::getSort)
                 .orderByAsc(ReadingMaterialDO::getId));
+    }
+
+    default PageResult<ReadingMaterialDO> selectPublishedPage(PageParam page, String levelCode, String materialType,
+                                                              String tag, String priority) {
+        LambdaQueryWrapperX<ReadingMaterialDO> wrapper = new LambdaQueryWrapperX<ReadingMaterialDO>()
+                .eqIfPresent(ReadingMaterialDO::getLevelCode, levelCode)
+                .eqIfPresent(ReadingMaterialDO::getMaterialType, materialType)
+                .likeIfPresent(ReadingMaterialDO::getTagsJson, tag)
+                .eq(ReadingMaterialDO::getStatus, 1);
+        applyPriority(wrapper, priority);
+        return selectPage(page, wrapper
+                .orderByAsc(ReadingMaterialDO::getSort)
+                .orderByAsc(ReadingMaterialDO::getId));
+    }
+
+    default void applyPriority(LambdaQueryWrapperX<ReadingMaterialDO> wrapper, String priority) {
+        if ("mustKnow".equals(priority)) {
+            wrapper.eq(ReadingMaterialDO::getMustKnow, 1);
+        } else if ("highFrequency".equals(priority)) {
+            wrapper.eq(ReadingMaterialDO::getHighFrequency, 1);
+        }
     }
 }

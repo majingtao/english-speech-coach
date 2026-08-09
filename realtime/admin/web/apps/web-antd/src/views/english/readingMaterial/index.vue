@@ -116,6 +116,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #tags="{ row }">
         <Tag v-for="tag in parseTags(row.tagsJson)" :key="tag">{{ tag }}</Tag>
       </template>
+      <template #priority="{ row }">
+        <Tag v-if="row.mustKnow === 1" color="red">必会</Tag>
+        <Tag v-if="row.highFrequency === 1" color="gold">高频</Tag>
+      </template>
       <template #status="{ row }">
         <Tag v-if="row.status === 0">草稿</Tag>
         <Tag v-else-if="row.status === 1" color="green">发布</Tag>

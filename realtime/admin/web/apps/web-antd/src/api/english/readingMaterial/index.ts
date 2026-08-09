@@ -8,19 +8,21 @@ export namespace EnglishReadingMaterialApi {
     textEn?: string;
     textCn?: string;
     description?: string;
-    materialType?: 'word' | 'phrase' | 'sentence';
+    materialType?: 'phrase' | 'sentence' | 'word';
     partOfSpeech?:
-      | 'noun'
-      | 'verb'
       | 'adjective'
       | 'adverb'
+      | 'noun'
       | 'phrase'
       | 'sentence'
-      | 'unknown';
+      | 'unknown'
+      | 'verb';
     levelCode?: string;
     tagsJson?: string;
     examplesJson?: string;
     wordFormsJson?: string;
+    mustKnow?: number;
+    highFrequency?: number;
     sort?: number;
     status?: number;
     createTime?: string;

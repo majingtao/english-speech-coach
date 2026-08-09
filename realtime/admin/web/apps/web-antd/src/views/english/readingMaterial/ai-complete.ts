@@ -89,8 +89,8 @@ function normalizeAiResult(raw: any): ReadingMaterialAiPatch {
   return {
     description: raw.description || '',
     examplesJson: JSON.stringify(
-      materialType === 'word' && Array.isArray(raw.examples)
-        ? raw.examples.slice(0, 3)
+      ['phrase', 'word'].includes(materialType) && Array.isArray(raw.examples)
+        ? raw.examples.slice(0, materialType === 'phrase' ? 3 : 5)
         : [],
       null,
       2,
@@ -131,14 +131,16 @@ Return strict JSON only:
 }
 Rules:
 - If materialType is word, example sentences must cover useful word forms.
-- If it is phrase or sentence, examples must be [].
+- If materialType is phrase, provide exactly 3 short KET-level example sentences using the phrase naturally.
+- If materialType is sentence, examples must be [].
 - For verbs include base, thirdPerson, pastTense, pastParticiple, presentParticiple.
 - For verbs provide exactly 5 examples, one for each verb form: base, thirdPerson, pastTense, pastParticiple, presentParticiple.
 - For adjectives include base, comparative, superlative.
 - For adjectives provide exactly 3 examples, one for each adjective form: base, comparative, superlative.
 - For nouns include base and plural.
 - For nouns provide exactly 3 examples: one base, one plural, and one natural extra base example.
-- Each example must include formKey, formLabel, target, en, cn. Use Chinese labels such as 原型, 三单, 过去式, 过去分词, 现在分词, 比较级, 最高级, 复数.
+- Each word example must include formKey, formLabel, target, en, cn. Use Chinese labels such as 原型, 三单, 过去式, 过去分词, 现在分词, 比较级, 最高级, 复数.
+- Each phrase example must include formKey:"phrase", formLabel:"短语", target set to the phrase, en, cn.
 - Keep examples simple, natural, and suitable for ages 7-12.`;
 
   const resp = await fetch(

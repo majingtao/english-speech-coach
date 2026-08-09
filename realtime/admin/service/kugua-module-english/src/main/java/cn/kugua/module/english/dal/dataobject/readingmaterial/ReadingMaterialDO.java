@@ -24,6 +24,8 @@ public class ReadingMaterialDO extends TenantBaseDO {
     private String tagsJson;
     private String examplesJson;
     private String wordFormsJson;
+    private Integer mustKnow;
+    private Integer highFrequency;
     private Integer sort;
     private Integer status;
 
@@ -35,4 +37,12 @@ public class ReadingMaterialDO extends TenantBaseDO {
     private String audioUkUrl;
     @TableField(exist = false)
     private String audioUsUrl;
+    @TableField(exist = false)
+    private Integer correctCount;
+    @TableField(exist = false)
+    private Integer wrongCount;
+    @TableField(exist = false)
+    private String lastResult;
+    @TableField(exist = false)
+    private String lastPracticeAt;
 }

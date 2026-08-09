@@ -20,4 +20,9 @@ public interface ReadingMaterialService {
     PageResult<ReadingMaterialDO> getMaterialPage(ReadingMaterialPageReqVO reqVO);
 
     List<ReadingMaterialDO> getPublishedMaterials(String levelCode, String materialType, String tag);
+
+    List<ReadingMaterialDO> getPublishedMaterials(String levelCode, String materialType, String tag, String priority);
+
+    PageResult<ReadingMaterialDO> getPublishedMaterialPage(String levelCode, String materialType, String tag,
+                                                           String priority, cn.iocoder.yudao.framework.common.pojo.PageParam page);
 }

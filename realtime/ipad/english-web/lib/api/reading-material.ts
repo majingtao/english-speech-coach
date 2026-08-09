@@ -34,6 +34,12 @@ export interface ReadingMaterial {
   vocabWord?: string
   audioUkUrl?: string
   audioUsUrl?: string
+  mustKnow?: number
+  highFrequency?: number
+  correctCount?: number
+  wrongCount?: number
+  lastResult?: "correct" | "wrong" | ""
+  lastPracticeAt?: string
   sort?: number
   status?: number
 }
@@ -70,18 +76,68 @@ export async function fetchReadingMaterials(params?: {
   level?: string
   materialType?: string
   tag?: string
+  priority?: "mustKnow" | "highFrequency"
 }): Promise<NormalizedReadingMaterial[]> {
   const list = await apiClient.get(BASE + "/list", {
     params: {
       level: params?.level || "ket",
       materialType: params?.materialType,
       tag: params?.tag,
+      priority: params?.priority,
     },
   }) as unknown as ReadingMaterial[]
   return (list || []).map(normalize)
 }
 
+export interface ReadingMaterialPage {
+  list: NormalizedReadingMaterial[]
+  total: number
+}
+
+export async function fetchReadingMaterialPage(params?: {
+  level?: string
+  materialType?: string
+  tag?: string
+  priority?: "mustKnow" | "highFrequency"
+  pageNo?: number
+  pageSize?: number
+}): Promise<ReadingMaterialPage> {
+  const page = await apiClient.get(BASE + "/page", {
+    params: {
+      level: params?.level || "ket",
+      materialType: params?.materialType,
+      tag: params?.tag,
+      priority: params?.priority,
+      pageNo: params?.pageNo || 1,
+      pageSize: params?.pageSize || 20,
+    },
+  }) as unknown as { list?: ReadingMaterial[]; total?: number }
+  return {
+    list: (page.list || []).map(normalize),
+    total: Number(page.total || 0),
+  }
+}
+
 export async function fetchReadingTags(level = "ket"): Promise<string[]> {
   const tags = await apiClient.get(BASE + "/tags", { params: { level } }) as unknown as string[] | Record<string, unknown>
   return Array.isArray(tags) ? tags : Object.values(tags).filter((tag): tag is string => typeof tag === "string")
+}
+
+export async function submitReadingSelfCheck(
+  id: number,
+  result: "correct" | "wrong",
+): Promise<{
+  materialId: number
+  correctCount: number
+  wrongCount: number
+  lastResult?: "correct" | "wrong" | ""
+  lastPracticeAt?: string
+}> {
+  return await apiClient.post(BASE + `/${id}/self-check`, { result }) as unknown as {
+    materialId: number
+    correctCount: number
+    wrongCount: number
+    lastResult?: "correct" | "wrong" | ""
+    lastPracticeAt?: string
+  }
 }

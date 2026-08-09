@@ -126,6 +126,8 @@ const [Modal, modalApi] = useVbenModal({
         tagsJson: '[]',
         examplesJson: '[]',
         wordFormsJson: '{}',
+        mustKnow: 0,
+        highFrequency: 0,
         sort: 0,
         status: 1,
       });

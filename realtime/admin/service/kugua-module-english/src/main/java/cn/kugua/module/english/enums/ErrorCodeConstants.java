@@ -91,6 +91,7 @@ public interface ErrorCodeConstants {
     // ========== 自由跟读 1-040-090-000 ==========
     ErrorCode READING_MATERIAL_NOT_EXISTS     = new ErrorCode(1_040_090_000, "自由跟读素材不存在");
     ErrorCode READING_MATERIAL_DUPLICATE      = new ErrorCode(1_040_090_001, "该级别下已有相同英文素材");
+    ErrorCode READING_MATERIAL_SELF_CHECK_INVALID = new ErrorCode(1_040_090_002, "自评结果只能是 correct 或 wrong");
 
     // ========== 配额（LLM/ASR/TTS）1-040-060-000 ==========
     ErrorCode ESC_QUOTA_DEFAULT_NOT_EXISTS = new ErrorCode(1_040_060_000, "默认配额记录不存在");

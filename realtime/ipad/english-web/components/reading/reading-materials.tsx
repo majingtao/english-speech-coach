@@ -1,9 +1,15 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Headphones, Loader2, RefreshCw, Settings, Volume2 } from "lucide-react"
-import { fetchReadingMaterials, fetchReadingTags, type NormalizedReadingMaterial, type ReadingWordForms } from "@/lib/api/reading-material"
+import { ArrowLeft, Eye, EyeOff, Headphones, Loader2, RefreshCw, Settings, Volume2 } from "lucide-react"
+import {
+  fetchReadingMaterialPage,
+  fetchReadingTags,
+  submitReadingSelfCheck,
+  type NormalizedReadingMaterial,
+  type ReadingWordForms,
+} from "@/lib/api/reading-material"
 import { useAiConfig } from "@/lib/exam/use-ai-config"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 import { playVocab, stopWord } from "@/lib/vocab/audio"
@@ -27,45 +33,63 @@ const formLabels: Array<[keyof ReadingWordForms, string]> = [
   ["superlative", "最高级"],
 ]
 
+const PAGE_SIZE = 20
+type ReadingMode = "follow" | "translate"
+type PriorityFilter = "" | "mustKnow" | "highFrequency"
+
 export function ReadingMaterials() {
   const router = useRouter()
   const config = useAiConfig()
   const [items, setItems] = useState<NormalizedReadingMaterial[]>([])
+  const [total, setTotal] = useState(0)
+  const [pageNo, setPageNo] = useState(1)
   const [tags, setTags] = useState<string[]>([])
   const [activeTag, setActiveTag] = useState("")
   const [activeType, setActiveType] = useState("")
+  const [activePriority, setActivePriority] = useState<PriorityFilter>("")
+  const [readingMode, setReadingMode] = useState<ReadingMode>("follow")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [speakingText, setSpeakingText] = useState("")
   const [loadingText, setLoadingText] = useState("")
   const [ttsLoading, setTtsLoading] = useState(false)
+  const [expandedIds, setExpandedIds] = useState<Set<number>>(() => new Set())
+  const [checkingKey, setCheckingKey] = useState("")
 
-  const filtered = useMemo(() => items.filter((item) => {
-    if (activeTag && !item.tags.includes(activeTag)) return false
-    if (activeType && item.materialType !== activeType) return false
-    return true
-  }), [activeTag, activeType, items])
+  const hasMore = items.length < total
+  const visibleItems = readingMode === "translate"
+    ? items.filter((item) => item.textCn?.trim())
+    : items
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (nextPage = 1, append = false) => {
     setLoading(true)
     setError("")
     try {
-      const [materialList, tagList] = await Promise.all([
-        fetchReadingMaterials({ level: "ket" }),
+      const [page, tagList] = await Promise.all([
+        fetchReadingMaterialPage({
+          level: "ket",
+          materialType: activeType || undefined,
+          tag: activeTag || undefined,
+          priority: activePriority || undefined,
+          pageNo: nextPage,
+          pageSize: PAGE_SIZE,
+        }),
         fetchReadingTags("ket"),
       ])
-      setItems(materialList)
+      setItems((current) => append ? [...current, ...page.list] : page.list)
+      setTotal(page.total)
+      setPageNo(nextPage)
       setTags(tagList)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "自由跟读素材加载失败")
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [activePriority, activeTag, activeType])
 
   useEffect(() => {
-    const timer = window.setTimeout(load, 0)
+    const timer = window.setTimeout(() => load(1, false), 0)
     return () => {
       window.clearTimeout(timer)
       stopTts()
@@ -135,6 +159,57 @@ export function ReadingMaterials() {
     }
   }
 
+  function toggleExpanded(id: number) {
+    setExpandedIds((current) => {
+      const next = new Set(current)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  function changeType(type: string) {
+    setActiveType(type)
+    setExpandedIds(new Set())
+  }
+
+  function changeTag(tag: string) {
+    setActiveTag(tag)
+    setExpandedIds(new Set())
+  }
+
+  function changePriority(priority: PriorityFilter) {
+    setActivePriority(priority)
+    setExpandedIds(new Set())
+  }
+
+  function changeMode(mode: ReadingMode) {
+    setReadingMode(mode)
+    setExpandedIds(new Set())
+  }
+
+  async function markSelfCheck(item: NormalizedReadingMaterial, result: "correct" | "wrong") {
+    const key = `${item.id}:${result}`
+    setCheckingKey(key)
+    setError("")
+    try {
+      const progress = await submitReadingSelfCheck(item.id, result)
+      setItems((current) => current.map((entry) => entry.id === item.id
+        ? {
+            ...entry,
+            correctCount: progress.correctCount,
+            wrongCount: progress.wrongCount,
+            lastResult: progress.lastResult,
+            lastPracticeAt: progress.lastPracticeAt,
+          }
+        : entry))
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "自评提交失败")
+    } finally {
+      setCheckingKey("")
+    }
+  }
+
   return (
     <main className="reading-shell">
       <header className="reading-header">
@@ -149,7 +224,7 @@ export function ReadingMaterials() {
           <button type="button" className="reading-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="语音设置">
             <Settings className="size-5" />
           </button>
-          <button type="button" className="reading-icon-btn" onClick={load} disabled={loading} title="刷新">
+          <button type="button" className="reading-icon-btn" onClick={() => load(1, false)} disabled={loading} title="刷新">
             <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
@@ -165,18 +240,29 @@ export function ReadingMaterials() {
         </section>
       )}
 
+      <section className="reading-filters" aria-label="练习模式">
+        <button type="button" className={readingMode === "follow" ? "active" : ""} onClick={() => changeMode("follow")}>跟读</button>
+        <button type="button" className={readingMode === "translate" ? "active" : ""} onClick={() => changeMode("translate")}>中译英</button>
+      </section>
+
       <section className="reading-filters" aria-label="筛选">
-        <button type="button" className={!activeType ? "active" : ""} onClick={() => setActiveType("")}>全部</button>
+        <button type="button" className={!activeType ? "active" : ""} onClick={() => changeType("")}>全部</button>
         {Object.entries(typeLabels).map(([type, label]) => (
-          <button key={type} type="button" className={activeType === type ? "active" : ""} onClick={() => setActiveType(type)}>{label}</button>
+          <button key={type} type="button" className={activeType === type ? "active" : ""} onClick={() => changeType(type)}>{label}</button>
         ))}
+      </section>
+
+      <section className="reading-filters" aria-label="重点筛选">
+        <button type="button" className={!activePriority ? "active" : ""} onClick={() => changePriority("")}>全部重点</button>
+        <button type="button" className={activePriority === "mustKnow" ? "active" : ""} onClick={() => changePriority("mustKnow")}>必会</button>
+        <button type="button" className={activePriority === "highFrequency" ? "active" : ""} onClick={() => changePriority("highFrequency")}>高频</button>
       </section>
 
       {tags.length > 0 && (
         <section className="reading-tags" aria-label="标签">
-          <button type="button" className={!activeTag ? "active" : ""} onClick={() => setActiveTag("")}>全部标签</button>
+          <button type="button" className={!activeTag ? "active" : ""} onClick={() => changeTag("")}>全部标签</button>
           {tags.map((tag) => (
-            <button key={tag} type="button" className={activeTag === tag ? "active" : ""} onClick={() => setActiveTag(tag)}>{tag}</button>
+            <button key={tag} type="button" className={activeTag === tag ? "active" : ""} onClick={() => changeTag(tag)}>{tag}</button>
           ))}
         </section>
       )}
@@ -184,20 +270,24 @@ export function ReadingMaterials() {
       {loading ? (
         <div className="reading-state"><Loader2 className="size-6 animate-spin" />正在加载</div>
       ) : error ? (
-        <div className="reading-state reading-error"><span>{error}</span><button type="button" onClick={load}>重试</button></div>
-      ) : filtered.length === 0 ? (
+        <div className="reading-state reading-error"><span>{error}</span><button type="button" onClick={() => load(1, false)}>重试</button></div>
+      ) : visibleItems.length === 0 ? (
         <div className="reading-state">当前没有已发布的自由跟读素材</div>
       ) : (
+        <>
         <section className="reading-list">
-          {filtered.map((item) => (
+          {visibleItems.map((item) => {
+            const expanded = expandedIds.has(item.id)
+            const translateHidden = readingMode === "translate" && !expanded
+            return (
             <article key={item.id} className="reading-card">
               <div className="reading-card-main">
                 <span className="reading-type">{typeLabels[item.materialType] || item.materialType}</span>
-                <h2>{item.textEn}</h2>
-                {item.textCn && <p>{item.textCn}</p>}
-                {item.description && <small>{item.description}</small>}
+                <h2>{translateHidden ? item.textCn : item.textEn}</h2>
+                {expanded && item.textCn && <p>{item.textCn}</p>}
+                {expanded && item.description && <small>{item.description}</small>}
               </div>
-              {item.materialType === "word" && item.vocabId ? (
+              {!translateHidden && item.materialType === "word" && item.vocabId ? (
                 <div className="reading-accent-actions">
                   {(["uk", "us"] as const).map((accent) => (
                     <button key={accent} type="button" className="reading-accent-play" onClick={() => speakMaterial(item, accent)} title={accent === "uk" ? "播放英音" : "播放美音"}>
@@ -206,13 +296,31 @@ export function ReadingMaterials() {
                     </button>
                   ))}
                 </div>
-              ) : (
+              ) : !translateHidden ? (
                 <button type="button" className="reading-play" onClick={() => speakMaterial(item)} title="播放">
                   {speakingText === item.textEn || loadingText === item.textEn ? <Loader2 className="size-6 animate-spin" /> : <Volume2 className="size-6" />}
                 </button>
-              )}
+              ) : null}
 
-              {Object.keys(item.wordForms || {}).length > 0 && (
+              <button type="button" className="reading-toggle-detail" onClick={() => toggleExpanded(item.id)}>
+                {expanded ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                {expanded ? "隐藏" : "显示"}
+              </button>
+
+              <div className="reading-self-check">
+                <button type="button" onClick={() => markSelfCheck(item, "correct")} disabled={checkingKey === `${item.id}:correct`}>
+                  {checkingKey === `${item.id}:correct` ? <Loader2 className="size-4 animate-spin" /> : null}
+                  已对
+                </button>
+                <button type="button" className="wrong" onClick={() => markSelfCheck(item, "wrong")} disabled={checkingKey === `${item.id}:wrong`}>
+                  {checkingKey === `${item.id}:wrong` ? <Loader2 className="size-4 animate-spin" /> : null}
+                  已错
+                </button>
+                <span>对 {item.correctCount || 0}</span>
+                <span>错 {item.wrongCount || 0}</span>
+              </div>
+
+              {expanded && Object.keys(item.wordForms || {}).length > 0 && (
                 <div className="reading-forms">
                   {formLabels.map(([key, label]) => item.wordForms[key] && (
                     <span key={key}><b>{label}</b>{item.wordForms[key]}</span>
@@ -220,7 +328,7 @@ export function ReadingMaterials() {
                 </div>
               )}
 
-              {item.examples.length > 0 && (
+              {expanded && item.examples.length > 0 && (
                 <div className="reading-examples">
                   {item.examples.map((example) => (
                     <button key={example.en} type="button" onClick={() => speak(example.en)}>
@@ -240,8 +348,23 @@ export function ReadingMaterials() {
                 </div>
               )}
             </article>
-          ))}
+            )
+          })}
         </section>
+        <div className="reading-load-more">
+          <span>
+            {readingMode === "translate"
+              ? `已显示 ${visibleItems.length} 条（已加载 ${items.length} 条）`
+              : `已显示 ${items.length} / ${total}`}
+          </span>
+          {hasMore && (
+            <button type="button" onClick={() => load(pageNo + 1, true)} disabled={loading}>
+              {loading ? <Loader2 className="size-4 animate-spin" /> : null}
+              加载更多
+            </button>
+          )}
+        </div>
+        </>
       )}
     </main>
   )
