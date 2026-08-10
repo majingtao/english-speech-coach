@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS esc_ket_writing_attempt (
+    id                   BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id              BIGINT       NOT NULL COMMENT 'User ID',
+    task_id              VARCHAR(128) NOT NULL COMMENT 'KET writing task ID',
+    level_code           VARCHAR(32)  NOT NULL DEFAULT 'ket',
+    part                 TINYINT      NOT NULL COMMENT 'KET Writing Part',
+    practice_mode        VARCHAR(32)  NOT NULL COMMENT 'guided/imitate/free',
+    prompt_snapshot_json LONGTEXT     DEFAULT NULL COMMENT 'Task snapshot JSON',
+    learner_info_json    LONGTEXT     DEFAULT NULL COMMENT 'AI model-writing input JSON',
+    ai_draft_text        TEXT         DEFAULT NULL COMMENT 'AI generated model answer',
+    response_text        TEXT         NOT NULL COMMENT 'Student written response',
+    word_count           INT          NOT NULL DEFAULT 0,
+    feedback_json        LONGTEXT     DEFAULT NULL COMMENT 'Structured LLM feedback snapshot',
+    score_label          VARCHAR(32)  DEFAULT NULL COMMENT 'great/almost/practice',
+    tenant_id            BIGINT       NOT NULL DEFAULT 0,
+    creator              VARCHAR(64)  DEFAULT '',
+    create_time          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updater              VARCHAR(64)  DEFAULT '',
+    update_time          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted              BIT(1)       NOT NULL DEFAULT 0,
+    INDEX idx_ket_writing_attempt_user_task (user_id, task_id, create_time),
+    INDEX idx_ket_writing_attempt_task (task_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='KET writing practice attempts';

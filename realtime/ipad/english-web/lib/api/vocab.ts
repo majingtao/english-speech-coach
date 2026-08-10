@@ -157,7 +157,7 @@ export interface EnrollResult {
 
 /**
  * 把已发布词库中用户尚未学过的词批量加入 SRS 队列。
- * 受后端 DAILY_NEW_WORD_CAP（默认 50）限制：超过当日剩余配额会被截短。
+ * 受后端 DAILY_NEW_WORD_CAP（默认 100）限制：超过当日剩余配额会被截短。
  * @param themeCode 可选；非空时只从该主题下挑词
  */
 export async function enrollNewVocabs(
@@ -274,7 +274,7 @@ export async function removeWordFromWordbook(vocabId: number): Promise<void> {
 
 /**
  * 把生词本待学池中尚未学过的词批量加入 SRS 队列。
- * 受后端 DAILY_NEW_WORD_CAP（默认 50）限制；池空返回 count=0。
+ * 受后端 DAILY_NEW_WORD_CAP（默认 100）限制；池空返回 count=0。
  */
 export async function enrollFromWordbook(limit = 25): Promise<EnrollResult> {
   return apiClient.post(`${BASE}/enroll-wordbook`, null, {

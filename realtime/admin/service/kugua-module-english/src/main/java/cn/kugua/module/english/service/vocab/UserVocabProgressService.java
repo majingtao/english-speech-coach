@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserVocabProgressService {
 
     /** 每日新词上限：单用户单日通过 enrollNewWords 加入 SRS 队列的最大词数 */
-    int DAILY_NEW_WORD_CAP = 50;
+    int DAILY_NEW_WORD_CAP = 100;
 
     /** 今日 SRS 复习队列（next_review_at <= now） */
     List<UserVocabProgressDO> getTodayReview(Long userId, int limit);

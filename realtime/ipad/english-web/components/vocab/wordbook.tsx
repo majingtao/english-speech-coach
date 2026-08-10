@@ -158,7 +158,7 @@ export function VocabWordbook() {
       </header>
 
       <p className="wb-intro">
-        输入孩子不会的单词加入生词本（只能加词库里已有的词）。系统每天会自动从这里挑最多 50 个新词进入背诵计划。
+        输入孩子不会的单词加入生词本（只能加词库里已有的词）。系统每天会自动从这里挑最多 100 个新词进入背诵计划。
       </p>
 
       <div className="wb-search">

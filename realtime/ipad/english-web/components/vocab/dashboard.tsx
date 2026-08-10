@@ -29,7 +29,7 @@ interface QuickEntry {
   enabled: boolean
 }
 
-const DAILY_NEW_TARGET = 50
+const DAILY_NEW_TARGET = 100
 
 export function VocabDashboard() {
   const router = useRouter()
@@ -41,13 +41,13 @@ export function VocabDashboard() {
     setLoading(true)
     setError("")
     try {
-      // 每天自动从生词本待学池补新词（后端按每日 50 上限限流，可重复安全调用）
+      // 每天自动从生词本待学池补新词（后端按每日 100 上限限流，可重复安全调用）
       try {
         await enrollFromWordbook(DAILY_NEW_TARGET)
       } catch {
         // best-effort：补词失败不影响复习队列展示
       }
-      const list = await fetchTodayReview(50)
+      const list = await fetchTodayReview(100)
       setQueue(list || [])
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "加载失败"

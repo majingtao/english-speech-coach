@@ -42,7 +42,7 @@ interface AppSection {
 const sections: AppSection[] = [
   {
     key: "speaking",
-    title: "口语考试练习",
+    title: "口语模拟考试",
     subtitle: "Cambridge YLE 官方真题模拟",
     icon: <Mic className="size-5" />,
     items: [
@@ -69,27 +69,29 @@ const sections: AppSection[] = [
     ],
   },
   {
-    key: "dictation",
-    title: "听写训练",
-    subtitle: "按教材进行听写练习",
-    icon: <PenLine className="size-5" />,
-    items: [
-      { key: "dict-primary", label: "小学", icon: <BookOpen className="size-5" />, enabled: true, href: "/dictation" },
-      { key: "dict-junior", label: "初中", icon: <BookOpen className="size-5" />, enabled: false },
-      { key: "dict-senior", label: "高中", icon: <BookOpen className="size-5" />, enabled: false },
-      { key: "dict-flyers", label: "Flyers", icon: <BookOpen className="size-5" />, enabled: false },
-      { key: "dict-ket", label: "KET", icon: <BookOpen className="size-5" />, enabled: false },
-    ],
-  },
-  {
     key: "expression",
-    title: "表达练习",
+    title: "口语练习",
     subtitle: "积累口语与写作常用问句和回答",
     icon: <MessagesSquare className="size-5" />,
     items: [
       { key: "expression-ket", label: "KET 表达", icon: <MessageCircle className="size-5" />, enabled: true, href: "/expression" },
       { key: "reading-ket", label: "自由跟读", icon: <Headphones className="size-5" />, enabled: true, href: "/reading" },
       { key: "expression-flyers", label: "Flyers 表达", icon: <BookOpen className="size-5" />, enabled: false },
+    ],
+  },
+  {
+    key: "dictation",
+    title: "单词默写与写作",
+    subtitle: "按教材进行听写、默写和写作练习",
+    icon: <PenLine className="size-5" />,
+    items: [
+      { key: "dict-primary", label: "小学", icon: <BookOpen className="size-5" />, enabled: true, href: "/dictation" },
+      { key: "ket-spell", label: "KET必默", icon: <PenLine className="size-5" />, enabled: true, href: "/ket-spell" },
+      { key: "ket-writing", label: "KET写作练习", icon: <PenLine className="size-5" />, enabled: true, href: "/ket-writing" },
+      { key: "dict-junior", label: "初中", icon: <BookOpen className="size-5" />, enabled: false },
+      { key: "dict-senior", label: "高中", icon: <BookOpen className="size-5" />, enabled: false },
+      { key: "dict-flyers", label: "Flyers", icon: <BookOpen className="size-5" />, enabled: false },
+      { key: "dict-ket", label: "KET", icon: <BookOpen className="size-5" />, enabled: false },
     ],
   },
   {
@@ -104,6 +106,8 @@ const sections: AppSection[] = [
     ],
   },
 ]
+
+const visibleSections = sections.filter((section) => section.key !== "free-chat")
 
 function QuotaBar({ label, used, total, unit }: { label: string; used: number; total: number; unit: string }) {
   const pct = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0
@@ -242,7 +246,7 @@ export function HomePage() {
 
       {/* Sections */}
       <div className="home-sections">
-        {sections.map((section) => (
+        {visibleSections.map((section) => (
           <section key={section.key} className="home-section">
             <div className="home-section-head">
               <div className="home-section-icon">{section.icon}</div>

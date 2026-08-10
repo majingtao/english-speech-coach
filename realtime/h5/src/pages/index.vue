@@ -24,7 +24,7 @@ interface AppSection {
 const sections: AppSection[] = [
   {
     key: 'speaking',
-    title: '口语考试练习',
+    title: '口语模拟考试',
     help: 'YLE（剑桥少儿）官方等级：Pre A1 Starters / A1 Movers / A2 Flyers',
     items: [
       {
@@ -72,8 +72,8 @@ const sections: AppSection[] = [
   },
   {
     key: 'dictation',
-    title: '听写',
-    help: '按教材进行听写或自定义听写题库',
+    title: '单词默写与写作',
+    help: '按教材进行听写、默写和写作练习',
     items: [
       { key: 'dictation-primary', label: '小学', icon: 'edit', enabled: true, to: '/dictation/primary' },
       { key: 'dictation-junior', label: '初中', icon: 'edit', enabled: false },
@@ -175,7 +175,7 @@ onMounted(() => {
   loadQuota()
 })
 
-const visibleSections = computed(() => sections.filter(section => section.key !== 'speaking-practice'))
+const visibleSections = computed(() => sections.filter(section => !['speaking-practice', 'free-chat'].includes(section.key)))
 </script>
 
 <template>

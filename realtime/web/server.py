@@ -1931,6 +1931,8 @@ MY_WORDS_FILE = os.path.join(STATIC_DIR, "my-words.json")
 VOCAB_GENERATE_PROMPT = _load_judge_prompt("vocab_generate.md")
 GRADE_SENTENCE_PROMPT = _load_judge_prompt("grade_sentence.md")
 EXPRESSION_GRADE_PROMPT = _load_judge_prompt("expression_grade.md")
+KET_WRITING_GRADE_PROMPT = _load_judge_prompt("ket_writing_grade.md")
+KET_WRITING_MODEL_PROMPT = _load_judge_prompt("ket_writing_model.md")
 
 
 def _pick_vocab_llm(provider_override="", model_override=""):
@@ -2233,6 +2235,125 @@ async def expression_grade_handler(request):
     return web.json_response(data)
 
 
+async def ket_writing_grade_handler(request):
+    """POST /py/writing/ket/grade - teacher-style KET writing correction."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+
+    task = body.get("task") or {}
+    response_text = (body.get("response_text") or "").strip()
+    if not isinstance(task, dict) or not response_text:
+        return web.json_response({"error": "task and response_text required"}, status=400)
+
+    auth = _client_authorization(request)
+    if auth:
+        try:
+            await quota_consume(request.app["session"], auth, "llm", 1)
+        except QuotaError as qe:
+            return _quota_rejected_response(qe)
+
+    user_msg = json.dumps({
+        "level": "ket",
+        "mode": body.get("mode") or "guided",
+        "task": {
+            "part": task.get("part"),
+            "type": task.get("type"),
+            "title": task.get("title"),
+            "prompt_en": task.get("promptEn"),
+            "prompt_cn": task.get("promptCn"),
+            "requirements": task.get("requirements") or [],
+            "target_words": task.get("targetWords"),
+            "sample_answer": task.get("sampleAnswer"),
+            "writing_frame": task.get("writingFrame") or [],
+            "picture_prompts": task.get("picturePrompts") or [],
+        },
+        "learner_response": response_text,
+    }, ensure_ascii=False)
+    data = await _vocab_llm_json(
+        request.app["session"],
+        KET_WRITING_GRADE_PROMPT,
+        user_msg,
+        timeout=25,
+        provider_override=body.get("provider") or "",
+        model_override=body.get("model") or "",
+        use_proxy=bool(body.get("use_proxy")),
+    )
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM grading failed"}, status=502)
+
+    dimensions = data.get("dimensions")
+    if not isinstance(dimensions, dict):
+        return web.json_response({"error": "LLM returned an incomplete grading response"}, status=502)
+
+    allowed_levels = {"great", "almost", "practice"}
+    if data.get("level") not in allowed_levels:
+        data["level"] = "almost"
+    labels = {"好", "还差一点", "需要练习"}
+    for key in ("task", "grammar", "spelling", "organization"):
+        if dimensions.get(key) not in labels:
+            dimensions[key] = "还差一点"
+    data["teacher_notes"] = data.get("teacher_notes") if isinstance(data.get("teacher_notes"), list) else []
+    data["corrections"] = data.get("corrections") if isinstance(data.get("corrections"), list) else []
+    data["useful_sentences"] = data.get("useful_sentences") if isinstance(data.get("useful_sentences"), list) else []
+    log.info("[writing] ket graded part=%s level=%s", task.get("part"), data.get("level"))
+    return web.json_response(data)
+
+
+async def ket_writing_model_handler(request):
+    """POST /py/writing/ket/model - generate a learner-personalized KET model answer."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+
+    task = body.get("task") or {}
+    learner_info = body.get("learner_info") or {}
+    if not isinstance(task, dict) or not isinstance(learner_info, dict):
+        return web.json_response({"error": "task and learner_info required"}, status=400)
+
+    auth = _client_authorization(request)
+    if auth:
+        try:
+            await quota_consume(request.app["session"], auth, "llm", 1)
+        except QuotaError as qe:
+            return _quota_rejected_response(qe)
+
+    user_msg = json.dumps({
+        "level": "ket",
+        "task": {
+            "part": task.get("part"),
+            "type": task.get("type"),
+            "title": task.get("title"),
+            "prompt_en": task.get("promptEn"),
+            "prompt_cn": task.get("promptCn"),
+            "requirements": task.get("requirements") or [],
+            "target_words": task.get("targetWords"),
+            "sample_answer": task.get("sampleAnswer"),
+            "writing_frame": task.get("writingFrame") or [],
+            "picture_prompts": task.get("picturePrompts") or [],
+        },
+        "learner_info": learner_info,
+    }, ensure_ascii=False)
+    data = await _vocab_llm_json(
+        request.app["session"],
+        KET_WRITING_MODEL_PROMPT,
+        user_msg,
+        timeout=25,
+        provider_override=body.get("provider") or "",
+        model_override=body.get("model") or "",
+        use_proxy=bool(body.get("use_proxy")),
+    )
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM draft generation failed"}, status=502)
+    if not isinstance(data.get("draft"), str):
+        return web.json_response({"error": "LLM returned an incomplete draft"}, status=502)
+    data["tips_cn"] = data.get("tips_cn") if isinstance(data.get("tips_cn"), list) else []
+    log.info("[writing] ket model generated part=%s", task.get("part"))
+    return web.json_response(data)
+
+
 async def dictation_save_words(request):
     """Save word list back to my-words.json."""
     try:
@@ -2276,6 +2397,8 @@ def create_app():
     app.router.add_route("POST", "/py/vocab/tts", vocab_tts_handler)
     app.router.add_route("POST", "/py/grade_sentence", grade_sentence_handler)
     app.router.add_route("POST", "/py/expression/grade", expression_grade_handler)
+    app.router.add_route("POST", "/py/writing/ket/grade", ket_writing_grade_handler)
+    app.router.add_route("POST", "/py/writing/ket/model", ket_writing_model_handler)
     app.router.add_static("/", STATIC_DIR, show_index=True)
     return app
 
