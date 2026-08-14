@@ -4,12 +4,14 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   BookOpen,
+  BookOpenCheck,
   ChevronDown,
   Headphones,
   Loader2,
   LogOut,
   MessageCircle,
   Mic,
+  Puzzle,
   PenLine,
   MessagesSquare,
   RefreshCw,
@@ -40,6 +42,15 @@ interface AppSection {
 }
 
 const sections: AppSection[] = [
+  {
+    key: "grammar",
+    title: "语法练习",
+    subtitle: "按 KET 高频知识点逐步练习",
+    icon: <Puzzle className="size-5" />,
+    items: [
+      { key: "grammar-ket", label: "KET 语法", icon: <BookOpenCheck className="size-5" />, enabled: true, href: "/grammar" },
+    ],
+  },
   {
     key: "speaking",
     title: "口语模拟考试",
