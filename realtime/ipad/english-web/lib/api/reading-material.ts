@@ -36,8 +36,12 @@ export interface ReadingMaterial {
   audioUsUrl?: string
   mustKnow?: number
   highFrequency?: number
-  correctCount?: number
-  wrongCount?: number
+  mustSpell?: number
+  readCorrectCount?: number
+  readWrongCount?: number
+  spellCorrectCount?: number
+  spellWrongCount?: number
+  lastMode?: "read" | "spell" | ""
   lastResult?: "correct" | "wrong" | ""
   lastPracticeAt?: string
   sort?: number
@@ -76,7 +80,7 @@ export async function fetchReadingMaterials(params?: {
   level?: string
   materialType?: string
   tag?: string
-  priority?: "mustKnow" | "highFrequency"
+  priority?: "mustKnow" | "highFrequency" | "mustSpell"
 }): Promise<NormalizedReadingMaterial[]> {
   const list = await apiClient.get(BASE + "/list", {
     params: {
@@ -98,7 +102,7 @@ export async function fetchReadingMaterialPage(params?: {
   level?: string
   materialType?: string
   tag?: string
-  priority?: "mustKnow" | "highFrequency"
+  priority?: "mustKnow" | "highFrequency" | "mustSpell"
   pageNo?: number
   pageSize?: number
 }): Promise<ReadingMaterialPage> {
@@ -126,17 +130,24 @@ export async function fetchReadingTags(level = "ket"): Promise<string[]> {
 export async function submitReadingSelfCheck(
   id: number,
   result: "correct" | "wrong",
+  mode: "read" | "spell",
 ): Promise<{
   materialId: number
-  correctCount: number
-  wrongCount: number
+  readCorrectCount: number
+  readWrongCount: number
+  spellCorrectCount: number
+  spellWrongCount: number
+  lastMode?: "read" | "spell" | ""
   lastResult?: "correct" | "wrong" | ""
   lastPracticeAt?: string
 }> {
-  return await apiClient.post(BASE + `/${id}/self-check`, { result }) as unknown as {
+  return await apiClient.post(BASE + `/${id}/self-check`, { mode, result }) as unknown as {
     materialId: number
-    correctCount: number
-    wrongCount: number
+    readCorrectCount: number
+    readWrongCount: number
+    spellCorrectCount: number
+    spellWrongCount: number
+    lastMode?: "read" | "spell" | ""
     lastResult?: "correct" | "wrong" | ""
     lastPracticeAt?: string
   }

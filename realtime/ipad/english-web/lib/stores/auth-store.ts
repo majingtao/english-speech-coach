@@ -4,8 +4,10 @@ import { create } from "zustand"
 import {
   clearTokenFromStorage,
   getTokenFromStorage,
+  setAuthTokenToStorage,
   setTokenToStorage,
 } from "@/lib/auth/token"
+import type { LoginResult } from "@/lib/api/auth"
 
 type AuthState = {
   token: string
@@ -13,6 +15,7 @@ type AuthState = {
   isLoggedIn: boolean
   hydrate: () => void
   setToken: (token: string) => void
+  setLoginResult: (result: LoginResult, rememberLogin: boolean) => void
   clearToken: () => void
 }
 
@@ -44,6 +47,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({
       token,
       isLoggedIn: !!token,
+      isHydrated: true,
+    })
+  },
+  setLoginResult: (result, rememberLogin) => {
+    setAuthTokenToStorage({
+      token: result.token,
+      refreshToken: result.refreshToken,
+      rememberLogin,
+      storedAt: Date.now(),
+    })
+    set({
+      token: result.token,
+      isLoggedIn: !!result.token,
       isHydrated: true,
     })
   },

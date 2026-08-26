@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import {
   fetchExpressionItems,
+  fetchExpressionThemes,
   gradeExpression,
   saveExpressionAttempt,
   type ExpressionAnswerLevel,
@@ -52,6 +53,7 @@ export function ExpressionPractice() {
   const config = useAiConfig()
 
   const [items, setItems] = useState<ExpressionItem[]>([])
+  const [themeTitle, setThemeTitle] = useState("")
   const [index, setIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -80,10 +82,12 @@ export function ExpressionPractice() {
 
   useEffect(() => {
     let active = true
-    fetchExpressionItems(themeCode)
-      .then((list) => {
+    Promise.all([fetchExpressionItems(themeCode), fetchExpressionThemes("ket")])
+      .then(([list, themes]) => {
         if (!active) return
         setItems(list)
+        const selectedTheme = themes.find((theme) => theme.code === themeCode)
+        setThemeTitle(selectedTheme?.nameEn || selectedTheme?.nameCn || themeCode)
         if (list[0]?.practiceMode === "writing") setMode("writing")
       })
       .catch((e: unknown) => active && setError(e instanceof Error ? e.message : "练习加载失败"))
@@ -134,7 +138,7 @@ export function ExpressionPractice() {
       setRecordSeconds(0)
       const started = await recorderRef.current.startRecording(setRecordSeconds)
       if (!started) {
-        setError("无法使用麦克风，请检查浏览器权限")
+        setError(recorderRef.current.lastError || "无法使用麦克风，请检查浏览器权限")
         return
       }
       setRecording(true)
@@ -197,7 +201,7 @@ export function ExpressionPractice() {
           <ArrowLeft className="size-5" />
         </button>
         <div className="expression-progress-copy">
-          <h1>Food and Drink</h1>
+          <h1>{themeTitle || "KET Expression"}</h1>
           <p>{index + 1} / {items.length}</p>
         </div>
         <div className="expression-header-actions">
@@ -322,10 +326,15 @@ export function ExpressionPractice() {
           )}
           {grade && <div className="expression-footer-actions">
             <button type="button" className="expression-secondary" onClick={() => { setGrade(null); setResponseText("") }}><RotateCcw className="size-4" />再答一次</button>
-            <button type="button" className="expression-primary" onClick={nextItem}>{index < items.length - 1 ? "下一题" : "完成练习"}<ArrowRight className="size-4" /></button>
           </div>}
         </section>
       )}
+
+      <div className="expression-skip-actions">
+        <button type="button" className="expression-primary" disabled={grading || recording} onClick={nextItem}>
+          {index < items.length - 1 ? "下一题" : "完成练习"}<ArrowRight className="size-4" />
+        </button>
+      </div>
     </main>
   )
 }

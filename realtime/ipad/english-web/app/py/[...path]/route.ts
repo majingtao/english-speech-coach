@@ -3,13 +3,19 @@ import https from "node:https"
 import http from "node:http"
 import type { RequestOptions } from "node:http"
 
-const PY_TARGET = process.env.NEXT_PUBLIC_PY_BASE_URL || "https://127.0.0.1:8443"
+const PY_TARGET = process.env.PY_TARGET || process.env.NEXT_PUBLIC_PY_BASE_URL || "https://127.0.0.1:8443"
 const isHttps = PY_TARGET.startsWith("https")
 
 function buildUrl(segments: string[], search: string) {
   // ASR/TTS/LLM are mounted at the Python root. Content-practice handlers are
   // also called directly by Java under /py, so preserve that upstream prefix.
-  const preservePyPrefix = new Set(["expression", "vocab", "writing", "grade_sentence"])
+  const preservePyPrefix = new Set([
+    "expression",
+    "grade_sentence",
+    "personal-practice",
+    "vocab",
+    "writing",
+  ])
   const upstreamSegments = preservePyPrefix.has(segments[0])
     ? ["py", ...segments]
     : segments

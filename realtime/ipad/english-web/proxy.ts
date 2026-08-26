@@ -10,7 +10,7 @@ function isPublicPath(pathname: string) {
   return false
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   if (isPublicPath(pathname)) {
     // Always allow visiting login pages to avoid redirect loops caused by stale cookies.
@@ -38,5 +38,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|py|.*\\..*).*)"],
+  matcher: ["/((?!api|app-api|admin-api|py|_next/static|_next/image|favicon|.*\\..*).*)"],
 }

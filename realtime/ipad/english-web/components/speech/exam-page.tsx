@@ -485,7 +485,7 @@ export function ExamPage() {
       unlockAudio()
       setRecording(true)
       const ok = await asr.startRecording((sec) => setStatus(`录音中 ${sec}s`, "success"))
-      if (!ok) { setRecording(false); setStatus("麦克风未授权", "error") }
+      if (!ok) { setRecording(false); setStatus(asr.lastError || "麦克风未授权", "error") }
     }
   }
 
@@ -503,10 +503,26 @@ export function ExamPage() {
   const [replayBusyId, setReplayBusyId] = useState<number | null>(null)
   async function replayMessage(msg: ExamMessage, voiceOverride?: string) {
     const target = msg.replay || msg.text
-    if (!target || replayBusyId !== null) return
+    if (!target) return
+    if (replayBusyId === msg.id) {
+      stopTts()
+      setTtsLoading(false)
+      setTtsSpeaking(false)
+      setAvatarState("idle")
+      setReplayBusyId(null)
+      return
+    }
+    if (replayBusyId !== null) return
     setReplayBusyId(msg.id)
     try { await speakText(target, voiceOverride) } catch {}
-    setReplayBusyId(null)
+    setReplayBusyId((current) => current === msg.id ? null : current)
+  }
+
+  function replayButtonState(msg: ExamMessage) {
+    if (replayBusyId !== msg.id) return "播放"
+    if (ttsLoading) return "生成中"
+    if (ttsSpeaking) return "停止"
+    return "处理中"
   }
 
   function renderKetRolePanel(role: "examiner" | "candidateA" | "candidateB") {
@@ -548,12 +564,14 @@ export function ExamPage() {
               {msg.replay && (
                 <button
                   type="button"
-                  className="exam-replay-btn"
+                  className={`exam-replay-btn ${replayBusyId === msg.id ? "exam-replay-btn-active" : ""}`}
                   disabled={replayBusyId !== null && replayBusyId !== msg.id}
                   onClick={() => replayMessage(msg, replayVoice)}
-                  title="重播"
+                  title={replayButtonState(msg)}
+                  aria-label={`${replayButtonState(msg)}这条语音`}
                 >
-                  {replayBusyId === msg.id ? <Loader2 className="size-3 animate-spin" /> : <Volume2 className="size-3" />}
+                  {replayBusyId === msg.id && ttsLoading ? <Loader2 className="size-3 animate-spin" /> : replayBusyId === msg.id && ttsSpeaking ? <Square className="size-3" /> : <Volume2 className="size-3" />}
+                  <span>{replayButtonState(msg)}</span>
                 </button>
               )}
             </div>
@@ -784,11 +802,14 @@ export function ExamPage() {
                         {msg.replay && (
                           <button
                             type="button"
-                            className="exam-replay-btn"
+                            className={`exam-replay-btn ${replayBusyId === msg.id ? "exam-replay-btn-active" : ""}`}
                             disabled={replayBusyId !== null && replayBusyId !== msg.id}
                             onClick={() => replayMessage(msg, replayVoice)}
+                            title={replayButtonState(msg)}
+                            aria-label={`${replayButtonState(msg)}这条语音`}
                           >
-                            {replayBusyId === msg.id ? <Loader2 className="size-3 animate-spin" /> : <Volume2 className="size-3" />}
+                            {replayBusyId === msg.id && ttsLoading ? <Loader2 className="size-3 animate-spin" /> : replayBusyId === msg.id && ttsSpeaking ? <Square className="size-3" /> : <Volume2 className="size-3" />}
+                            <span>{replayButtonState(msg)}</span>
                           </button>
                         )}
                       </div>

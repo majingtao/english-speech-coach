@@ -1,14 +1,38 @@
-Next.js 
-Tailwind 
-shadcn/ui 
-UI组件 
+# EnglishAI iPad 局域网使用
 
-react-use 用于：麦克风状态 屏幕尺寸判断 计时器（口语练习）
-zustand 用于：用户信息 当前练习状态 录音状态 全局数据
-axios： 用于：调后端 API 登录 获取题库 提交练习
-react-hook-form： 用于：登录注册 题目填写 设置页 AI配置
-framer-motion 用来做：页面切换动画 卡片 hover 学习完成动画 录音状态变化
-lucide-react   图标（按钮、菜单、状态）
-class-variance-authority  组件变体（按钮尺寸/样式）
-clsx  class 组合
-tailwind-merge   Tailwind 样式冲突处理
+## 启动
+
+```powershell
+npm run dev
+```
+
+孩子的 iPad 与电脑连接同一 Wi-Fi 后，使用 Safari 打开：
+
+```text
+https://192.168.0.7:53000/login
+```
+
+日常稳定使用建议启动生产预览：
+
+```powershell
+npm run build
+npm run preview:prod:https
+```
+
+## iPad 证书与麦克风
+
+1. 将 `certs/englishai-iphone-cert-package/englishai-rootCA.cer` 传到 iPad，不要传送任何 `*-key.pem` 私钥文件。
+2. 在“设置 > 通用 > VPN 与设备管理”中安装已下载的描述文件。
+3. 在“设置 > 通用 > 关于本机 > 证书信任设置”中完全信任 `EnglishAI Local Root CA`。
+4. 在 Safari 的网站设置中将麦克风设为“允许”。
+5. 关闭旧的 Safari 标签页，再重新打开上述 HTTPS 地址。
+
+如果电脑的局域网 IP 发生变化，需要重新运行 `npm run dev` 生成包含新 IP 的服务器证书，并同步更新 `allowedDevOrigins`。
+
+## 主要技术
+
+- Next.js、Tailwind CSS、shadcn/ui
+- Zustand：用户信息和练习状态
+- Axios：通过同源 `/app-api` 路径访问后端
+- React Hook Form：登录注册和表单
+- Framer Motion：页面和练习状态动画

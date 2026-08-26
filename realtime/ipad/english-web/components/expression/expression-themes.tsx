@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, BookOpenText, ChevronRight, Loader2, RefreshCw } from "lucide-react"
+import { ArrowLeft, BookOpenText, ChevronRight, Loader2, RefreshCw, Users } from "lucide-react"
 import { fetchExpressionThemes, type ExpressionTheme } from "@/lib/api/expression"
 
 export function ExpressionThemes() {
@@ -35,8 +35,8 @@ export function ExpressionThemes() {
           <ArrowLeft className="size-5" />
         </button>
         <div>
-          <h1>表达练习</h1>
-          <p>KET speaking and writing</p>
+          <h1>KET 表达</h1>
+          <p>单题表达与双人互动</p>
         </div>
         <button type="button" className="expression-icon-btn" onClick={load} disabled={loading} title="刷新">
           <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
@@ -46,10 +46,24 @@ export function ExpressionThemes() {
       <section className="expression-intro">
         <BookOpenText className="size-6" />
         <div>
-          <h2>从句型到自由表达</h2>
-          <p>先听分级范文，再替换关键词，最后完成自己的口语或写作回答。</p>
+          <h2>选择训练方式</h2>
+          <p>单题表达练习 Part 1 回答；双人互动练习 Part 2 提问、回应和说明理由。</p>
         </div>
       </section>
+
+      <nav className="expression-mode-entry" aria-label="KET 表达训练方式">
+        <div className="active">
+          <BookOpenText className="size-5" />
+          <span><strong>单题表达</strong><small>主题练习 · Part 1</small></span>
+        </div>
+        <button type="button" onClick={() => router.push("/expression/dialogue")}>
+          <Users className="size-5" />
+          <span><strong>双人互动</strong><small>选择 A/B 角色 · Part 2</small></span>
+          <ChevronRight className="size-4" />
+        </button>
+      </nav>
+
+      <h2 className="expression-list-heading">单题表达主题</h2>
 
       {loading ? (
         <div className="expression-state"><Loader2 className="size-6 animate-spin" />正在加载</div>

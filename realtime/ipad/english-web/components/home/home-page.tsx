@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import {
   BookOpen,
   BookOpenCheck,
+  BookOpenText,
   ChevronDown,
   Headphones,
   Loader2,
@@ -43,15 +44,6 @@ interface AppSection {
 
 const sections: AppSection[] = [
   {
-    key: "grammar",
-    title: "语法练习",
-    subtitle: "按 KET 高频知识点逐步练习",
-    icon: <Puzzle className="size-5" />,
-    items: [
-      { key: "grammar-ket", label: "KET 语法", icon: <BookOpenCheck className="size-5" />, enabled: true, href: "/grammar" },
-    ],
-  },
-  {
     key: "speaking",
     title: "口语模拟考试",
     subtitle: "Cambridge YLE 官方真题模拟",
@@ -86,6 +78,7 @@ const sections: AppSection[] = [
     icon: <MessagesSquare className="size-5" />,
     items: [
       { key: "expression-ket", label: "KET 表达", icon: <MessageCircle className="size-5" />, enabled: true, href: "/expression" },
+      { key: "personal-speaking", label: "专属口语", icon: <Mic className="size-5" />, enabled: true, href: "/personal-speaking" },
       { key: "reading-ket", label: "自由跟读", icon: <Headphones className="size-5" />, enabled: true, href: "/reading" },
       { key: "expression-flyers", label: "Flyers 表达", icon: <BookOpen className="size-5" />, enabled: false },
     ],
@@ -99,10 +92,20 @@ const sections: AppSection[] = [
       { key: "dict-primary", label: "小学", icon: <BookOpen className="size-5" />, enabled: true, href: "/dictation" },
       { key: "ket-spell", label: "KET必默", icon: <PenLine className="size-5" />, enabled: true, href: "/ket-spell" },
       { key: "ket-writing", label: "KET写作练习", icon: <PenLine className="size-5" />, enabled: true, href: "/ket-writing" },
+      { key: "personal-writing", label: "专属写作", icon: <BookOpenText className="size-5" />, enabled: true, href: "/personal-writing" },
       { key: "dict-junior", label: "初中", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-senior", label: "高中", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-flyers", label: "Flyers", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-ket", label: "KET", icon: <BookOpen className="size-5" />, enabled: false },
+    ],
+  },
+  {
+    key: "grammar",
+    title: "语法练习",
+    subtitle: "按 KET 高频知识点逐步练习",
+    icon: <Puzzle className="size-5" />,
+    items: [
+      { key: "grammar-ket", label: "KET 语法", icon: <BookOpenCheck className="size-5" />, enabled: true, href: "/grammar" },
     ],
   },
   {
@@ -112,6 +115,7 @@ const sections: AppSection[] = [
     icon: <BookOpen className="size-5" />,
     items: [
       { key: "vocab-ket", label: "KET 词汇", icon: <Sparkles className="size-5" />, enabled: true, href: "/vocab" },
+      { key: "synonyms-ket", label: "同义词练习", icon: <BookOpenCheck className="size-5" />, enabled: true, href: "/synonyms" },
       { key: "vocab-flyers", label: "Flyers 词汇", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "vocab-pet", label: "PET 词汇", icon: <BookOpen className="size-5" />, enabled: false },
     ],

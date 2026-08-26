@@ -33,10 +33,21 @@ export class AsrRecorder {
   private chunks: Float32Array[] = []
   private timer: ReturnType<typeof setInterval> | null = null
   private _recording = false
+  private _lastError = ""
 
   get recording() { return this._recording }
+  get lastError() { return this._lastError }
 
   async ensureMic(): Promise<boolean> {
+    this._lastError = ""
+    if (!window.isSecureContext) {
+      this._lastError = "当前页面不是可信 HTTPS 连接，请安装并完全信任 EnglishAI 根证书"
+      return false
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      this._lastError = "Safari 未提供麦克风接口，请检查网站权限和证书信任"
+      return false
+    }
     if (this.mediaStream && this.mediaStream.getTracks().some((t) => t.readyState === "live")) {
       if (!this.audioCtx || this.audioCtx.state === "closed")
         this.audioCtx = new AudioContext()
@@ -48,7 +59,15 @@ export class AsrRecorder {
       this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } })
       this.audioCtx = new AudioContext()
       return true
-    } catch {
+    } catch (error: unknown) {
+      const name = error instanceof DOMException ? error.name : ""
+      this._lastError = name === "NotAllowedError"
+        ? "麦克风访问被拒绝，请在 Safari 的网站设置中允许麦克风"
+        : name === "NotFoundError"
+          ? "没有检测到可用的麦克风"
+          : error instanceof Error
+            ? `麦克风启动失败：${error.message}`
+            : "麦克风启动失败"
       return false
     }
   }

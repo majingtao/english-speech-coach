@@ -34,6 +34,7 @@ import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/ex
 type PracticeMode = "guided" | "imitate" | "free"
 
 const tasks = tasksData as KetWritingTask[]
+const TASKS_PER_PAGE = 10
 
 const modeLabels: Record<PracticeMode, string> = {
   guided: "跟写",
@@ -82,6 +83,7 @@ export function KetWritingPractice() {
   const [taskList, setTaskList] = useState<KetWritingTask[]>(tasks)
   const [taskLoadError, setTaskLoadError] = useState("")
   const [taskIndex, setTaskIndex] = useState(0)
+  const [taskPage, setTaskPage] = useState(1)
   const [mode, setMode] = useState<PracticeMode>("guided")
   const [answer, setAnswer] = useState("")
   const [grade, setGrade] = useState<KetWritingGradeResult | null>(null)
@@ -100,6 +102,11 @@ export function KetWritingPractice() {
   const task = taskList[taskIndex] || taskList[0]
   const wordCount = useMemo(() => countWords(answer), [answer])
   const filteredTasks = taskList
+  const totalTaskPages = Math.max(1, Math.ceil(filteredTasks.length / TASKS_PER_PAGE))
+  const safeTaskPage = Math.min(taskPage, totalTaskPages)
+  const taskPageStart = (safeTaskPage - 1) * TASKS_PER_PAGE
+  const taskPageEnd = Math.min(taskPageStart + TASKS_PER_PAGE, filteredTasks.length)
+  const pagedTasks = filteredTasks.slice(taskPageStart, taskPageEnd)
   const partLabel = task.part === 6 ? "Part 6 短邮件" : "Part 7 看图故事"
   const sourceLabel = task.sourceUnit ? `Unit ${task.sourceUnit}` : `Page ${task.sourcePage || ""}`.trim()
   const draftFields = task.aiDraftFields?.length ? task.aiDraftFields : fallbackDraftFields
@@ -111,6 +118,7 @@ export function KetWritingPractice() {
         if (!active || data.length === 0) return
         setTaskList(data)
         setTaskIndex(0)
+        setTaskPage(1)
         setAnswer("")
         setGrade(null)
         setMode(data[0]?.part === 7 ? "imitate" : "guided")
@@ -150,6 +158,7 @@ export function KetWritingPractice() {
 
   function selectTask(nextIndex: number) {
     setTaskIndex(nextIndex)
+    setTaskPage(Math.floor(nextIndex / TASKS_PER_PAGE) + 1)
     setAnswer("")
     setGrade(null)
     setError("")
@@ -294,19 +303,44 @@ export function KetWritingPractice() {
           </div>
           {taskLoadError && <p className="ket-writing-bank-warning">{taskLoadError}</p>}
           <div className="ket-writing-task-list">
-            {filteredTasks.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                className={index === taskIndex ? "active" : ""}
-                onClick={() => selectTask(index)}
-              >
-                <span>{item.part === 6 ? "邮件" : "故事"}</span>
-                <strong>{item.title}</strong>
-                <small>{item.sourceUnit ? `Unit ${item.sourceUnit}` : `Page ${item.sourcePage || ""}`.trim()} · {item.targetWords} words</small>
-              </button>
-            ))}
+            {pagedTasks.map((item, index) => {
+              const realIndex = taskPageStart + index
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={realIndex === taskIndex ? "active" : ""}
+                  onClick={() => selectTask(realIndex)}
+                >
+                  <span>{item.part === 6 ? "邮件" : "故事"}</span>
+                  <strong>{item.title}</strong>
+                  <small>{item.sourceUnit ? `Unit ${item.sourceUnit}` : `Page ${item.sourcePage || ""}`.trim()} · {item.targetWords} words</small>
+                </button>
+              )
+            })}
           </div>
+          {filteredTasks.length > TASKS_PER_PAGE && (
+            <div className="ket-writing-pagination" aria-label="题库分页">
+              <button
+                type="button"
+                disabled={safeTaskPage <= 1}
+                onClick={() => setTaskPage((page) => Math.max(1, page - 1))}
+              >
+                上一页
+              </button>
+              <span>
+                {taskPageStart + 1}-{taskPageEnd} / {filteredTasks.length}
+                <b>{safeTaskPage}/{totalTaskPages}</b>
+              </span>
+              <button
+                type="button"
+                disabled={safeTaskPage >= totalTaskPages}
+                onClick={() => setTaskPage((page) => Math.min(totalTaskPages, page + 1))}
+              >
+                下一页
+              </button>
+            </div>
+          )}
         </aside>
 
         <section className="ket-writing-main">

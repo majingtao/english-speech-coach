@@ -4,26 +4,24 @@ import { useEffect, useState } from "react"
 import type { InputHTMLAttributes, ReactNode } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { BookOpen, Eye, EyeOff, Loader2, Mail, MessageSquareMore, Mic, Sparkles, UserCircle2 } from "lucide-react"
+import { BookOpen, Check, Eye, EyeOff, Loader2, Mail, MessageSquareMore, Mic, Sparkles } from "lucide-react"
 import { z } from "zod"
 import {
   checkEmail,
   checkMobile,
-  checkUsername,
+  type LoginResult,
   loginByEmail,
   loginBySms,
-  loginByUsername,
   registerByEmail,
-  registerByUsername,
   sendEmailCode,
   sendSmsCode,
 } from "@/lib/api/auth"
 import { useAuthStore } from "@/lib/stores/auth-store"
 import { getErrorMessage } from "@/lib/utils/error"
+import { REMEMBER_LOGIN_DAYS } from "@/lib/auth/constants"
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const mobilePattern = /^1[3-9]\d{9}$/
-const usernamePattern = /^[a-zA-Z0-9_]{4,20}$/
 
 const emailLoginSchema = z.object({
   email: z.string().regex(emailPattern, "请输入正确的邮箱"),
@@ -36,16 +34,6 @@ const emailRegisterSchema = z.object({
   password: z.string().min(6, "密码至少 6 位"),
 })
 
-const accountLoginSchema = z.object({
-  username: z.string().min(1, "请输入账号"),
-  password: z.string().min(1, "请输入密码"),
-})
-
-const accountRegisterSchema = z.object({
-  username: z.string().regex(usernamePattern, "账号 4-20 位，仅字母/数字/下划线"),
-  password: z.string().min(6, "密码至少 6 位"),
-})
-
 const smsSchema = z.object({
   mobile: z.string().regex(mobilePattern, "请输入中国大陆手机号"),
   code: z.string().min(4, "请输入验证码"),
@@ -53,16 +41,13 @@ const smsSchema = z.object({
 
 type EmailLoginForm = z.infer<typeof emailLoginSchema>
 type EmailRegisterForm = z.infer<typeof emailRegisterSchema>
-type AccountLoginForm = z.infer<typeof accountLoginSchema>
-type AccountRegisterForm = z.infer<typeof accountRegisterSchema>
 type SmsForm = z.infer<typeof smsSchema>
 
 type Mode = "login" | "register"
-type Channel = "email" | "account" | "sms"
+type Channel = "email" | "sms"
 
 const channelMap: Record<Channel, { label: string; icon: ReactNode }> = {
   email: { label: "邮箱", icon: <Mail className="size-4" /> },
-  account: { label: "账号", icon: <UserCircle2 className="size-4" /> },
   sms: { label: "手机", icon: <MessageSquareMore className="size-4" /> },
 }
 
@@ -96,7 +81,7 @@ export function LoginCard({
   initialChannel,
   initialRedirect,
 }: LoginCardProps) {
-  const { setToken, hydrate, isHydrated, isLoggedIn } = useAuthStore()
+  const { setLoginResult, hydrate, isHydrated, isLoggedIn } = useAuthStore()
 
   const [mode, setMode] = useState<Mode>(initialMode)
   const [channel, setChannel] = useState<Channel>(initialChannel)
@@ -106,6 +91,7 @@ export function LoginCard({
   const [status, setStatus] = useState<{ type: "error" | "success"; message: string } | null>(null)
   const [redirect] = useState(initialRedirect)
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({})
+  const [rememberLogin, setRememberLogin] = useState(true)
 
   function switchMode(next: Mode) {
     setMode(next)
@@ -170,14 +156,6 @@ export function LoginCard({
     resolver: zodResolver(emailRegisterSchema),
     defaultValues: { email: "", code: "", password: "" },
   })
-  const accountLoginForm = useForm<AccountLoginForm>({
-    resolver: zodResolver(accountLoginSchema),
-    defaultValues: { username: "", password: "" },
-  })
-  const accountRegisterForm = useForm<AccountRegisterForm>({
-    resolver: zodResolver(accountRegisterSchema),
-    defaultValues: { username: "", password: "" },
-  })
   const smsLoginForm = useForm<SmsForm>({
     resolver: zodResolver(smsSchema),
     defaultValues: { mobile: "", code: "" },
@@ -187,8 +165,8 @@ export function LoginCard({
     defaultValues: { mobile: "", code: "" },
   })
 
-  async function handleAuthSuccess(token: string, successText: string) {
-    setToken(token)
+  async function handleAuthSuccess(result: LoginResult, successText: string) {
+    setLoginResult(result, rememberLogin)
     setStatus({ type: "success", message: successText })
     window.location.href = redirect
   }
@@ -210,7 +188,7 @@ export function LoginCard({
       await emailLoginForm.handleSubmit(async (values) => {
         await handleSubmit(async () => {
           const result = await loginByEmail(values)
-          await handleAuthSuccess(result.token, "登录成功")
+          await handleAuthSuccess(result, "登录成功")
         })
       })()
       return
@@ -220,31 +198,7 @@ export function LoginCard({
       await emailRegisterForm.handleSubmit(async (values) => {
         await handleSubmit(async () => {
           const result = await registerByEmail(values)
-          await handleAuthSuccess(result.token, "注册成功")
-        })
-      })()
-      return
-    }
-
-    if (mode === "login" && channel === "account") {
-      await accountLoginForm.handleSubmit(async (values) => {
-        await handleSubmit(async () => {
-          const result = await loginByUsername(values)
-          await handleAuthSuccess(result.token, "登录成功")
-        })
-      })()
-      return
-    }
-
-    if (mode === "register" && channel === "account") {
-      await accountRegisterForm.handleSubmit(async (values) => {
-        await handleSubmit(async () => {
-          const exists = await checkUsername(values.username)
-          if (exists) {
-            throw new Error("该账号已被注册")
-          }
-          const result = await registerByUsername(values)
-          await handleAuthSuccess(result.token, "注册成功")
+          await handleAuthSuccess(result, "注册成功")
         })
       })()
       return
@@ -254,7 +208,7 @@ export function LoginCard({
       await smsLoginForm.handleSubmit(async (values) => {
         await handleSubmit(async () => {
           const result = await loginBySms(values)
-          await handleAuthSuccess(result.token, "登录成功")
+          await handleAuthSuccess(result, "登录成功")
         })
       })()
       return
@@ -263,7 +217,7 @@ export function LoginCard({
     await smsRegisterForm.handleSubmit(async (values) => {
       await handleSubmit(async () => {
         const result = await loginBySms(values)
-        await handleAuthSuccess(result.token, "注册成功")
+        await handleAuthSuccess(result, "注册成功")
       })
     })()
   }
@@ -313,7 +267,7 @@ export function LoginCard({
           return
         }
       }
-      await sendSmsCode({ mobile, scene: 2 })
+      await sendSmsCode({ mobile, scene: 1 })
       setStatus({ type: "success", message: "验证码已发送" })
     } catch (error) {
       setSmsCountdown(0)
@@ -462,68 +416,6 @@ export function LoginCard({
             </>
           ) : null}
 
-          {mode === "login" && channel === "account" ? (
-            <>
-              <FormInput
-                autoComplete="username"
-                error={accountLoginForm.formState.errors.username?.message}
-                label="账号"
-                placeholder="请输入账号"
-                type="text"
-                {...accountLoginForm.register("username")}
-              />
-              <FormInput
-                autoComplete="current-password"
-                error={accountLoginForm.formState.errors.password?.message}
-                label="密码"
-                placeholder="请输入密码"
-                type={showPassword["account-login"] ? "text" : "password"}
-                action={
-                  <button
-                    className="password-toggle"
-                    aria-label="显示或隐藏密码"
-                    onClick={() => togglePassword("account-login")}
-                    type="button"
-                  >
-                    {showPassword["account-login"] ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
-                }
-                {...accountLoginForm.register("password")}
-              />
-            </>
-          ) : null}
-
-          {mode === "register" && channel === "account" ? (
-            <>
-              <FormInput
-                autoComplete="username"
-                error={accountRegisterForm.formState.errors.username?.message}
-                label="账号"
-                placeholder="4-20位 字母/数字/下划线"
-                type="text"
-                {...accountRegisterForm.register("username")}
-              />
-              <FormInput
-                autoComplete="new-password"
-                error={accountRegisterForm.formState.errors.password?.message}
-                label="密码"
-                placeholder="至少 6 位"
-                type={showPassword["account-register"] ? "text" : "password"}
-                action={
-                  <button
-                    className="password-toggle"
-                    aria-label="显示或隐藏密码"
-                    onClick={() => togglePassword("account-register")}
-                    type="button"
-                  >
-                    {showPassword["account-register"] ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
-                }
-                {...accountRegisterForm.register("password")}
-              />
-            </>
-          ) : null}
-
           {channel === "sms" ? (
             <>
               <FormInput
@@ -571,6 +463,22 @@ export function LoginCard({
             <p className={status.type === "error" ? "status is-error" : "status is-success"}>
               {status.message}
             </p>
+          ) : null}
+
+          {mode === "login" ? (
+            <label className="remember-login">
+              <input
+                checked={rememberLogin}
+                onChange={(event) => setRememberLogin(event.target.checked)}
+                type="checkbox"
+              />
+              <span className="remember-login-box">
+                {rememberLogin ? <Check className="size-3.5" /> : null}
+              </span>
+              <span>
+                保持登录 {REMEMBER_LOGIN_DAYS} 天
+              </span>
+            </label>
           ) : null}
 
           <button className="submit-btn" disabled={submitting} type="submit">

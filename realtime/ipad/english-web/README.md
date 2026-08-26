@@ -1,5 +1,26 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## 孩子日常使用（推荐）
+
+孩子在 iPad 上日常练习时使用生产预览模式，避免依赖 Next.js 开发热更新。
+
+在本目录 `ipad/english-web` 中执行：
+
+```powershell
+npm run build
+npm run preview:prod:https
+```
+
+- `npm run build`：生成最新生产版本；代码发生变化后需要重新执行。
+- `npm run preview:prod:https`：通过 HTTPS 启动生产预览服务。
+- iPad 与电脑连接同一 Wi-Fi 后，使用 Safari 打开：
+
+```text
+https://192.168.0.7:53000/login
+```
+
+首次使用时，还需要按照 [README_USER.md](./README_USER.md) 安装并完全信任 `EnglishAI Local Root CA` 证书。
+
 ## Getting Started
 
 First, run the development server:

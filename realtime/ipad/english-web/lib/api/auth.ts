@@ -9,12 +9,14 @@ type YudaoAuthResp = {
 
 export type LoginResult = {
   token: string
+  refreshToken: string
   expiresIn: number
 }
 
 function toLoginResult(data: YudaoAuthResp): LoginResult {
   return {
     token: data.accessToken,
+    refreshToken: data.refreshToken,
     expiresIn: Math.floor((data.expiresTime - Date.now()) / 1000),
   }
 }
@@ -47,7 +49,7 @@ export async function registerByUsername(params: { username: string; password: s
 export async function sendSmsCode(params: { mobile: string; scene?: number }) {
   await apiClient.post("/app-api/member/auth/send-sms-code", {
     mobile: params.mobile,
-    scene: params.scene ?? 2,
+    scene: params.scene ?? 1,
   })
 }
 
@@ -75,4 +77,11 @@ export async function checkMobile(mobile: string) {
 
 export async function logout() {
   await apiClient.post("/app-api/member/auth/logout")
+}
+
+export async function refreshAccessToken(refreshToken: string) {
+  const data = await apiClient.post("/app-api/member/auth/refresh-token", null, {
+    params: { refreshToken },
+  }) as unknown as YudaoAuthResp
+  return toLoginResult(data)
 }

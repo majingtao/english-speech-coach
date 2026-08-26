@@ -17,8 +17,7 @@ export default async function LoginPage({
   const redirectParam = toSingle(params.redirect)
 
   const initialMode = modeParam === "register" ? "register" : "login"
-  const initialChannel =
-    channelParam === "account" || channelParam === "sms" ? channelParam : "email"
+  const initialChannel = channelParam === "email" ? "email" : "sms"
   const initialRedirect =
     redirectParam && redirectParam.startsWith("/") ? redirectParam : "/"
 

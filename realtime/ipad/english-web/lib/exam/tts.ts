@@ -8,6 +8,8 @@ let _ttsAudioCtx: AudioContext | null = null
 let _ttsSourceNode: AudioBufferSourceNode | null = null
 let _ttsResolve: (() => void) | null = null
 let _ttsObjectUrl: string | null = null
+let _ttsAbortController: AbortController | null = null
+let _ttsRunId = 0
 
 const ttsAudio = typeof window !== "undefined" ? new Audio() : null
 if (ttsAudio) {
@@ -21,6 +23,12 @@ function _getTtsAudioCtx() {
   if (_ttsAudioCtx.state === "suspended")
     _ttsAudioCtx.resume().catch(() => {})
   return _ttsAudioCtx
+}
+
+function isAppleTouchDevice() {
+  if (typeof window === "undefined") return false
+  const nav = window.navigator
+  return /iPad|iPhone|iPod/.test(nav.userAgent) || (nav.platform === "MacIntel" && nav.maxTouchPoints > 1)
 }
 
 export function unlockAudio() {
@@ -75,6 +83,9 @@ export function extractEnglishText(text: string) {
 }
 
 export function stopTts() {
+  _ttsRunId += 1
+  _ttsAbortController?.abort()
+  _ttsAbortController = null
   if (typeof window !== "undefined" && "speechSynthesis" in window)
     window.speechSynthesis.cancel()
   if (ttsAudio) {
@@ -115,6 +126,10 @@ async function playWithHtmlAudio(arrayBuf: ArrayBuffer, contentType: string) {
     const fail = () => {
       ttsAudio.removeEventListener("ended", done)
       ttsAudio.removeEventListener("error", fail)
+      if (_ttsObjectUrl) {
+        URL.revokeObjectURL(_ttsObjectUrl)
+        _ttsObjectUrl = null
+      }
       if (_ttsResolve === resolve) _ttsResolve = null
       reject(new Error("HTMLAudio playback failed"))
     }
@@ -129,8 +144,7 @@ async function playWithHtmlAudio(arrayBuf: ArrayBuffer, contentType: string) {
 
 export async function speakWithSystem(text: string, voiceName: string) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return
-  window.speechSynthesis.cancel()
-  if (_ttsResolve) { _ttsResolve(); _ttsResolve = null }
+  stopTts()
   const toSpeak = extractEnglishText(text)
   if (!toSpeak) return
   await new Promise<void>((resolve) => {
@@ -163,6 +177,7 @@ export async function speakWithServer(
   },
 ) {
   stopTts()
+  const runId = _ttsRunId
   const toSpeak = extractEnglishText(text)
   if (!toSpeak) return
   unlockAudio()
@@ -175,7 +190,13 @@ export async function speakWithServer(
   else if (engine === "qwen-tts") { body.voice = voiceName || "Chelsie" }
 
   const ctrl = new AbortController()
-  const timer = setTimeout(() => ctrl.abort(), 45000)
+  _ttsAbortController = ctrl
+  let timedOut = false
+  const timer = setTimeout(() => {
+    timedOut = true
+    ctrl.abort()
+  }, 45000)
+  const isCurrentRun = () => runId === _ttsRunId && !ctrl.signal.aborted
   try {
     const res = await pyFetch(endpoints.tts(), {
       method: "POST",
@@ -184,28 +205,63 @@ export async function speakWithServer(
       signal: ctrl.signal,
     })
     clearTimeout(timer)
-    if (await handleAuthRejection(res)) { callbacks.onLoadingChange(false); return }
+    if (await handleAuthRejection(res)) { if (isCurrentRun()) callbacks.onLoadingChange(false); return }
     if (!res.ok) throw new Error(`TTS 请求失败 ${res.status}`)
-    if (await handleQuotaRejection(res)) { callbacks.onLoadingChange(false); return }
+    if (await handleQuotaRejection(res)) { if (isCurrentRun()) callbacks.onLoadingChange(false); return }
     const arrayBuf = await res.arrayBuffer()
-    if (arrayBuf.byteLength < 256) return
+    if (!isCurrentRun() || arrayBuf.byteLength < 256) return
+
+    // iOS Safari is more reliable with the native MP3 decoder than with
+    // decoding the response through Web Audio after an async fetch.
+    if (isAppleTouchDevice()) {
+      callbacks.onLoadingChange(false)
+      callbacks.onSpeakingChange(true)
+      try {
+        await playWithHtmlAudio(arrayBuf, res.headers.get("content-type") || "audio/mpeg")
+        if (isCurrentRun()) callbacks.onSpeakingChange(false)
+        return
+      } catch (err) {
+        if (!isCurrentRun()) return
+        callbacks.onSpeakingChange(false)
+        console.warn("[tts] native audio playback failed, trying Web Audio", err)
+      }
+    }
+
     const ctx = _getTtsAudioCtx()
     if (ctx.state === "suspended") await ctx.resume()
+    if (!isCurrentRun()) return
     if (ctx.state === "suspended") {
       callbacks.onLoadingChange(false)
       callbacks.onSpeakingChange(true)
       await playWithHtmlAudio(arrayBuf, res.headers.get("content-type") || "audio/mpeg")
-      callbacks.onSpeakingChange(false)
+      if (isCurrentRun()) callbacks.onSpeakingChange(false)
       return
     }
-    const audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0))
+    let audioBuf: AudioBuffer
+    try {
+      audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0))
+    } catch (err) {
+      if (!isCurrentRun()) return
+      callbacks.onLoadingChange(false)
+      callbacks.onSpeakingChange(true)
+      try {
+        await playWithHtmlAudio(arrayBuf, res.headers.get("content-type") || "audio/mpeg")
+        if (isCurrentRun()) callbacks.onSpeakingChange(false)
+        return
+      } catch (fallbackErr) {
+        callbacks.onSpeakingChange(false)
+        console.warn("[tts] Web Audio decode failed and native fallback failed", err, fallbackErr)
+        throw fallbackErr
+      }
+    }
+    if (!isCurrentRun()) return
     callbacks.onLoadingChange(false)
     try {
       await new Promise<void>((resolve) => {
         _ttsResolve = resolve
         const done = () => {
-          _ttsSourceNode = null
-          callbacks.onSpeakingChange(false)
+          if (_ttsSourceNode === src) _ttsSourceNode = null
+          if (isCurrentRun()) callbacks.onSpeakingChange(false)
           if (_ttsResolve === resolve) _ttsResolve = null
           resolve()
         }
@@ -218,16 +274,22 @@ export async function speakWithServer(
         src.start()
       })
     } catch {
+      if (!isCurrentRun()) return
       callbacks.onSpeakingChange(true)
       await playWithHtmlAudio(arrayBuf, res.headers.get("content-type") || "audio/mpeg")
-      callbacks.onSpeakingChange(false)
+      if (isCurrentRun()) callbacks.onSpeakingChange(false)
     }
   } catch (err) {
+    if (ctrl.signal.aborted) {
+      if (timedOut) throw new Error("语音请求超时，请重试")
+      return
+    }
     console.warn("[tts] playback failed", err)
     throw err
   } finally {
     clearTimeout(timer)
-    callbacks.onLoadingChange(false)
+    if (_ttsAbortController === ctrl) _ttsAbortController = null
+    if (isCurrentRun()) callbacks.onLoadingChange(false)
   }
 }
 
