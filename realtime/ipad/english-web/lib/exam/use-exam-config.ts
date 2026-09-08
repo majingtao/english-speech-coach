@@ -9,14 +9,17 @@ import { useAiConfig } from "./use-ai-config"
 export function useExamConfig(query?: QuestionBankQuery) {
   const aiConfig = useAiConfig()
   const [questionBank, setQuestionBank] = useState<QuestionBank | null>(null)
+  const [questionBankError, setQuestionBankError] = useState("")
   const [voiceOnly, setVoiceOnly] = useState(false)
   const [hideChat, setHideChat] = useState(false)
 
   const loadQuestionBank = useCallback(async () => {
+    setQuestionBankError("")
     try {
       setQuestionBank(await fetchQuestionBank(query))
     } catch (error) {
       console.error("题库加载失败", error)
+      setQuestionBankError(error instanceof Error ? error.message : "题库加载失败")
     }
   }, [query])
 
@@ -26,6 +29,8 @@ export function useExamConfig(query?: QuestionBankQuery) {
   return {
     ...aiConfig,
     questionBank,
+    questionBankError,
+    reloadQuestionBank: loadQuestionBank,
     voiceOnly,
     setVoiceOnly,
     hideChat,

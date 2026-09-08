@@ -19,9 +19,13 @@ function canUseStorage() {
 const REMEMBER_LOGIN_MAX_AGE_SECONDS = 60 * 60 * 24 * REMEMBER_LOGIN_DAYS
 const DEFAULT_LOGIN_MAX_AGE_SECONDS = 60 * 60 * 24 * DEFAULT_LOGIN_DAYS
 
+function getLoginMaxAgeSeconds(rememberLogin: boolean) {
+  return rememberLogin ? REMEMBER_LOGIN_MAX_AGE_SECONDS : DEFAULT_LOGIN_MAX_AGE_SECONDS
+}
+
 function setTokenCookie(token: string, rememberLogin: boolean) {
   const encoded = encodeURIComponent(token)
-  const maxAge = rememberLogin ? REMEMBER_LOGIN_MAX_AGE_SECONDS : DEFAULT_LOGIN_MAX_AGE_SECONDS
+  const maxAge = getLoginMaxAgeSeconds(rememberLogin)
   document.cookie = `${TOKEN_COOKIE_KEY}=${encoded}; Path=/; Max-Age=${maxAge}; SameSite=Lax`
 }
 
@@ -61,12 +65,25 @@ export function getAuthTokenFromStorage() {
   }
 }
 
+export function getActiveAuthTokenFromStorage() {
+  const auth = getAuthTokenFromStorage()
+  if (!auth) {
+    return null
+  }
+  const maxAgeSeconds = getLoginMaxAgeSeconds(auth.rememberLogin)
+  if (Date.now() - auth.storedAt > maxAgeSeconds * 1000) {
+    clearTokenFromStorage()
+    return null
+  }
+  return auth
+}
+
 export function getTokenFromStorage() {
-  return getAuthTokenFromStorage()?.token ?? ""
+  return getActiveAuthTokenFromStorage()?.token ?? ""
 }
 
 export function getRefreshTokenFromStorage() {
-  return getAuthTokenFromStorage()?.refreshToken ?? ""
+  return getActiveAuthTokenFromStorage()?.refreshToken ?? ""
 }
 
 export function setAuthTokenToStorage(auth: StoredAuthToken) {
@@ -108,15 +125,7 @@ export function setTokenToStorage(token: string) {
 }
 
 export function isRememberLoginActive() {
-  const auth = getAuthTokenFromStorage()
-  if (!auth?.rememberLogin) {
-    return false
-  }
-  if (Date.now() - auth.storedAt > REMEMBER_LOGIN_MAX_AGE_SECONDS * 1000) {
-    clearTokenFromStorage()
-    return false
-  }
-  return true
+  return getActiveAuthTokenFromStorage()?.rememberLogin === true
 }
 
 export function clearTokenFromStorage() {

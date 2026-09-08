@@ -42,6 +42,8 @@ const ALL_PART_OPTIONS = [
 
 let msgIdCounter = 0
 
+const MIC_HINT_STORAGE_KEY = "exam-mic-hint-seen"
+
 export function ExamPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -71,6 +73,7 @@ export function ExamPage() {
   const [recordDisabled, setRecordDisabled] = useState(true)
   const [startDisabled, setStartDisabled] = useState(false)
   const [recording, setRecording] = useState(false)
+  const [showMicHint, setShowMicHint] = useState(false)
   const [ttsLoading, setTtsLoading] = useState(false)
   const [ttsSpeaking, setTtsSpeaking] = useState(false)
   const [avatarState, setAvatarState] = useState<AvatarState>("idle")
@@ -90,6 +93,7 @@ export function ExamPage() {
 
   const chatRef = useRef<HTMLDivElement>(null)
   const asrRef = useRef(new AsrRecorder())
+  const micHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const stepsRef = useRef<ExamStep[]>([])
   const stepIdxRef = useRef(0)
@@ -105,6 +109,12 @@ export function ExamPage() {
       label: test.label || id,
     }))
   }, [config.questionBank])
+
+  useEffect(() => {
+    return () => {
+      if (micHintTimerRef.current) clearTimeout(micHintTimerRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (testOptions.length > 0 && !selectedTest) {
@@ -461,9 +471,18 @@ export function ExamPage() {
     setInputText("")
   }
 
+  function dismissMicHint() {
+    setShowMicHint(false)
+    if (micHintTimerRef.current) {
+      clearTimeout(micHintTimerRef.current)
+      micHintTimerRef.current = null
+    }
+  }
+
   async function toggleRecording() {
     const asr = asrRef.current
     if (recording) {
+      dismissMicHint()
       setRecording(false)
       setRecordDisabled(true)
       setStatus("识别中...")
@@ -484,8 +503,15 @@ export function ExamPage() {
     } else {
       unlockAudio()
       setRecording(true)
-      const ok = await asr.startRecording((sec) => setStatus(`录音中 ${sec}s`, "success"))
-      if (!ok) { setRecording(false); setStatus(asr.lastError || "麦克风未授权", "error") }
+      const ok = await asr.startRecording((sec) => setStatus(`录音中 ${sec}s · 说完请再次点击麦克风`, "success"))
+      if (!ok) {
+        setRecording(false)
+        setStatus(asr.lastError || "麦克风未授权", "error")
+      } else if (typeof window !== "undefined" && !window.localStorage.getItem(MIC_HINT_STORAGE_KEY)) {
+        window.localStorage.setItem(MIC_HINT_STORAGE_KEY, "1")
+        setShowMicHint(true)
+        micHintTimerRef.current = setTimeout(() => setShowMicHint(false), 5000)
+      }
     }
   }
 
@@ -618,6 +644,12 @@ export function ExamPage() {
 
           {settingsOpen && (
             <div className="exam-settings">
+              {config.questionBankError && (
+                <div className="reading-state reading-error" style={{ marginBottom: 12 }}>
+                  <span>{config.questionBankError}</span>
+                  <button type="button" onClick={() => config.reloadQuestionBank()}>重试</button>
+                </div>
+              )}
               {/* Test & Part */}
               <div className="exam-setting-group">
                 <label className="exam-setting-label">试卷</label>
@@ -636,12 +668,14 @@ export function ExamPage() {
                   {testOptions.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
               </div>
-              <div className="exam-setting-group">
-                <label className="exam-setting-label">起始部分</label>
-                <select className="exam-select" value={selectedPart} onChange={(e) => setSelectedPart(e.target.value)}>
-                  {partOptions.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
-                </select>
-              </div>
+              {!isKet && (
+                <div className="exam-setting-group">
+                  <label className="exam-setting-label">起始部分</label>
+                  <select className="exam-select" value={selectedPart} onChange={(e) => setSelectedPart(e.target.value)}>
+                    {partOptions.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+                  </select>
+                </div>
+              )}
               {isKet && (
                 <div className="exam-setting-group">
                   <label className="exam-setting-label">你的考生位置</label>
@@ -827,18 +861,25 @@ export function ExamPage() {
                 className="exam-input-field"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="输入或点击麦克风回答..."
+                placeholder="点右侧麦克风录音或停止录音"
                 onKeyDown={(e) => { if (e.key === "Enter" && !sendDisabled) sendAnswer() }}
                 disabled={sendDisabled && !waitingRef.current}
               />
-              <button
-                type="button"
-                className={`exam-mic-btn ${recording ? "exam-mic-recording" : ""}`}
-                disabled={recordDisabled && !recording}
-                onClick={toggleRecording}
-              >
-                {recording ? <MicOff className="size-[18px]" /> : <Mic className="size-[18px]" />}
-              </button>
+              <div className="exam-mic-wrap">
+                {showMicHint && (
+                  <div className="exam-mic-hint" role="status">
+                    说完后再次点击麦克风结束录音
+                  </div>
+                )}
+                <button
+                  type="button"
+                  className={`exam-mic-btn ${recording ? "exam-mic-recording" : ""}`}
+                  disabled={recordDisabled && !recording}
+                  onClick={toggleRecording}
+                >
+                  {recording ? <MicOff className="size-[18px]" /> : <Mic className="size-[18px]" />}
+                </button>
+              </div>
               <button
                 type="button"
                 className="exam-send-btn"

@@ -6,6 +6,8 @@ import type { TtsEngineOption } from "@/lib/api/speech"
 import { fetchAiConfig } from "@/lib/api/speech"
 import { fetchVoices, getSystemVoices } from "./tts"
 
+const EDGE_DEFAULT_VOICE = "en-US-AnaNeural"
+
 export function useAiConfig() {
   const [llmModels, setLlmModels] = useState<LlmModel[]>([])
   const [selectedLlmKey, setSelectedLlmKey] = useState("")
@@ -89,8 +91,11 @@ export function useAiConfig() {
   useEffect(() => {
     const options = getVoiceOptions()
     if (options.length && !options.some((voice) => voice.name === selectedVoice)) {
+      const preferred = ttsEngine === "edge"
+        ? options.find((voice) => voice.name === EDGE_DEFAULT_VOICE)
+        : undefined
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedVoice(options[0].name)
+      setSelectedVoice((preferred || options[0]).name)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ttsEngine, edgeVoices, vibeVoices, systemVoices])

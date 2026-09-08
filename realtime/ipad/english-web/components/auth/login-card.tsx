@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import type { InputHTMLAttributes, ReactNode } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { BookOpen, Check, Eye, EyeOff, Loader2, Mail, MessageSquareMore, Mic, Sparkles } from "lucide-react"
+import { BookOpen, Check, Eye, EyeOff, Loader2, Mic, Sparkles } from "lucide-react"
 import { z } from "zod"
 import {
   checkEmail,
@@ -46,21 +46,20 @@ type SmsForm = z.infer<typeof smsSchema>
 type Mode = "login" | "register"
 type Channel = "email" | "sms"
 
-const channelMap: Record<Channel, { label: string; icon: ReactNode }> = {
-  email: { label: "邮箱", icon: <Mail className="size-4" /> },
-  sms: { label: "手机", icon: <MessageSquareMore className="size-4" /> },
-}
-
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string
   error?: string
-  action?: React.ReactNode
+  action?: ReactNode
+  labelAction?: ReactNode
 }
 
-function FormInput({ label, error, action, ...props }: InputProps) {
+function FormInput({ label, error, action, labelAction, ...props }: InputProps) {
   return (
     <label className="field">
-      <span className="field-label">{label}</span>
+      <span className="field-label-row">
+        <span className="field-label">{label}</span>
+        {labelAction}
+      </span>
       <span className="field-control">
         <input className="field-input" {...props} />
         {action}
@@ -92,6 +91,10 @@ export function LoginCard({
   const [redirect] = useState(initialRedirect)
   const [showPassword, setShowPassword] = useState<Record<string, boolean>>({})
   const [rememberLogin, setRememberLogin] = useState(true)
+  const [agreedTerms, setAgreedTerms] = useState(false)
+
+  const actionText = mode === "register" ? "注册" : "登录"
+  const otherChannelText = channel === "sms" ? `邮箱${actionText}` : `手机${actionText}`
 
   function switchMode(next: Mode) {
     setMode(next)
@@ -101,6 +104,10 @@ export function LoginCard({
   function switchChannel(next: Channel) {
     setChannel(next)
     setStatus(null)
+  }
+
+  function toggleChannel() {
+    switchChannel(channel === "sms" ? "email" : "sms")
   }
 
   function togglePassword(key: string) {
@@ -315,20 +322,6 @@ export function LoginCard({
           </button>
         </div>
 
-        <div className="channel-switch">
-          {(Object.keys(channelMap) as Channel[]).map((key) => (
-            <button
-              key={key}
-              className={channel === key ? "is-active" : ""}
-              onClick={() => switchChannel(key)}
-              type="button"
-            >
-              {channelMap[key].icon}
-              {channelMap[key].label}
-            </button>
-          ))}
-        </div>
-
         <form
           className="form-grid"
           onSubmit={(event) => {
@@ -352,6 +345,15 @@ export function LoginCard({
                 label="密码"
                 placeholder="请输入密码"
                 type={showPassword["email-login"] ? "text" : "password"}
+                labelAction={
+                  <button
+                    className="forgot-link"
+                    onClick={() => switchChannel("sms")}
+                    type="button"
+                  >
+                    忘记密码？
+                  </button>
+                }
                 action={
                   <button
                     className="password-toggle"
@@ -379,6 +381,8 @@ export function LoginCard({
               />
               <FormInput
                 autoComplete="one-time-code"
+                inputMode="numeric"
+                maxLength={6}
                 error={emailRegisterForm.formState.errors.code?.message}
                 label="验证码"
                 placeholder="请输入验证码"
@@ -420,6 +424,8 @@ export function LoginCard({
             <>
               <FormInput
                 autoComplete="tel"
+                inputMode="numeric"
+                maxLength={11}
                 error={
                   mode === "login"
                     ? smsLoginForm.formState.errors.mobile?.message
@@ -434,6 +440,8 @@ export function LoginCard({
               />
               <FormInput
                 autoComplete="one-time-code"
+                inputMode="numeric"
+                maxLength={6}
                 error={
                   mode === "login"
                     ? smsLoginForm.formState.errors.code?.message
@@ -460,28 +468,60 @@ export function LoginCard({
           ) : null}
 
           {status ? (
-            <p className={status.type === "error" ? "status is-error" : "status is-success"}>
+            <p
+              className={status.type === "error" ? "status is-error" : "status is-success"}
+              role="alert"
+              aria-live="polite"
+            >
               {status.message}
             </p>
           ) : null}
 
-          {mode === "login" ? (
-            <label className="remember-login">
+          <div className={mode === "login" ? "form-aux" : "form-aux form-aux-end"}>
+            {mode === "login" ? (
+              <label className="remember-login">
+                <input
+                  checked={rememberLogin}
+                  onChange={(event) => setRememberLogin(event.target.checked)}
+                  type="checkbox"
+                />
+                <span className="remember-login-box">
+                  {rememberLogin ? <Check className="size-3.5" /> : null}
+                </span>
+                <span>
+                  保持登录 {REMEMBER_LOGIN_DAYS} 天
+                </span>
+              </label>
+            ) : null}
+            <button className="channel-link" onClick={toggleChannel} type="button">
+              {otherChannelText}
+            </button>
+          </div>
+
+          {mode === "register" ? (
+            <label className="agree-terms">
               <input
-                checked={rememberLogin}
-                onChange={(event) => setRememberLogin(event.target.checked)}
+                checked={agreedTerms}
+                onChange={(event) => setAgreedTerms(event.target.checked)}
                 type="checkbox"
               />
-              <span className="remember-login-box">
-                {rememberLogin ? <Check className="size-3.5" /> : null}
+              <span className="agree-terms-box">
+                {agreedTerms ? <Check className="size-3.5" /> : null}
               </span>
-              <span>
-                保持登录 {REMEMBER_LOGIN_DAYS} 天
+              <span className="agree-terms-text">
+                我已阅读并同意
+                <a href="#" onClick={(event) => event.stopPropagation()}>《用户协议》</a>
+                和
+                <a href="#" onClick={(event) => event.stopPropagation()}>《隐私政策》</a>
               </span>
             </label>
           ) : null}
 
-          <button className="submit-btn" disabled={submitting} type="submit">
+          <button
+            className="submit-btn"
+            disabled={submitting || (mode === "register" && !agreedTerms)}
+            type="submit"
+          >
             {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
             {mode === "register" ? "注册并开始学习" : "登录并继续学习"}
           </button>

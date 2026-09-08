@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, BookOpen, Loader2 } from "lucide-react"
+import { ArrowLeft, BookOpen, Loader2, RefreshCw } from "lucide-react"
 import type { ExamSeries } from "@/lib/api/speech"
 import { fetchExamSeriesList } from "@/lib/api/speech"
 
@@ -25,15 +25,18 @@ export function YleSelector() {
   const [activeLevel, setActiveLevel] = useState<LevelKey>("flyers")
   const [allSeries, setAllSeries] = useState<ExamSeries[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const currentLevel = levels.find((l) => l.key === activeLevel)!
 
   const loadSeries = useCallback(async () => {
     setLoading(true)
+    setError("")
     try {
       setAllSeries(await fetchExamSeriesList())
-    } catch (error) {
-      console.error("[yle-selector] fetch series failed", error)
+    } catch (err) {
+      console.error("[yle-selector] fetch series failed", err)
+      setError(err instanceof Error ? err.message : "真题列表加载失败")
     } finally {
       setLoading(false)
     }
@@ -93,6 +96,14 @@ export function YleSelector() {
           <div className="yle-empty">
             <Loader2 className="size-6 animate-spin text-blue-400" />
             <span>加载中...</span>
+          </div>
+        ) : error ? (
+          <div className="yle-empty">
+            <span>{error}</span>
+            <button type="button" className="yle-back" onClick={() => loadSeries()}>
+              <RefreshCw className="size-4" />
+              <span>重试</span>
+            </button>
           </div>
         ) : currentBooks.length === 0 ? (
           <div className="yle-empty">

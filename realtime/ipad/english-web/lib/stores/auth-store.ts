@@ -3,7 +3,7 @@
 import { create } from "zustand"
 import {
   clearTokenFromStorage,
-  getTokenFromStorage,
+  getActiveAuthTokenFromStorage,
   setAuthTokenToStorage,
   setTokenToStorage,
 } from "@/lib/auth/token"
@@ -25,10 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoggedIn: false,
   hydrate: () => {
     try {
-      const token = getTokenFromStorage()
-      if (token) {
-        setTokenToStorage(token)
-      }
+      const token = getActiveAuthTokenFromStorage()?.token ?? ""
       set({
         token,
         isHydrated: true,

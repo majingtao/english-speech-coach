@@ -679,6 +679,23 @@ body {
 .expression-record strong { font-size: 16px; }
 .expression-record span { color: #61736f; font-size: 12px; }
 .expression-record.recording { border-color: #c4322b; color: #b42318; background: #fff1f0; }
+
+.expression-record-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.expression-mic-hint {
+  margin: 0;
+  width: max-content;
+  max-width: 260px;
+  text-align: center;
+  background: #172133;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  padding: 7px 14px;
+  border-radius: 999px;
+  animation: mic-hint-in 0.2s ease;
+}
 .expression-answer-input { display: flex; flex-direction: column; gap: 7px; color: #475467; font-size: 13px; font-weight: 800; }
 .expression-answer-input textarea {
   width: 100%; resize: vertical; min-height: 112px; padding: 13px 14px; border: 1px solid #cfd7e1; border-radius: 8px;
@@ -704,7 +721,13 @@ body {
 .expression-feedback ul { margin: 0; padding-left: 20px; color: #697586; font-size: 13px; line-height: 1.7; }
 .expression-footer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .expression-footer-actions > :only-child { grid-column: 1 / -1; }
-.expression-skip-actions { display: grid; grid-template-columns: 1fr; }
+.expression-skip-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e4e7ec;
+}
 
 .expression-mode-entry {
   display: grid;
@@ -911,7 +934,7 @@ body {
   max-width: 1180px;
   margin: 0 auto 14px;
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
   align-items: center;
   gap: 10px;
 }
@@ -935,7 +958,7 @@ body {
   max-width: 1180px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px minmax(0, 1fr);
   gap: 14px;
   align-items: start;
 }
@@ -1101,6 +1124,7 @@ body {
   color: #344054;
   font-size: 15px;
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .ket-writing-task-card small {
@@ -1120,13 +1144,14 @@ body {
 
 .ket-writing-pictures {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
 .ket-writing-pictures img,
 .ket-writing-pictures div {
   width: 100%;
+  min-width: 0;
   aspect-ratio: 4 / 3;
   border: 1px dashed #cbd5e1;
   border-radius: 8px;
@@ -1250,6 +1275,7 @@ body {
 .ket-writing-feedback pre {
   margin: 0;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
   color: #344054;
   font: inherit;
   line-height: 1.55;
@@ -1279,13 +1305,14 @@ body {
 
 .ket-writing-ai-fields input {
   width: 100%;
+  min-width: 0;
   height: 38px;
   padding: 0 10px;
   border: 1px solid #cfd7e2;
   border-radius: 8px;
   background: #fff;
   color: #172133;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .ket-writing-ai-fields input:focus {
@@ -1394,7 +1421,7 @@ body {
 
 .ket-writing-dimensions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1476,17 +1503,20 @@ body {
     padding-inline: 12px;
   }
   .ket-writing-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .ket-writing-sidebar {
     position: static;
   }
   .ket-writing-task-list {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(190px, 1fr);
-    overflow-x: auto;
-    padding-bottom: 4px;
+    max-height: 44vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 2px;
+  }
+  .ket-writing-task-list button {
+    min-height: 64px;
   }
   .ket-writing-pagination {
     max-width: 360px;
@@ -1495,7 +1525,7 @@ body {
   .ket-writing-study-grid,
   .ket-writing-pictures,
   .ket-writing-dimensions {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1715,11 +1745,11 @@ h3 {
 }
 
 .mode-switch button {
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
   border-radius: 9px;
   min-height: 40px;
-  color: #6b829e;
+  color: #42597a;
   font-size: 14px;
   font-weight: 700;
   transition: all 0.2s ease;
@@ -1731,49 +1761,124 @@ h3 {
   text-decoration: none;
 }
 
+.mode-switch button:not(.is-active) {
+  border-color: #d7e0ee;
+}
+
+.mode-switch button:not(.is-active):hover {
+  background: rgb(15 43 82 / 5%);
+}
+
+.mode-switch button:not(.is-active):active {
+  background: rgb(15 43 82 / 9%);
+}
+
 .mode-switch button.is-active {
   background: #fff;
   color: #0f2b52;
   box-shadow: 0 1px 3px rgb(15 40 80 / 10%);
 }
 
-.channel-switch {
-  position: relative;
-  z-index: 5;
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
 }
 
-.channel-switch button {
-  border: 1.5px solid #e2eaf6;
-  background: #fff;
-  color: #5a7194;
-  border-radius: 10px;
-  min-height: 40px;
-  font-size: 13px;
+.forgot-link {
+  border: 0;
+  background: transparent;
+  padding: 2px 2px;
+  color: #1256b0;
+  font-size: 12px;
   font-weight: 600;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.form-aux {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form-aux-end {
+  justify-content: flex-end;
+}
+
+.channel-link {
+  border: 0;
+  background: transparent;
+  padding: 4px 2px;
+  color: #1256b0;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.channel-link:hover {
+  text-decoration: underline;
+}
+
+.agree-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #4d6588;
+  font-size: 12px;
+  line-height: 1.5;
+  cursor: pointer;
+  user-select: none;
+}
+
+.agree-terms input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.agree-terms-box {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 6px;
+  border: 1.5px solid #c4d7f2;
+  background: #fff;
+  color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  pointer-events: auto;
-  transition: all 0.2s ease;
+  transition: all 0.15s;
+  flex: 0 0 auto;
+}
+
+.agree-terms input:checked + .agree-terms-box {
+  border-color: #1767cf;
+  background: #1767cf;
+}
+
+.agree-terms:has(input:focus-visible) .agree-terms-box {
+  box-shadow: 0 0 0 3px rgb(42 122 226 / 14%);
+}
+
+.agree-terms-text a {
+  color: #1256b0;
+  font-weight: 600;
   text-decoration: none;
 }
 
-.channel-switch button:hover {
-  border-color: #c4d7f2;
-  background: #f8fbff;
-}
-
-.channel-switch button.is-active {
-  color: #1256b0;
-  border-color: #7fb3f0;
-  background: linear-gradient(180deg, #f5faff 0%, #e8f2ff 100%);
-  box-shadow: 0 0 0 1px rgb(31 102 204 / 8%);
+.agree-terms-text a:hover {
+  text-decoration: underline;
 }
 
 .form-grid {
@@ -1808,6 +1913,7 @@ h3 {
   padding: 0 14px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  scroll-margin-block: 96px;
 }
 
 .field-input::placeholder {
@@ -1834,8 +1940,8 @@ h3 {
   border: 0;
   background: transparent;
   color: #6b829e;
-  min-height: 30px;
-  min-width: 30px;
+  min-height: 36px;
+  min-width: 36px;
   border-radius: 8px;
   display: inline-flex;
   align-items: center;
@@ -3331,6 +3437,44 @@ h3 {
   50% { box-shadow: 0 0 0 8px rgb(220 38 38 / 0%); }
 }
 
+.exam-mic-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.exam-mic-hint {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: -6px;
+  width: max-content;
+  max-width: 200px;
+  background: #0f2b52;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgb(15 40 80 / 25%);
+  z-index: 30;
+  pointer-events: none;
+  animation: mic-hint-in 0.2s ease;
+}
+
+.exam-mic-hint::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 16px;
+  border: 6px solid transparent;
+  border-top-color: #0f2b52;
+}
+
+@keyframes mic-hint-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .exam-send-btn {
   appearance: none;
   border: 0;
@@ -3349,7 +3493,7 @@ h3 {
 
 .exam-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-@media (max-width: 767px) {
+@media (max-width: 767px), (max-width: 1023px) and (max-height: 599px) {
   .exam-ket-room {
     padding: 8px;
   }
@@ -3363,17 +3507,101 @@ h3 {
     max-height: 180px;
   }
 
-  .exam-ket-candidates {
-    grid-template-columns: 1fr;
+  /* Examiner on top + both candidates side-by-side below — a compact
+     2-row layout instead of stacking all three full-width (3 rows). */
+  .exam-ket-role-examiner {
+    min-height: 96px;
+    max-height: 130px;
   }
 
-  .exam-ket-role {
-    min-height: 150px;
+  .exam-ket-candidates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    min-height: 0;
+  }
+
+  .exam-ket-role-candidateA,
+  .exam-ket-role-candidateB {
+    min-height: 130px;
+  }
+
+  .exam-ket-role-header {
+    gap: 6px;
+    min-height: 40px;
+    padding: 6px 8px;
+  }
+
+  .exam-ket-role-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .exam-ket-role-title strong {
+    font-size: 12px;
+  }
+
+  .exam-ket-role-title span {
+    font-size: 10px;
+  }
+
+  .exam-ket-role-history {
+    min-height: 48px;
+    padding: 5px 8px 7px;
+  }
+
+  .exam-ket-line {
+    font-size: 11px;
+  }
+
+  .exam-ket-line-latest {
+    font-size: 12.5px;
+  }
+
+  /* Keep the start button always visible: only the settings list
+     scrolls, the toggle bar and start button stay pinned in view. */
+  .exam-left {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .exam-settings-toggle {
+    flex-shrink: 0;
+  }
+
+  .exam-settings {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .exam-start-area {
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid #e8eef6;
+    box-shadow: 0 -4px 6px -6px rgb(0 0 0 / 10%);
+  }
+
+  /* Before the exam starts, let settings take the full screen instead
+     of a small capped drawer — the exam content below is empty anyway.
+     Starting the exam already flips settingsOpen to false (see
+     startExam()), which collapses this back down and hands the space
+     to the exam/chat area. */
+  .exam-left-open {
+    flex: 1 1 auto;
+    max-height: none;
+  }
+
+  .exam-left-open ~ .exam-right {
+    flex: 0 1 0;
+    min-height: 0;
+    overflow: hidden;
   }
 }
 
 /* Split layout for iPad+ */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 600px), (min-width: 1024px) and (min-height: 500px) {
   .exam-body {
     flex-direction: row;
   }
@@ -3408,7 +3636,7 @@ h3 {
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1024px) and (min-height: 500px) {
   .exam-left {
     width: 360px;
   }
@@ -3509,24 +3737,22 @@ h3 {
     font-size: 12px;
   }
 
-  .mode-switch button,
-  .channel-switch button {
+  .mode-switch button {
     min-height: 36px;
-  }
-
-  .channel-switch {
-    gap: 5px;
-    margin-top: 10px;
-  }
-
-  .channel-switch button {
-    gap: 4px;
-    font-size: 12px;
   }
 
   .form-grid {
     gap: 10px;
     margin-top: 12px;
+  }
+
+  .password-toggle,
+  .code-btn {
+    min-height: 40px;
+  }
+
+  .password-toggle {
+    min-width: 40px;
   }
 
   .field {
@@ -6188,5 +6414,170 @@ h3 {
 
   .personal-score-breakdown {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Phone portrait hardening: iOS zoom, safe areas and touch targets. */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .home-header-inner {
+    height: calc(56px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    padding-right: calc(12px + env(safe-area-inset-right));
+    padding-left: calc(12px + env(safe-area-inset-left));
+  }
+
+  .home-logo {
+    max-width: calc(100vw - 126px);
+    overflow: hidden;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-icon-btn,
+  .home-user-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .home-icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .home-user-btn {
+    padding-right: 9px;
+  }
+
+  .home-hero {
+    padding: 12px;
+  }
+
+  .home-hero-content {
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .home-sections {
+    padding: 2px 12px calc(32px + env(safe-area-inset-bottom));
+    gap: 16px;
+  }
+
+  .home-section {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
+
+  .home-app-card {
+    min-height: 112px;
+    padding: 14px 8px;
+  }
+
+  .home-sheet {
+    right: env(safe-area-inset-right);
+    left: env(safe-area-inset-left);
+  }
+
+  .yle-header,
+  .exam-header,
+  .syn-header,
+  .vocab-header,
+  .vocab-review-header {
+    height: calc(56px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    padding-right: calc(10px + env(safe-area-inset-right));
+    padding-left: calc(10px + env(safe-area-inset-left));
+  }
+
+  .yle-back {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+  }
+
+  .expression-shell,
+  .personal-shell {
+    padding-top: calc(10px + env(safe-area-inset-top));
+    padding-right: calc(10px + env(safe-area-inset-right));
+    padding-left: calc(10px + env(safe-area-inset-left));
+    padding-bottom: calc(30px + env(safe-area-inset-bottom));
+  }
+
+  .expression-icon-btn,
+  .expression-round-action,
+  .personal-header > button,
+  .personal-question-row > button,
+  .personal-reference-list article > button,
+  .personal-answer-block > button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .personal-reference-list article {
+    grid-template-columns: 28px minmax(0, 1fr) 44px;
+  }
+
+  .exam-header {
+    flex-shrink: 0;
+  }
+
+  .exam-left-closed {
+    max-height: none;
+  }
+
+  .exam-images,
+  .exam-images-single {
+    max-height: 30dvh;
+  }
+
+  .exam-input-bar {
+    gap: 6px;
+    padding-right: calc(8px + env(safe-area-inset-right));
+    padding-left: calc(8px + env(safe-area-inset-left));
+  }
+
+  .exam-input-field {
+    min-width: 0;
+    height: 44px;
+    /* iOS Safari auto-zooms the whole page when a focused input's font-size
+       is under 16px, regardless of the viewport's user-scalable setting.
+       That's what pushes the send button off-screen when a child taps into
+       the answer box on a phone/iPad. 16px keeps Safari from zooming at all. */
+    font-size: 16px;
+  }
+
+  .exam-mic-btn,
+  .exam-send-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .personal-stop-audio {
+    right: calc(12px + env(safe-area-inset-right));
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 380px) {
+  .exam-header .yle-back span {
+    display: none;
+  }
+
+  .exam-header .yle-back {
+    padding: 0;
+  }
+
+  .exam-header-title {
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

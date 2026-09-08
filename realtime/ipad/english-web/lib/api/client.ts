@@ -17,6 +17,7 @@ import { useAuthStore } from "@/lib/stores/auth-store"
 
 type AuthRetryConfig = InternalAxiosRequestConfig & {
   skipAuthRefresh?: boolean
+  _retryCount?: number
 }
 
 const apiClient = axios.create({
@@ -26,6 +27,30 @@ const apiClient = axios.create({
   baseURL: "",
   timeout: 15000,
 })
+
+// Mobile networks (wifi<->cellular handoff, weak signal, cold TLS handshake)
+// frequently drop a single request without anything being wrong server-side.
+// Retry idempotent (GET/HEAD) requests a couple of times with backoff before
+// surfacing an error, instead of making the user tap "重试" themselves.
+const MAX_RETRIES = 2
+const RETRY_DELAYS_MS = [600, 1400]
+
+function isIdempotent(method?: string) {
+  const m = (method || "get").toLowerCase()
+  return m === "get" || m === "head"
+}
+
+function isRetryableError(error: AxiosError) {
+  if (!isIdempotent(error.config?.method)) return false
+  // No response at all: network drop, DNS blip, or timeout.
+  if (!error.response) return true
+  // Transient upstream/gateway failures are worth one more try too.
+  return [502, 503, 504].includes(error.response.status)
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 function kickToLogin() {
   useAuthStore.getState().clearToken()
@@ -125,6 +150,14 @@ apiClient.interceptors.response.use(
         return retry
       }
       kickToLogin()
+    } else if (isRetryableError(error)) {
+      const retryConfig = error.config as AuthRetryConfig | undefined
+      const retryCount = retryConfig?._retryCount ?? 0
+      if (retryConfig && retryCount < MAX_RETRIES) {
+        retryConfig._retryCount = retryCount + 1
+        await delay(RETRY_DELAYS_MS[retryCount] ?? 1400)
+        return apiClient.request(retryConfig)
+      }
     }
     const msg =
       error.response?.data?.msg ||

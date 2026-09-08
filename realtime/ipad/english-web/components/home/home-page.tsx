@@ -53,8 +53,6 @@ const sections: AppSection[] = [
       { key: "ket", label: "KET", icon: <MessageCircle className="size-5" />, enabled: true, href: "/speech/ket" },
       { key: "pet", label: "PET", icon: <MessageCircle className="size-5" />, enabled: false },
       { key: "fce", label: "FCE", icon: <MessageCircle className="size-5" />, enabled: false },
-      { key: "ielts", label: "IELTS 雅思", icon: <MessageCircle className="size-5" />, enabled: false },
-      { key: "toefl", label: "TOEFL 托福", icon: <MessageCircle className="size-5" />, enabled: false },
     ],
   },
   {
@@ -67,8 +65,6 @@ const sections: AppSection[] = [
       { key: "chat-ket", label: "KET", icon: <MessageCircle className="size-5" />, enabled: false },
       { key: "chat-pet", label: "PET", icon: <MessageCircle className="size-5" />, enabled: false },
       { key: "chat-fce", label: "FCE", icon: <MessageCircle className="size-5" />, enabled: false },
-      { key: "chat-ielts", label: "IELTS 雅思", icon: <MessageCircle className="size-5" />, enabled: false },
-      { key: "chat-toefl", label: "TOEFL 托福", icon: <MessageCircle className="size-5" />, enabled: false },
     ],
   },
   {
@@ -77,10 +73,10 @@ const sections: AppSection[] = [
     subtitle: "积累口语与写作常用问句和回答",
     icon: <MessagesSquare className="size-5" />,
     items: [
-      { key: "expression-ket", label: "KET 表达", icon: <MessageCircle className="size-5" />, enabled: true, href: "/expression" },
+      { key: "expression-ket", label: "KET口语对话", icon: <MessageCircle className="size-5" />, enabled: true, href: "/expression" },
       { key: "personal-speaking", label: "专属口语", icon: <Mic className="size-5" />, enabled: true, href: "/personal-speaking" },
-      { key: "reading-ket", label: "自由跟读", icon: <Headphones className="size-5" />, enabled: true, href: "/reading" },
-      { key: "expression-flyers", label: "Flyers 表达", icon: <BookOpen className="size-5" />, enabled: false },
+      { key: "reading-ket", label: "跟读练习", icon: <Headphones className="size-5" />, enabled: true, href: "/reading" },
+      { key: "expression-pet", label: "PET口语对话", icon: <BookOpen className="size-5" />, enabled: false },
     ],
   },
   {
@@ -89,12 +85,9 @@ const sections: AppSection[] = [
     subtitle: "按教材进行听写、默写和写作练习",
     icon: <PenLine className="size-5" />,
     items: [
-      { key: "dict-primary", label: "小学", icon: <BookOpen className="size-5" />, enabled: true, href: "/dictation" },
       { key: "ket-spell", label: "KET必默", icon: <PenLine className="size-5" />, enabled: true, href: "/ket-spell" },
       { key: "ket-writing", label: "KET写作练习", icon: <PenLine className="size-5" />, enabled: true, href: "/ket-writing" },
       { key: "personal-writing", label: "专属写作", icon: <BookOpenText className="size-5" />, enabled: true, href: "/personal-writing" },
-      { key: "dict-junior", label: "初中", icon: <BookOpen className="size-5" />, enabled: false },
-      { key: "dict-senior", label: "高中", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-flyers", label: "Flyers", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "dict-ket", label: "KET", icon: <BookOpen className="size-5" />, enabled: false },
     ],

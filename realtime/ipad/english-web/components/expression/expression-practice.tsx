@@ -40,6 +40,8 @@ const answerLevelLabels: Record<AnswerLevelKey, string> = {
   challenge: "进阶回答",
 }
 
+const MIC_HINT_STORAGE_KEY = "expression-mic-hint-seen"
+
 function buildPattern(pattern: string, values: string[]) {
   let index = 0
   return pattern.replace(/___/g, () => values[index++] || "___")
@@ -65,6 +67,8 @@ export function ExpressionPractice() {
   const [grading, setGrading] = useState(false)
   const [recording, setRecording] = useState(false)
   const [recordSeconds, setRecordSeconds] = useState(0)
+  const [showMicHint, setShowMicHint] = useState(false)
+  const micHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [slotIndexes, setSlotIndexes] = useState<number[]>([])
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [ttsLoading, setTtsLoading] = useState(false)
@@ -99,6 +103,12 @@ export function ExpressionPractice() {
     }
   }, [themeCode])
 
+  useEffect(() => {
+    return () => {
+      if (micHintTimerRef.current) clearTimeout(micHintTimerRef.current)
+    }
+  }, [])
+
   async function speak(text: string) {
     if (!config.ttsEnabled || !text.trim()) return
     setError("")
@@ -131,6 +141,14 @@ export function ExpressionPractice() {
     setError("")
   }
 
+  function dismissMicHint() {
+    setShowMicHint(false)
+    if (micHintTimerRef.current) {
+      clearTimeout(micHintTimerRef.current)
+      micHintTimerRef.current = null
+    }
+  }
+
   async function toggleRecording() {
     setError("")
     if (!recorderRef.current) recorderRef.current = new AsrRecorder()
@@ -142,8 +160,14 @@ export function ExpressionPractice() {
         return
       }
       setRecording(true)
+      if (typeof window !== "undefined" && !window.localStorage.getItem(MIC_HINT_STORAGE_KEY)) {
+        window.localStorage.setItem(MIC_HINT_STORAGE_KEY, "1")
+        setShowMicHint(true)
+        micHintTimerRef.current = setTimeout(() => setShowMicHint(false), 5000)
+      }
       return
     }
+    dismissMicHint()
     setRecording(false)
     const result = await recorderRef.current.stopAndRecognize(config.currentAsr?.id || config.selectedAsrId)
     if ("error" in result) setError(result.error)
@@ -286,10 +310,18 @@ export function ExpressionPractice() {
                   </label>
                 ))}
               </div>
-              <button type="button" className="expression-secondary" onClick={() => setResponseText(patternText)}><CheckCircle2 className="size-4" />用这个句子回答</button>
             </>
           ) : <p className="expression-muted">这道题暂时没有句型替换配置。</p>}
-          <button type="button" className="expression-primary" onClick={() => setStage("answer")}>开始自由表达<ArrowRight className="size-4" /></button>
+          <button
+            type="button"
+            className="expression-primary"
+            onClick={() => {
+              if (pattern) setResponseText(patternText)
+              setStage("answer")
+            }}
+          >
+            开始练习<ArrowRight className="size-4" />
+          </button>
         </section>
       )}
 
@@ -303,11 +335,18 @@ export function ExpressionPractice() {
           )}
 
           {mode === "speaking" && (
-            <button type="button" className={`expression-record ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={grading}>
-              {recording ? <Square className="size-6" /> : <Mic className="size-7" />}
-              <strong>{recording ? `${recordSeconds}s 点击停止` : "点击开始回答"}</strong>
-              <span>录音完成后会自动转成文字</span>
-            </button>
+            <div className="expression-record-wrap">
+              <button type="button" className={`expression-record ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={grading}>
+                {recording ? <Square className="size-6" /> : <Mic className="size-7" />}
+                <strong>{recording ? `${recordSeconds}s 点击停止` : "点击开始回答"}</strong>
+                <span>录音完成后会自动转成文字</span>
+              </button>
+              {showMicHint && (
+                <p className="expression-mic-hint" role="status">
+                  说完后再次点击麦克风结束录音
+                </p>
+              )}
+            </div>
           )}
 
           <label className="expression-answer-input">
