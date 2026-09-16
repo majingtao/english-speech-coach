@@ -24,12 +24,14 @@ import datetime
 import io
 import json
 import logging
+import logging.handlers
 import math
 import os
 import ssl
 import struct
 import subprocess
 import sys
+import time
 import uuid
 
 # Force transformers/HuggingFace Hub to work offline — avoids network calls to
@@ -115,8 +117,6 @@ except Exception as _vv_err:
     VibeVoiceStreamingForConditionalGenerationInference = None
     VibeVoiceStreamingProcessor = None
 
-HOST = "0.0.0.0"
-PORT = 8443
 CERT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cert.pem")
 KEY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "key.pem")
 STATIC_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -167,6 +167,15 @@ def load_dotenv():
                 os.environ.setdefault(key, val)
 
 load_dotenv()
+
+# Bind address / port. Dev default (0.0.0.0) is what lets you open
+# https://<your-lan-ip>:8443 from another device (e.g. an iPad) on the same
+# network. On a production server this must be locked down — set
+# PY_HOST=127.0.0.1 in that server's .env so the port only answers on
+# localhost and is reached through a reverse proxy / SSH tunnel, never
+# directly from the internet.
+HOST = os.environ.get("PY_HOST", "0.0.0.0")
+PORT = int(os.environ.get("PY_PORT", "8443"))
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -314,6 +323,83 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 log = logging.getLogger("proxy")
+
+# ---------- Usage/audit log for ASR / TTS / LLM calls ----------
+# Separate from the console/journald debug log above: one JSON line per
+# ASR/TTS/LLM call (who, what, success, how long), written to its own
+# rotating file so it can be grepped/analyzed independently of debug noise
+# and doesn't depend on how long journald happens to retain logs.
+_USAGE_LOG_DIR = os.path.join(STATIC_DIR, "logs")
+os.makedirs(_USAGE_LOG_DIR, exist_ok=True)
+usage_log = logging.getLogger("usage")
+usage_log.setLevel(logging.INFO)
+usage_log.propagate = False  # keep it out of the console/journald stream
+_usage_handler = logging.handlers.RotatingFileHandler(
+    os.path.join(_USAGE_LOG_DIR, "calls.log"),
+    maxBytes=20 * 1024 * 1024,  # 20MB per file
+    backupCount=10,             # ~200MB total before oldest rolls off
+    encoding="utf-8",
+)
+_usage_handler.setFormatter(logging.Formatter("%(message)s"))
+usage_log.addHandler(_usage_handler)
+
+
+def _client_ip(request):
+    """Real browser IP when reached through nginx + the Next.js /py proxy
+    (both forward X-Real-IP untouched); falls back to the direct peer
+    address for local dev, where the browser hits server.py directly."""
+    xri = request.headers.get("X-Real-IP")
+    if xri:
+        return xri
+    xff = request.headers.get("X-Forwarded-For")
+    if xff:
+        return xff.split(",")[0].strip()
+    return request.remote or ""
+
+
+def _client_user(request):
+    """Best-effort caller id for the audit log: decodes the JWT payload the
+    frontend forwards, WITHOUT verifying its signature — this is for "who
+    called this" visibility only, yudao is still the one that actually
+    authorizes/authenticates the request via quota_consume()."""
+    auth = _client_authorization(request)
+    if not auth:
+        return "anonymous"
+    token = auth[7:] if auth.lower().startswith("bearer ") else auth
+    try:
+        parts = token.split(".")
+        if len(parts) != 3:
+            raise ValueError("not a JWT")
+        payload = parts[1]
+        payload += "=" * (-len(payload) % 4)  # restore base64 padding
+        data = json.loads(base64.urlsafe_b64decode(payload))
+        for key in ("userId", "user_id", "id", "sub", "uid"):
+            if key in data:
+                return str(data[key])
+    except Exception:
+        pass
+    # Not decodable (opaque token, unexpected shape, ...) — still let calls
+    # from the same session be correlated without exposing the full token.
+    return "token:" + token[:8]
+
+
+def log_call(kind, request, provider=None, model=None, ok=True, duration_ms=None, **extra):
+    """One JSON line in logs/calls.log per ASR/TTS/LLM call."""
+    entry = {
+        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "kind": kind,
+        "provider": provider,
+        "model": model,
+        "ok": ok,
+        "duration_ms": duration_ms,
+        "user": _client_user(request),
+        "ip": _client_ip(request),
+    }
+    entry.update(extra)
+    try:
+        usage_log.info(json.dumps(entry, ensure_ascii=False))
+    except Exception:
+        log.exception("[usage] failed to write call log")
 
 
 def generate_cert():
@@ -853,51 +939,67 @@ async def asr_offline(request):
     except QuotaError as qe:
         return _quota_rejected_response(qe)
 
-    # ---------- 在线 ASR（火山引擎等）----------
-    if model["type"] == "online":
-        session = request.app["session"]
-        if model_id == "volcano-asr":
-            result = await asr_volcano(session, pcm_data, sample_rate)
-        elif model_id == "dashscope-asr":
-            result = await asr_dashscope(pcm_data, sample_rate)
-        elif model_id == "qwen3-asr-flash":
-            result = await asr_qwen3_flash(pcm_data, sample_rate)
-        else:
-            return web.json_response({"error": f"Unknown online model: {model_id}"}, status=400)
-        if "error" in result:
-            return web.json_response(result, status=502)
-        return web.json_response(result)
-
-    # ---------- 本地离线 ASR（sherpa-onnx websocket）----------
-    port = model["port"]
-    header = struct.pack("<ii", sample_rate, len(pcm_data))
-
-    # Debug: check audio content
-    samples = np.frombuffer(pcm_data, dtype=np.float32)
-    duration = len(samples) / sample_rate
-    max_val = float(np.max(np.abs(samples))) if len(samples) > 0 else 0
-    log.info("[asr] %s audio=%d bytes (%.1fs, max=%.4f, sr=%d) → port %d",
-             model_id, len(pcm_data), duration, max_val, sample_rate, port)
-
+    t0 = time.monotonic()
+    ok = False
+    err_text = None
     try:
-        async with ws_legacy_connect(
-            f"ws://localhost:{port}",
-            max_size=50 * 1024 * 1024,  # 50MB for large audio
-            ping_interval=None,
-        ) as ws:
-            await ws.send(header + pcm_data)
-            await ws.send("Done")
-            result = await asyncio.wait_for(ws.recv(), timeout=60)
-    except asyncio.TimeoutError:
-        log.error("[asr] Recognition timed out for %s", model_id)
-        return web.json_response({"error": "Recognition timed out"}, status=504)
-    except Exception as e:
-        log.error("[asr] Error connecting to %s: %s", model_id, e)
-        return web.json_response({"error": f"ASR error: {e}"}, status=502)
+        # ---------- 在线 ASR（火山引擎等）----------
+        if model["type"] == "online":
+            session = request.app["session"]
+            if model_id == "volcano-asr":
+                result = await asr_volcano(session, pcm_data, sample_rate)
+            elif model_id == "dashscope-asr":
+                result = await asr_dashscope(pcm_data, sample_rate)
+            elif model_id == "qwen3-asr-flash":
+                result = await asr_qwen3_flash(pcm_data, sample_rate)
+            else:
+                err_text = f"unknown online model: {model_id}"
+                return web.json_response({"error": f"Unknown online model: {model_id}"}, status=400)
+            if "error" in result:
+                err_text = str(result.get("error"))
+                return web.json_response(result, status=502)
+            ok = True
+            return web.json_response(result)
 
-    text = result if result and result != "<EMPTY>" else ""
-    log.info("[asr] %s result: %s", model_id, text[:100])
-    return web.json_response({"text": text.strip()})
+        # ---------- 本地离线 ASR（sherpa-onnx websocket）----------
+        port = model["port"]
+        header = struct.pack("<ii", sample_rate, len(pcm_data))
+
+        # Debug: check audio content
+        samples = np.frombuffer(pcm_data, dtype=np.float32)
+        duration = len(samples) / sample_rate
+        max_val = float(np.max(np.abs(samples))) if len(samples) > 0 else 0
+        log.info("[asr] %s audio=%d bytes (%.1fs, max=%.4f, sr=%d) → port %d",
+                 model_id, len(pcm_data), duration, max_val, sample_rate, port)
+
+        try:
+            async with ws_legacy_connect(
+                f"ws://localhost:{port}",
+                max_size=50 * 1024 * 1024,  # 50MB for large audio
+                ping_interval=None,
+            ) as ws:
+                await ws.send(header + pcm_data)
+                await ws.send("Done")
+                result = await asyncio.wait_for(ws.recv(), timeout=60)
+        except asyncio.TimeoutError:
+            err_text = "timeout"
+            log.error("[asr] Recognition timed out for %s", model_id)
+            return web.json_response({"error": "Recognition timed out"}, status=504)
+        except Exception as e:
+            err_text = str(e)
+            log.error("[asr] Error connecting to %s: %s", model_id, e)
+            return web.json_response({"error": f"ASR error: {e}"}, status=502)
+
+        text = result if result and result != "<EMPTY>" else ""
+        log.info("[asr] %s result: %s", model_id, text[:100])
+        ok = True
+        return web.json_response({"text": text.strip()})
+    finally:
+        log_call(
+            "asr", request, provider=model_id, model=model_id, ok=ok,
+            duration_ms=round((time.monotonic() - t0) * 1000),
+            audio_sec=round(_duration_sec, 2), error=err_text,
+        )
 
 
 # ---------- HTTP proxy: /api/* → Ollama ----------
@@ -1035,6 +1137,8 @@ async def llm_judge(request):
 
     session = request.app["session"]
 
+    t0 = time.monotonic()
+    err_text = None
     try:
         if provider == "ollama":
             coro = _judge_ollama(session, model, messages)
@@ -1052,17 +1156,30 @@ async def llm_judge(request):
                 extra_body={"thinking": {"type": "disabled"}},
             )
         else:
+            err_text = "unknown provider"
+            log_call("llm", request, provider=provider, model=model, ok=False,
+                      duration_ms=round((time.monotonic() - t0) * 1000), mode="judge", error=err_text)
             return web.json_response({"ok": False, "fb": "Unknown provider", "cn": "未知提供商", "ans": expected})
         timeout = 60 if provider == "ollama" else 25
-        result = await asyncio.wait_for(coro, timeout=timeout)
+        result, call_ok = await asyncio.wait_for(coro, timeout=timeout)
+        if not call_ok:
+            # Call-level failure (bad status / unparseable reply) — distinct
+            # from a normal {"ok": false} "student got it wrong" verdict.
+            err_text = result.get("fb") or "upstream error"
     except asyncio.TimeoutError:
+        err_text = "timeout"
         log.error("[judge] Timed out: provider=%s model=%s", provider, model)
         result = {"ok": False, "fb": "Judge timed out", "cn": "判分超时", "ans": expected}
     except Exception as e:
+        err_text = str(e)
         log.error("[judge] Error: %s", e)
         result = {"ok": False, "fb": f"Judge error: {e}", "cn": "判分出错", "ans": expected}
 
     log.info("[judge] result: %s", json.dumps(result, ensure_ascii=False)[:200])
+    log_call(
+        "llm", request, provider=provider, model=model, ok=(err_text is None),
+        duration_ms=round((time.monotonic() - t0) * 1000), mode="judge", error=err_text,
+    )
     return web.json_response(result)
 
 
@@ -1152,7 +1269,9 @@ def _first_choice_content(data):
 
 
 async def _judge_ollama(session, model, messages):
-    """Non-streaming Ollama judge call."""
+    """Non-streaming Ollama judge call. Returns (result_dict, call_ok) —
+    call_ok is False when the API call itself failed (vs. the exam verdict
+    being "wrong", which is a normal {"ok": false, ...} result)."""
     payload = json.dumps({"model": model, "messages": messages, "stream": False, "format": "json"})
     async with session.post(
         OLLAMA_BASE + "/api/chat",
@@ -1161,13 +1280,13 @@ async def _judge_ollama(session, model, messages):
     ) as resp:
         data = await _read_json_or_text(resp)
         if not isinstance(data, dict):
-            return {"ok": False, "fb": f"Ollama error: {_error_message(data)[:100]}", "cn": "API错误", "ans": ""}
+            return {"ok": False, "fb": f"Ollama error: {_error_message(data)[:100]}", "cn": "API错误", "ans": ""}, False
         message = data.get("message")
         content = _message_content_to_text(message.get("content") if isinstance(message, dict) else "")
         result = _parse_judge_json(content)
         if isinstance(result, dict):
-            return result
-        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
+            return result, True
+        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}, False
 
 
 async def _judge_openai(session, model, messages, proxy=None):
@@ -1190,12 +1309,12 @@ async def _judge_openai(session, model, messages, proxy=None):
         data = await _read_json_or_text(resp)
         if resp.status != 200:
             err = _error_message(data)
-            return {"ok": False, "fb": f"OpenAI error: {err[:100]}", "cn": "API错误", "ans": ""}
+            return {"ok": False, "fb": f"OpenAI error: {err[:100]}", "cn": "API错误", "ans": ""}, False
         content = _first_choice_content(data)
         result = _parse_judge_json(content)
         if isinstance(result, dict):
-            return result
-        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
+            return result, True
+        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}, False
 
 
 async def _judge_claude(session, model, messages, proxy=None):
@@ -1227,7 +1346,7 @@ async def _judge_claude(session, model, messages, proxy=None):
         data = await _read_json_or_text(resp)
         if resp.status != 200:
             err = _error_message(data)
-            return {"ok": False, "fb": f"Claude error: {err[:100]}", "cn": "API错误", "ans": ""}
+            return {"ok": False, "fb": f"Claude error: {err[:100]}", "cn": "API错误", "ans": ""}, False
         content = ""
         if isinstance(data, dict):
             for block in data.get("content", []):
@@ -1237,8 +1356,8 @@ async def _judge_claude(session, model, messages, proxy=None):
                     content += str(block.get("text", ""))
         result = _parse_judge_json(content)
         if isinstance(result, dict):
-            return result
-        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
+            return result, True
+        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}, False
 
 
 async def _judge_openai_compat(session, model, messages, base_url, api_key, proxy=None, extra_body=None):
@@ -1264,12 +1383,12 @@ async def _judge_openai_compat(session, model, messages, base_url, api_key, prox
         data = await _read_json_or_text(resp)
         if resp.status != 200:
             err = _error_message(data)
-            return {"ok": False, "fb": f"API error: {err[:100]}", "cn": "API错误", "ans": ""}
+            return {"ok": False, "fb": f"API error: {err[:100]}", "cn": "API错误", "ans": ""}, False
         content = _first_choice_content(data)
         result = _parse_judge_json(content)
         if isinstance(result, dict):
-            return result
-        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}
+            return result, True
+        return {"ok": False, "fb": "Could not parse response", "cn": "无法解析回复", "ans": ""}, False
 
 
 async def llm_chat(request):
@@ -1307,35 +1426,51 @@ async def llm_chat(request):
     )
     await response.prepare(request)
 
+    t0 = time.monotonic()
+    ok = False
+    err_text = None
     try:
         if provider == "ollama":
-            await _stream_ollama(session, response, model, messages)
+            ok = await _stream_ollama(session, response, model, messages)
         elif provider == "openai":
-            await _stream_openai(session, response, model, messages, proxy)
+            ok = await _stream_openai(session, response, model, messages, proxy)
         elif provider == "claude":
-            await _stream_claude(session, response, model, messages, proxy)
+            ok = await _stream_claude(session, response, model, messages, proxy)
         elif provider == "moonshot":
-            await _stream_openai_compat(session, response, model, messages,
+            ok = await _stream_openai_compat(session, response, model, messages,
                                         MOONSHOT_BASE_URL, MOONSHOT_API_KEY, "Moonshot", proxy)
         elif provider == "openrouter":
-            await _stream_openai_compat(session, response, model, messages,
+            ok = await _stream_openai_compat(session, response, model, messages,
                                         OPENROUTER_BASE_URL, OPENROUTER_API_KEY, "OpenRouter", proxy)
         elif provider == "deepseek":
-            await _stream_openai_compat(
+            ok = await _stream_openai_compat(
                 session, response, model, messages,
                 DEEPSEEK_BASE_URL, DEEPSEEK_API_KEY, "DeepSeek", proxy,
                 extra_body={"thinking": {"type": "disabled"}},
             )
         else:
+            err_text = "unknown provider"
             await response.write(json.dumps({"content": "Unknown provider: " + provider, "done": True}).encode() + b"\n")
+        if not ok and err_text is None:
+            err_text = "upstream error"
     except (ConnectionResetError, asyncio.CancelledError):
+        ok = False
+        err_text = "client disconnected"
         log.warning("[llm] Client disconnected")
     except Exception as e:
+        ok = False
+        err_text = str(e)
         log.error("[llm] Error: %s", e)
         try:
             await response.write(json.dumps({"content": f"\n[Error: {e}]", "done": True}).encode() + b"\n")
         except Exception:
             pass
+    finally:
+        log_call(
+            "llm", request, provider=provider, model=model, ok=ok,
+            duration_ms=round((time.monotonic() - t0) * 1000),
+            mode="chat", msgs=len(messages), error=err_text,
+        )
 
     try:
         await response.write_eof()
@@ -1345,13 +1480,18 @@ async def llm_chat(request):
 
 
 async def _stream_ollama(session, response, model, messages):
-    """Forward to Ollama /api/chat and convert to unified format."""
+    """Forward to Ollama /api/chat and convert to unified format. Returns
+    True/False so the caller can log whether the call actually succeeded."""
     payload = json.dumps({"model": model, "messages": messages, "stream": True})
     async with session.post(
         OLLAMA_BASE + "/api/chat",
         data=payload,
         headers={"Content-Type": "application/json"},
     ) as resp:
+        if resp.status != 200:
+            err = await resp.text()
+            await response.write(json.dumps({"content": f"[Ollama error {resp.status}: {err[:200]}]", "done": True}).encode() + b"\n")
+            return False
         async for raw_line in resp.content:
             line = raw_line.decode("utf-8").strip()
             if not line:
@@ -1365,6 +1505,7 @@ async def _stream_ollama(session, response, model, messages):
                 await response.write(json.dumps({"content": content, "done": done}).encode() + b"\n")
             except json.JSONDecodeError:
                 pass
+    return True
 
 
 async def _stream_openai(session, response, model, messages, proxy=None):
@@ -1384,7 +1525,7 @@ async def _stream_openai(session, response, model, messages, proxy=None):
         if resp.status != 200:
             err = await resp.text()
             await response.write(json.dumps({"content": f"[OpenAI error {resp.status}: {err[:200]}]", "done": True}).encode() + b"\n")
-            return
+            return False
         async for raw_line in resp.content:
             line = raw_line.decode("utf-8").strip()
             if not line or not line.startswith("data:"):
@@ -1392,7 +1533,7 @@ async def _stream_openai(session, response, model, messages, proxy=None):
             data = line[5:].strip()
             if data == "[DONE]":
                 await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
-                return
+                return True
             try:
                 obj = json.loads(data)
                 delta = obj.get("choices", [{}])[0].get("delta", {})
@@ -1402,6 +1543,7 @@ async def _stream_openai(session, response, model, messages, proxy=None):
             except json.JSONDecodeError:
                 pass
     await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
+    return True
 
 
 async def _stream_openai_compat(
@@ -1426,7 +1568,7 @@ async def _stream_openai_compat(
         if resp.status != 200:
             err = await resp.text()
             await response.write(json.dumps({"content": f"[{name} error {resp.status}: {err[:200]}]", "done": True}).encode() + b"\n")
-            return
+            return False
         async for raw_line in resp.content:
             line = raw_line.decode("utf-8").strip()
             if not line or not line.startswith("data:"):
@@ -1434,7 +1576,7 @@ async def _stream_openai_compat(
             data = line[5:].strip()
             if data == "[DONE]":
                 await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
-                return
+                return True
             try:
                 obj = json.loads(data)
                 delta = obj.get("choices", [{}])[0].get("delta", {})
@@ -1444,6 +1586,7 @@ async def _stream_openai_compat(
             except json.JSONDecodeError:
                 pass
     await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
+    return True
 
 
 async def _stream_claude(session, response, model, messages, proxy=None):
@@ -1481,7 +1624,7 @@ async def _stream_claude(session, response, model, messages, proxy=None):
         if resp.status != 200:
             err = await resp.text()
             await response.write(json.dumps({"content": f"[Claude error {resp.status}: {err[:200]}]", "done": True}).encode() + b"\n")
-            return
+            return False
         async for raw_line in resp.content:
             line = raw_line.decode("utf-8").strip()
             if not line or not line.startswith("data:"):
@@ -1496,10 +1639,11 @@ async def _stream_claude(session, response, model, messages, proxy=None):
                         await response.write(json.dumps({"content": text, "done": False}).encode() + b"\n")
                 elif evt_type == "message_stop":
                     await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
-                    return
+                    return True
             except json.JSONDecodeError:
                 pass
     await response.write(json.dumps({"content": "", "done": True}).encode() + b"\n")
+    return True
 
 
 # ---------- Qwen3-TTS helper (sync, runs in executor) ----------
@@ -1719,111 +1863,136 @@ async def tts_speak(request):
     except QuotaError as qe:
         return _quota_rejected_response(qe)
 
-    if engine == "vibevoice":
-        vibevoice_state = request.app.get("vibevoice")
-        if not vibevoice_state:
-            return web.Response(text="VibeVoice TTS not available", status=503)
-        voice_name = body.get("voice") or "en-Carter_man"
-        try:
-            voice_path = _resolve_vibevoice_voice(voice_name, request.app)
-        except FileNotFoundError as exc:
-            return web.Response(text=str(exc), status=404)
-        cfg_scale = float(body.get("cfg_scale") or vibevoice_state.get("cfg_scale", VIBEVOICE_CFG_SCALE))
-        log.info("[tts/vibevoice] voice=%s len=%d cfg=%.2f", voice_name, len(text), cfg_scale)
-        try:
-            audio_bytes = await _generate_vibevoice_audio(request.app, text, voice_path, cfg_scale)
-        except Exception as e:
-            log.error("[tts/vibevoice] Error: %s", e)
-            return web.Response(text=f"VibeVoice error: {e}", status=500)
-        return web.Response(
-            body=audio_bytes,
-            content_type="audio/wav",
-            headers={"Cache-Control": "no-cache"},
-        )
-
-    # --- Qwen3-TTS (DashScope Realtime) ---
-    if engine == "qwen-tts":
-        if QwenTtsRealtime is None or not DASHSCOPE_API_KEY:
-            return web.Response(text="Qwen TTS not available (dashscope not installed or DASHSCOPE_API_KEY not set)", status=503)
-        voice = body.get("voice", "Cherry")
-        log.info("[tts/qwen] voice=%s len=%d", voice, len(text))
-        try:
-            audio_bytes = await asyncio.get_event_loop().run_in_executor(
-                None, lambda: _qwen_tts_sync(text, voice)
+    t0 = time.monotonic()
+    ok = False
+    err_text = None
+    try:
+        if engine == "vibevoice":
+            vibevoice_state = request.app.get("vibevoice")
+            if not vibevoice_state:
+                err_text = "vibevoice not available"
+                return web.Response(text="VibeVoice TTS not available", status=503)
+            voice_name = body.get("voice") or "en-Carter_man"
+            try:
+                voice_path = _resolve_vibevoice_voice(voice_name, request.app)
+            except FileNotFoundError as exc:
+                err_text = str(exc)
+                return web.Response(text=str(exc), status=404)
+            cfg_scale = float(body.get("cfg_scale") or vibevoice_state.get("cfg_scale", VIBEVOICE_CFG_SCALE))
+            log.info("[tts/vibevoice] voice=%s len=%d cfg=%.2f", voice_name, len(text), cfg_scale)
+            try:
+                audio_bytes = await _generate_vibevoice_audio(request.app, text, voice_path, cfg_scale)
+            except Exception as e:
+                err_text = str(e)
+                log.error("[tts/vibevoice] Error: %s", e)
+                return web.Response(text=f"VibeVoice error: {e}", status=500)
+            ok = True
+            return web.Response(
+                body=audio_bytes,
+                content_type="audio/wav",
+                headers={"Cache-Control": "no-cache"},
             )
-        except Exception as e:
-            log.error("[tts/qwen] Error: %s", e)
-            return web.Response(text=f"Qwen TTS error: {e}", status=500)
-        # Convert raw PCM 24kHz 16-bit mono to WAV
-        buf = io.BytesIO()
-        with wave.open(buf, "wb") as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(24000)
-            wf.writeframes(audio_bytes)
-        buf.seek(0)
-        return web.Response(
-            body=buf.read(),
-            content_type="audio/wav",
-            headers={"Cache-Control": "no-cache"},
-        )
 
-    # --- Piper TTS ---
-    if engine == "piper":
-        piper_tts = request.app.get("piper_tts")
-        if not piper_tts:
-            return web.Response(text="Piper TTS not available", status=503)
-
-        speed = float(body.get("speed", 1.0))
-        log.info("[tts/piper] len=%d speed=%.1f", len(text), speed)
-
-        try:
-            audio = await asyncio.get_event_loop().run_in_executor(
-                None, lambda: piper_tts.generate(text, sid=0, speed=speed)
-            )
-            if not audio.samples or len(audio.samples) == 0:
-                return web.Response(text="TTS generation empty", status=500)
-
+        # --- Qwen3-TTS (DashScope Realtime) ---
+        if engine == "qwen-tts":
+            if QwenTtsRealtime is None or not DASHSCOPE_API_KEY:
+                err_text = "qwen-tts not available"
+                return web.Response(text="Qwen TTS not available (dashscope not installed or DASHSCOPE_API_KEY not set)", status=503)
+            voice = body.get("voice", "Cherry")
+            log.info("[tts/qwen] voice=%s len=%d", voice, len(text))
+            try:
+                audio_bytes = await asyncio.get_event_loop().run_in_executor(
+                    None, lambda: _qwen_tts_sync(text, voice)
+                )
+            except Exception as e:
+                err_text = str(e)
+                log.error("[tts/qwen] Error: %s", e)
+                return web.Response(text=f"Qwen TTS error: {e}", status=500)
+            # Convert raw PCM 24kHz 16-bit mono to WAV
             buf = io.BytesIO()
             with wave.open(buf, "wb") as wf:
                 wf.setnchannels(1)
                 wf.setsampwidth(2)
-                wf.setframerate(audio.sample_rate)
-                pcm = (np.array(audio.samples) * 32767).astype(np.int16)
-                wf.writeframes(pcm.tobytes())
+                wf.setframerate(24000)
+                wf.writeframes(audio_bytes)
             buf.seek(0)
+            ok = True
             return web.Response(
                 body=buf.read(),
                 content_type="audio/wav",
                 headers={"Cache-Control": "no-cache"},
             )
+
+        # --- Piper TTS ---
+        if engine == "piper":
+            piper_tts = request.app.get("piper_tts")
+            if not piper_tts:
+                err_text = "piper not available"
+                return web.Response(text="Piper TTS not available", status=503)
+
+            speed = float(body.get("speed", 1.0))
+            log.info("[tts/piper] len=%d speed=%.1f", len(text), speed)
+
+            try:
+                audio = await asyncio.get_event_loop().run_in_executor(
+                    None, lambda: piper_tts.generate(text, sid=0, speed=speed)
+                )
+                if not audio.samples or len(audio.samples) == 0:
+                    err_text = "empty output"
+                    return web.Response(text="TTS generation empty", status=500)
+
+                buf = io.BytesIO()
+                with wave.open(buf, "wb") as wf:
+                    wf.setnchannels(1)
+                    wf.setsampwidth(2)
+                    wf.setframerate(audio.sample_rate)
+                    pcm = (np.array(audio.samples) * 32767).astype(np.int16)
+                    wf.writeframes(pcm.tobytes())
+                buf.seek(0)
+                ok = True
+                return web.Response(
+                    body=buf.read(),
+                    content_type="audio/wav",
+                    headers={"Cache-Control": "no-cache"},
+                )
+            except Exception as e:
+                err_text = str(e)
+                log.error("[tts/piper] Error: %s", e)
+                return web.Response(text=f"Piper TTS error: {e}", status=500)
+
+        # --- Edge-TTS ---
+        voice = body.get("voice", "en-US-AnaNeural")
+        rate = body.get("rate", "-10%")
+        engine = "edge"
+        log.info("[tts/edge] voice=%s len=%d", voice, len(text))
+
+        try:
+            communicate = edge_tts.Communicate(text, voice, rate=rate)
+            response = web.StreamResponse(
+                status=200,
+                headers={"Content-Type": "audio/mpeg", "Cache-Control": "no-cache"},
+            )
+            await response.prepare(request)
+            async for chunk in communicate.stream():
+                if chunk["type"] == "audio":
+                    await response.write(chunk["data"])
+            await response.write_eof()
+            ok = True
+        except (ConnectionResetError, asyncio.CancelledError):
+            err_text = "client disconnected"
+            log.warning("[tts/edge] Client disconnected")
         except Exception as e:
-            log.error("[tts/piper] Error: %s", e)
-            return web.Response(text=f"Piper TTS error: {e}", status=500)
+            err_text = str(e)
+            log.error("[tts/edge] Error: %s", e)
+            return web.Response(text=f"TTS error: {e}", status=500)
 
-    # --- Edge-TTS ---
-    voice = body.get("voice", "en-US-AnaNeural")
-    rate = body.get("rate", "-10%")
-    log.info("[tts/edge] voice=%s len=%d", voice, len(text))
-
-    try:
-        communicate = edge_tts.Communicate(text, voice, rate=rate)
-        response = web.StreamResponse(
-            status=200,
-            headers={"Content-Type": "audio/mpeg", "Cache-Control": "no-cache"},
+        return response
+    finally:
+        log_call(
+            "tts", request, provider=engine, model=body.get("voice"), ok=ok,
+            duration_ms=round((time.monotonic() - t0) * 1000),
+            text_len=len(text), error=err_text,
         )
-        await response.prepare(request)
-        async for chunk in communicate.stream():
-            if chunk["type"] == "audio":
-                await response.write(chunk["data"])
-        await response.write_eof()
-    except (ConnectionResetError, asyncio.CancelledError):
-        log.warning("[tts/edge] Client disconnected")
-    except Exception as e:
-        log.error("[tts/edge] Error: %s", e)
-        return web.Response(text=f"TTS error: {e}", status=500)
-
-    return response
 
 
 async def init_vibevoice_tts(app):
@@ -1931,6 +2100,8 @@ MY_WORDS_FILE = os.path.join(STATIC_DIR, "my-words.json")
 VOCAB_GENERATE_PROMPT = _load_judge_prompt("vocab_generate.md")
 GRADE_SENTENCE_PROMPT = _load_judge_prompt("grade_sentence.md")
 EXPRESSION_GRADE_PROMPT = _load_judge_prompt("expression_grade.md")
+EXPRESSION_DIALOGUE_GRADE_PROMPT = _load_judge_prompt("expression_dialogue_grade.md")
+PERSONAL_PRACTICE_GRADE_PROMPT = _load_judge_prompt("personal_practice_grade.md")
 KET_WRITING_GRADE_PROMPT = _load_judge_prompt("ket_writing_grade.md")
 KET_WRITING_MODEL_PROMPT = _load_judge_prompt("ket_writing_model.md")
 
@@ -1969,18 +2140,31 @@ def _pick_vocab_llm(provider_override="", model_override=""):
     return None
 
 
-async def _vocab_llm_json(session, system_prompt, user_msg, timeout=25,
+async def _vocab_llm_json(session, system_prompt, user_msg, request, mode, timeout=25,
                           provider_override="", model_override="", use_proxy=False):
-    """Call an LLM and return parsed JSON dict (or None on failure)."""
+    """Call an LLM and return parsed JSON dict (or None on failure).
+
+    Shared by all the /py/* content-grading endpoints (vocab generate,
+    sentence/expression/personal-practice/KET-writing grading) — `mode`
+    tags which one in the usage/audit log so their LLM spend is visible."""
+    t0 = time.monotonic()
     pick = _pick_vocab_llm(provider_override, model_override)
     if not pick:
         log.error("[vocab] no LLM provider configured (set OPENAI/MOONSHOT/ANTHROPIC API KEY)")
+        log_call(
+            "llm", request, provider=None, model=None, ok=False,
+            duration_ms=round((time.monotonic() - t0) * 1000),
+            mode=mode, error="no provider configured",
+        )
         return None
     provider, model, base_url, api_key = pick
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_msg},
     ]
+    ok = False
+    err_text = None
+    result = None
     try:
         proxy = HTTP_PROXY if (use_proxy and HTTP_PROXY) else None
         if provider == "ollama":
@@ -1989,13 +2173,24 @@ async def _vocab_llm_json(session, system_prompt, user_msg, timeout=25,
             coro = _judge_claude(session, model, messages, proxy)
         else:
             coro = _judge_openai_compat(session, model, messages, base_url, api_key, proxy)
-        return await asyncio.wait_for(coro, timeout=timeout)
+        result, ok = await asyncio.wait_for(coro, timeout=timeout)
+        if not ok:
+            err_text = result.get("fb") if isinstance(result, dict) else "upstream error"
+        return result
     except asyncio.TimeoutError:
+        err_text = "timeout"
         log.error("[vocab] LLM timeout provider=%s model=%s", provider, model)
         return None
     except Exception as e:
+        err_text = str(e)
         log.error("[vocab] LLM error: %s", e)
         return None
+    finally:
+        log_call(
+            "llm", request, provider=provider, model=model, ok=ok,
+            duration_ms=round((time.monotonic() - t0) * 1000),
+            mode=mode, error=err_text,
+        )
 
 
 # In-memory IPA cache (proc-local LRU-ish; DB content_json is authoritative).
@@ -2024,7 +2219,7 @@ async def vocab_generate_handler(request):
     user_msg = "\n".join(user_parts)
 
     session = request.app["session"]
-    data = await _vocab_llm_json(session, VOCAB_GENERATE_PROMPT, user_msg, timeout=30)
+    data = await _vocab_llm_json(session, VOCAB_GENERATE_PROMPT, user_msg, request, "vocab_generate", timeout=30)
     if not data or not isinstance(data, dict):
         return web.json_response({"error": "LLM generation failed"}, status=502)
 
@@ -2108,6 +2303,9 @@ async def vocab_tts_handler(request):
     voice = _VOCAB_TTS_VOICES.get(accent, _VOCAB_TTS_VOICES["uk"])
     rate = body.get("rate", "-10%")
 
+    t0 = time.monotonic()
+    ok = False
+    err_text = None
     try:
         communicate = edge_tts.Communicate(word, voice, rate=rate)
         chunks: list[bytes] = []
@@ -2115,11 +2313,20 @@ async def vocab_tts_handler(request):
             if chunk["type"] == "audio":
                 chunks.append(chunk["data"])
         if not chunks:
+            err_text = "empty audio"
             return web.Response(text="empty audio", status=502)
         audio = b"".join(chunks)
+        ok = True
     except Exception as e:
+        err_text = str(e)
         log.error("[vocab/tts] error word=%s accent=%s err=%s", word, accent, e)
         return web.Response(text=f"tts error: {e}", status=500)
+    finally:
+        log_call(
+            "tts", request, provider="edge", model=voice, ok=ok,
+            duration_ms=round((time.monotonic() - t0) * 1000),
+            text_len=len(word), mode="vocab_tts", error=err_text,
+        )
 
     log.info("[vocab/tts] word=%s accent=%s bytes=%d", word, accent, len(audio))
     return web.Response(
@@ -2149,7 +2356,7 @@ async def grade_sentence_handler(request):
             return _quota_rejected_response(qe)
 
     user_msg = f"target word: {word}\nlevel: {level}\nstudent sentence: {sentence}"
-    data = await _vocab_llm_json(request.app["session"], GRADE_SENTENCE_PROMPT, user_msg, timeout=20)
+    data = await _vocab_llm_json(request.app["session"], GRADE_SENTENCE_PROMPT, user_msg, request, "grade_sentence", timeout=20)
     if not data or not isinstance(data, dict):
         return web.json_response({"error": "LLM grading failed"}, status=502)
     log.info("[vocab] graded word=%s ok=%s", word, data.get("ok"))
@@ -2195,6 +2402,7 @@ async def expression_grade_handler(request):
         request.app["session"],
         EXPRESSION_GRADE_PROMPT,
         user_msg,
+        request, "expression_grade",
         timeout=25,
         provider_override=body.get("provider") or "",
         model_override=body.get("model") or "",
@@ -2233,6 +2441,150 @@ async def expression_grade_handler(request):
     data["improvements"] = data.get("improvements") if isinstance(data.get("improvements"), list) else []
     log.info("[expression] graded mode=%s score=%d", mode, score)
     return web.json_response(data)
+
+
+async def expression_dialogue_grade_handler(request):
+    """POST /py/expression/dialogue/grade - assess one learner in a Part 2 dialogue."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+
+    task = body.get("task") or {}
+    selected_role = (body.get("selected_role") or "").strip().lower()
+    transcript = body.get("transcript") or []
+    if not isinstance(task, dict) or selected_role not in ("student_a", "student_b"):
+        return web.json_response({"error": "task and valid selected_role required"}, status=400)
+    if not isinstance(transcript, list) or not transcript:
+        return web.json_response({"error": "transcript required"}, status=400)
+
+    auth = _client_authorization(request)
+    if auth:
+        try:
+            await quota_consume(request.app["session"], auth, "llm", 1)
+        except QuotaError as qe:
+            return _quota_rejected_response(qe)
+
+    user_msg = json.dumps({
+        "level": "ket",
+        "task": task,
+        "learner_role": selected_role,
+        "transcript": transcript,
+    }, ensure_ascii=False)
+    data = await _vocab_llm_json(
+        request.app["session"],
+        EXPRESSION_DIALOGUE_GRADE_PROMPT,
+        user_msg,
+        request, "expression_dialogue_grade",
+        timeout=30,
+        provider_override=body.get("provider") or "",
+        model_override=body.get("model") or "",
+        use_proxy=bool(body.get("use_proxy")),
+    )
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM dialogue grading failed"}, status=502)
+
+    dimensions = data.get("dimensions")
+    required = ("interaction", "task_achievement", "language", "fluency")
+    if not isinstance(dimensions, dict) or not all(key in dimensions for key in required):
+        return web.json_response({"error": "LLM returned incomplete dialogue feedback"}, status=502)
+    try:
+        score = max(0, min(100, int(data.get("score", 0))))
+    except (TypeError, ValueError):
+        score = 0
+    data["score"] = score
+    data["passed"] = score >= 60
+    for key in required:
+        try:
+            dimensions[key] = max(0, min(100, int(dimensions[key])))
+        except (TypeError, ValueError):
+            dimensions[key] = 0
+    for key in ("strengths", "improvements", "useful_phrases"):
+        data[key] = data.get(key) if isinstance(data.get(key), list) else []
+    log.info("[expression/dialogue] graded role=%s score=%d", selected_role, score)
+    return web.json_response(data)
+
+
+async def personal_practice_grade_handler(request):
+    """POST /py/personal-practice/grade - grammar and basic KET content scoring."""
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"error": "invalid json"}, status=400)
+
+    practice_type = (body.get("practice_type") or "").strip().lower()
+    question = (body.get("question") or "").strip()
+    response_text = (body.get("response_text") or "").strip()
+    if practice_type not in ("speaking", "writing"):
+        return web.json_response({"error": "practice_type must be speaking or writing"}, status=400)
+    if not question or not response_text:
+        return web.json_response({"error": "question and response_text required"}, status=400)
+
+    auth = _client_authorization(request)
+    if auth:
+        try:
+            await quota_consume(request.app["session"], auth, "llm", 1)
+        except QuotaError as qe:
+            return _quota_rejected_response(qe)
+
+    user_msg = json.dumps({
+        "level": "A2 Key for Schools",
+        "practice_type": practice_type,
+        "question": question,
+        "question_cn": body.get("question_cn") or "",
+        "reference_lines": body.get("reference_lines") or [],
+        "required_content_points": body.get("content_points") or [],
+        "minimum_sentences": body.get("min_sentences") or 1,
+        "minimum_words": body.get("min_words") or 0,
+        "learner_response": response_text,
+    }, ensure_ascii=False)
+    data = await _vocab_llm_json(
+        request.app["session"],
+        PERSONAL_PRACTICE_GRADE_PROMPT,
+        user_msg,
+        request, "personal_practice_grade",
+        timeout=25,
+        provider_override=body.get("provider") or "",
+        model_override=body.get("model") or "",
+        use_proxy=bool(body.get("use_proxy")),
+    )
+    if not data or not isinstance(data, dict):
+        return web.json_response({"error": "LLM grading failed"}, status=502)
+
+    try:
+        grammar_score = max(0, min(60, int(data.get("grammar_score", 0))))
+        content_score = max(0, min(40, int(data.get("content_score", 0))))
+    except (TypeError, ValueError):
+        return web.json_response({"error": "LLM returned invalid scores"}, status=502)
+
+    corrected = data.get("corrected_answer")
+    enriched = data.get("enriched_answer")
+    if not isinstance(corrected, str) or not corrected.strip():
+        corrected = response_text
+    if not isinstance(enriched, str) or not enriched.strip():
+        enriched = corrected
+    missing_points = data.get("missing_points")
+    if not isinstance(missing_points, list):
+        missing_points = []
+
+    result = {
+        "grammar_correct": bool(data.get("grammar_correct", grammar_score == 60)),
+        "grammar_score": grammar_score,
+        "content_score": content_score,
+        "total_score": grammar_score + content_score,
+        "corrected_answer": corrected.strip(),
+        "enriched_answer": enriched.strip(),
+        "content_feedback_cn": data.get("content_feedback_cn")
+            if isinstance(data.get("content_feedback_cn"), str) else "",
+        "missing_points": [str(item) for item in missing_points[:3] if str(item).strip()],
+    }
+    log.info(
+        "[personal-practice] graded type=%s grammar=%d content=%d",
+        practice_type,
+        grammar_score,
+        content_score,
+    )
+    return web.json_response(result)
 
 
 async def ket_writing_grade_handler(request):
@@ -2275,6 +2627,7 @@ async def ket_writing_grade_handler(request):
         request.app["session"],
         KET_WRITING_GRADE_PROMPT,
         user_msg,
+        request, "ket_writing_grade",
         timeout=25,
         provider_override=body.get("provider") or "",
         model_override=body.get("model") or "",
@@ -2340,6 +2693,7 @@ async def ket_writing_model_handler(request):
         request.app["session"],
         KET_WRITING_MODEL_PROMPT,
         user_msg,
+        request, "ket_writing_model",
         timeout=25,
         provider_override=body.get("provider") or "",
         model_override=body.get("model") or "",
@@ -2373,15 +2727,66 @@ async def dictation_save_words(request):
         return web.json_response({"ok": False, "error": str(e)}, status=500)
 
 
+async def _index_handler(request):
+    index_path = os.path.join(STATIC_DIR, "index.html")
+    if not os.path.isfile(index_path):
+        # e.g. the "service"-only production deployment, which doesn't ship
+        # the local dev demo pages — nothing relies on GET / there.
+        raise web.HTTPNotFound(text="Not Found")
+    return web.FileResponse(index_path)
+
+
+# ---------- Static file safety ----------
+# STATIC_DIR is the directory this file lives in — it also holds .env,
+# cert.pem/key.pem, and all the .py source. add_static below serves that
+# whole directory so the app's html/json assets work, which means anything
+# not explicitly blocked here is downloadable over HTTP. This blocklist is
+# the actual protection (show_index=False just stops casual browsing, it
+# does not stop a direct request for a known filename).
+_BLOCKED_STATIC_DIR_PREFIXES = (
+    "/prompts/",       # server-side judge/system prompts, never fetched by the client
+    "/logs/",          # usage/audit log (contains user ids + IPs)
+    "/__pycache__/",
+    "/.pytest_cache/",
+    "/.git/",
+)
+_BLOCKED_STATIC_EXTENSIONS = (
+    ".env", ".pem", ".key", ".py", ".pyc", ".bak", ".log",
+)
+
+
+@web.middleware
+async def _block_sensitive_static(request, handler):
+    path = request.path
+    lower = path.lower()
+    if any(lower.startswith(prefix) for prefix in _BLOCKED_STATIC_DIR_PREFIXES):
+        raise web.HTTPForbidden(text="Forbidden")
+    # Any dotfile path segment: .env, .env.example, .git, .pytest_cache, ...
+    if any(seg.startswith(".") for seg in path.split("/") if seg):
+        raise web.HTTPForbidden(text="Forbidden")
+    if any(lower.endswith(ext) for ext in _BLOCKED_STATIC_EXTENSIONS):
+        raise web.HTTPForbidden(text="Forbidden")
+    return await handler(request)
+
+
 def create_app():
     # Float32 16 kHz mono audio uses about 64 KB/s. Ten MB supports roughly
     # 160 seconds while still bounding request memory usage.
-    app = web.Application(client_max_size=10 * 1024 * 1024)
+    app = web.Application(
+        client_max_size=10 * 1024 * 1024,
+        middlewares=[_block_sensitive_static],
+    )
     app.on_startup.append(create_shared_session)
+    from speaking_coach import start_internal_coach, close_internal_coach
+    async def start_coach(application):
+        await start_internal_coach(application, _vocab_llm_json)
+    app.on_startup.append(start_coach)
     app.on_startup.append(init_piper_tts)
     app.on_startup.append(init_vibevoice_tts)
+    app.on_cleanup.append(close_internal_coach)
     app.on_cleanup.append(close_shared_session)
 
+    app.router.add_route("GET", "/", _index_handler)
     app.router.add_route("GET", "/ws", ws_proxy)
     app.router.add_route("GET", "/asr/models", asr_models_handler)
     app.router.add_route("POST", "/asr", asr_offline)
@@ -2397,9 +2802,11 @@ def create_app():
     app.router.add_route("POST", "/py/vocab/tts", vocab_tts_handler)
     app.router.add_route("POST", "/py/grade_sentence", grade_sentence_handler)
     app.router.add_route("POST", "/py/expression/grade", expression_grade_handler)
+    app.router.add_route("POST", "/py/expression/dialogue/grade", expression_dialogue_grade_handler)
+    app.router.add_route("POST", "/py/personal-practice/grade", personal_practice_grade_handler)
     app.router.add_route("POST", "/py/writing/ket/grade", ket_writing_grade_handler)
     app.router.add_route("POST", "/py/writing/ket/model", ket_writing_model_handler)
-    app.router.add_static("/", STATIC_DIR, show_index=True)
+    app.router.add_static("/", STATIC_DIR, show_index=False)
     return app
 
 
@@ -2412,8 +2819,12 @@ def main():
     app = create_app()
 
     print(f"\n{'='*55}")
-    print(f"  HTTPS server: https://0.0.0.0:{PORT}")
-    print(f"  Open https://<your-lan-ip>:{PORT} on any device")
+    print(f"  HTTPS server: https://{HOST}:{PORT}")
+    if HOST == "0.0.0.0":
+        print(f"  Open https://<your-lan-ip>:{PORT} on any device")
+    else:
+        print(f"  Bound to {HOST} only — not reachable from other devices directly")
+        print(f"  (put a reverse proxy in front for LAN/internet access)")
     print(f"{'='*55}")
     print(f"  /ws?model=xxx  → streaming ASR (WebSocket)")
     print(f"  /asr?model=xxx → offline ASR (POST audio)")

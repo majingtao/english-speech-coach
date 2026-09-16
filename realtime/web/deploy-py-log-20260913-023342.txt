@@ -1,0 +1,37 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260913023342
+用户名: MAJINGTAO\majingtao
+RunAs 用户: MAJINGTAO\majingtao
+配置名称: 
+计算机: MAJINGTAO (Microsoft Windows NT 10.0.19045.0)
+主机应用程序: powershell -NoProfile -ExecutionPolicy Bypass -File E:\project\englishAi\realtime\web\deploy-py.ps1
+进程 ID: 33212
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Log file: E:\project\englishAi\realtime\web\deploy-py-log-20260913-023342.txt
+Working dir: E:\project\englishAi\realtime\web
+
+==> 1/6 Syntax check
+
+    server.py compiles
+
+==> 2/6 Scan source for hardcoded keys
+    No hardcoded keys
+
+==> 3/6 Pack
+tar.exe: Couldn't open ./deploy-py-log-20260913-023342.txt: Permission denied
+tar.exe: Error exit delayed from previous errors.
+
+[FAIL] tar failed
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260913023343
+**********************
