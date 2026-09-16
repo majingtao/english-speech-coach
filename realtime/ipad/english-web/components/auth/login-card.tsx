@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import type { InputHTMLAttributes, ReactNode } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type UseFormRegisterReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { BookOpen, Check, Eye, EyeOff, Loader2, Mic, Sparkles } from "lucide-react"
 import { z } from "zod"
@@ -11,10 +11,14 @@ import {
   checkMobile,
   type LoginResult,
   loginByEmail,
+  loginByMobilePassword,
   loginBySms,
   registerByEmail,
+  resetPasswordByEmail,
+  resetPasswordByMobile,
   sendEmailCode,
   sendSmsCode,
+  SMS_SCENE,
 } from "@/lib/api/auth"
 import { useAuthStore } from "@/lib/stores/auth-store"
 import { getErrorMessage } from "@/lib/utils/error"
@@ -39,12 +43,46 @@ const smsSchema = z.object({
   code: z.string().min(4, "请输入验证码"),
 })
 
+const mobilePasswordSchema = z.object({
+  mobile: z.string().regex(mobilePattern, "请输入中国大陆手机号"),
+  password: z.string().min(1, "请输入密码"),
+})
+
+const emailResetSchema = z
+  .object({
+    email: z.string().regex(emailPattern, "请输入正确的邮箱"),
+    code: z.string().regex(/^\d{4,8}$/, "请输入验证码"),
+    password: z.string().min(6, "密码至少 6 位").max(32, "密码最多 32 位"),
+    confirmPassword: z.string().min(1, "请再次输入新密码"),
+  })
+  .refine((v) => v.password === v.confirmPassword, {
+    message: "两次输入的密码不一致",
+    path: ["confirmPassword"],
+  })
+
+// 手机密码与 yudao /member/auth/login 保持一致：最多 16 位
+const smsResetSchema = z
+  .object({
+    mobile: z.string().regex(mobilePattern, "请输入中国大陆手机号"),
+    code: z.string().regex(/^\d{4,6}$/, "请输入验证码"),
+    password: z.string().min(6, "密码至少 6 位").max(16, "密码最多 16 位"),
+    confirmPassword: z.string().min(1, "请再次输入新密码"),
+  })
+  .refine((v) => v.password === v.confirmPassword, {
+    message: "两次输入的密码不一致",
+    path: ["confirmPassword"],
+  })
+
 type EmailLoginForm = z.infer<typeof emailLoginSchema>
 type EmailRegisterForm = z.infer<typeof emailRegisterSchema>
 type SmsForm = z.infer<typeof smsSchema>
+type MobilePasswordForm = z.infer<typeof mobilePasswordSchema>
+type EmailResetForm = z.infer<typeof emailResetSchema>
+type SmsResetForm = z.infer<typeof smsResetSchema>
 
-type Mode = "login" | "register"
+type Mode = "login" | "register" | "forgot"
 type Channel = "email" | "sms"
+type SmsLoginType = "code" | "password"
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string
@@ -69,6 +107,57 @@ function FormInput({ label, error, action, labelAction, ...props }: InputProps) 
   )
 }
 
+type PasswordPairProps = {
+  passwordField: UseFormRegisterReturn
+  confirmField: UseFormRegisterReturn
+  passwordError?: string
+  confirmError?: string
+  placeholder: string
+  show: boolean
+  onToggle: () => void
+}
+
+function PasswordPair({
+  passwordField,
+  confirmField,
+  passwordError,
+  confirmError,
+  placeholder,
+  show,
+  onToggle,
+}: PasswordPairProps) {
+  return (
+    <>
+      <FormInput
+        autoComplete="new-password"
+        error={passwordError}
+        label="新密码"
+        placeholder={placeholder}
+        type={show ? "text" : "password"}
+        action={
+          <button
+            className="password-toggle"
+            aria-label="显示或隐藏密码"
+            onClick={onToggle}
+            type="button"
+          >
+            {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        }
+        {...passwordField}
+      />
+      <FormInput
+        autoComplete="new-password"
+        error={confirmError}
+        label="确认新密码"
+        placeholder="再次输入新密码"
+        type={show ? "text" : "password"}
+        {...confirmField}
+      />
+    </>
+  )
+}
+
 type LoginCardProps = {
   initialMode: Mode
   initialChannel: Channel
@@ -84,6 +173,7 @@ export function LoginCard({
 
   const [mode, setMode] = useState<Mode>(initialMode)
   const [channel, setChannel] = useState<Channel>(initialChannel)
+  const [smsLoginType, setSmsLoginType] = useState<SmsLoginType>("code")
   const [emailCountdown, setEmailCountdown] = useState(0)
   const [smsCountdown, setSmsCountdown] = useState(0)
   const [submitting, setSubmitting] = useState(false)
@@ -93,8 +183,25 @@ export function LoginCard({
   const [rememberLogin, setRememberLogin] = useState(true)
   const [agreedTerms, setAgreedTerms] = useState(false)
 
+  const isForgot = mode === "forgot"
   const actionText = mode === "register" ? "注册" : "登录"
-  const otherChannelText = channel === "sms" ? `邮箱${actionText}` : `手机${actionText}`
+  const otherChannelText = isForgot
+    ? channel === "sms" ? "通过邮箱找回" : "通过手机找回"
+    : channel === "sms" ? `邮箱${actionText}` : `手机${actionText}`
+
+  const headerTitle = isForgot ? "找回密码" : mode === "register" ? "创建账号" : "欢迎回来"
+  const headerSubtitle = isForgot
+    ? channel === "sms"
+      ? "通过手机验证码设置新密码（验证码注册的用户也可在此首次设置密码）"
+      : "通过邮箱验证码设置新密码"
+    : mode === "register"
+      ? "注册后即可开始口语训练"
+      : "登录继续你的学习之旅"
+  const submitText = isForgot
+    ? "重置密码"
+    : mode === "register"
+      ? "注册并开始学习"
+      : "登录并继续学习"
 
   function switchMode(next: Mode) {
     setMode(next)
@@ -171,6 +278,56 @@ export function LoginCard({
     resolver: zodResolver(smsSchema),
     defaultValues: { mobile: "", code: "" },
   })
+  const mobilePasswordForm = useForm<MobilePasswordForm>({
+    resolver: zodResolver(mobilePasswordSchema),
+    defaultValues: { mobile: "", password: "" },
+  })
+  const emailResetForm = useForm<EmailResetForm>({
+    resolver: zodResolver(emailResetSchema),
+    defaultValues: { email: "", code: "", password: "", confirmPassword: "" },
+  })
+  const smsResetForm = useForm<SmsResetForm>({
+    resolver: zodResolver(smsResetSchema),
+    defaultValues: { mobile: "", code: "", password: "", confirmPassword: "" },
+  })
+
+  /** 从登录页进入「忘记密码」，把已输入的账号带过去 */
+  function openForgot(from: Channel) {
+    if (from === "email") {
+      const email = emailLoginForm.getValues("email")
+      if (email) emailResetForm.setValue("email", email)
+    } else {
+      const mobile = mobilePasswordForm.getValues("mobile") || smsLoginForm.getValues("mobile")
+      if (mobile) smsResetForm.setValue("mobile", mobile)
+    }
+    setChannel(from)
+    switchMode("forgot")
+  }
+
+  function backToLogin() {
+    if (channel === "email") {
+      const email = emailResetForm.getValues("email")
+      if (email) emailLoginForm.setValue("email", email)
+    } else {
+      const mobile = smsResetForm.getValues("mobile")
+      if (mobile) mobilePasswordForm.setValue("mobile", mobile)
+      setSmsLoginType("password")
+    }
+    switchMode("login")
+  }
+
+  function toggleSmsLoginType() {
+    const next: SmsLoginType = smsLoginType === "code" ? "password" : "code"
+    const mobile = next === "password"
+      ? smsLoginForm.getValues("mobile")
+      : mobilePasswordForm.getValues("mobile")
+    if (mobile) {
+      if (next === "password") mobilePasswordForm.setValue("mobile", mobile)
+      else smsLoginForm.setValue("mobile", mobile)
+    }
+    setSmsLoginType(next)
+    setStatus(null)
+  }
 
   async function handleAuthSuccess(result: LoginResult, successText: string) {
     setLoginResult(result, rememberLogin)
@@ -191,6 +348,43 @@ export function LoginCard({
   }
 
   async function submitCurrentForm() {
+    if (mode === "forgot" && channel === "email") {
+      await emailResetForm.handleSubmit(async (values) => {
+        await handleSubmit(async () => {
+          await resetPasswordByEmail({
+            email: values.email,
+            code: values.code,
+            password: values.password,
+          })
+          emailLoginForm.reset({ email: values.email, password: "" })
+          emailResetForm.reset({ email: values.email, code: "", password: "", confirmPassword: "" })
+          setEmailCountdown(0)
+          setMode("login")
+          setStatus({ type: "success", message: "密码已重置，请使用新密码登录" })
+        })
+      })()
+      return
+    }
+
+    if (mode === "forgot" && channel === "sms") {
+      await smsResetForm.handleSubmit(async (values) => {
+        await handleSubmit(async () => {
+          await resetPasswordByMobile({
+            mobile: values.mobile,
+            code: values.code,
+            password: values.password,
+          })
+          mobilePasswordForm.reset({ mobile: values.mobile, password: "" })
+          smsResetForm.reset({ mobile: values.mobile, code: "", password: "", confirmPassword: "" })
+          setSmsCountdown(0)
+          setSmsLoginType("password")
+          setMode("login")
+          setStatus({ type: "success", message: "密码已重置，请使用新密码登录" })
+        })
+      })()
+      return
+    }
+
     if (mode === "login" && channel === "email") {
       await emailLoginForm.handleSubmit(async (values) => {
         await handleSubmit(async () => {
@@ -206,6 +400,16 @@ export function LoginCard({
         await handleSubmit(async () => {
           const result = await registerByEmail(values)
           await handleAuthSuccess(result, "注册成功")
+        })
+      })()
+      return
+    }
+
+    if (mode === "login" && channel === "sms" && smsLoginType === "password") {
+      await mobilePasswordForm.handleSubmit(async (values) => {
+        await handleSubmit(async () => {
+          const result = await loginByMobilePassword(values)
+          await handleAuthSuccess(result, "登录成功")
         })
       })()
       return
@@ -230,7 +434,10 @@ export function LoginCard({
   }
 
   async function onSendEmailCode() {
-    const email = emailRegisterForm.getValues("email")
+    const isReset = mode === "forgot"
+    const email = isReset
+      ? emailResetForm.getValues("email")
+      : emailRegisterForm.getValues("email")
     if (!emailPattern.test(email)) {
       setStatus({ type: "error", message: "请输入正确的邮箱" })
       return
@@ -241,12 +448,17 @@ export function LoginCard({
     setEmailCountdown(60)
     try {
       const exists = await checkEmail(email)
-      if (exists) {
+      if (!isReset && exists) {
         setEmailCountdown(0)
         setStatus({ type: "error", message: "该邮箱已注册，请直接登录" })
         return
       }
-      await sendEmailCode({ email, scene: "register" })
+      if (isReset && !exists) {
+        setEmailCountdown(0)
+        setStatus({ type: "error", message: "该邮箱未注册" })
+        return
+      }
+      await sendEmailCode({ email, scene: isReset ? "reset" : "register" })
       setStatus({ type: "success", message: "验证码已发送" })
     } catch (error) {
       setEmailCountdown(0)
@@ -255,8 +467,12 @@ export function LoginCard({
   }
 
   async function onSendSmsCode() {
-    const activeForm = mode === "register" ? smsRegisterForm : smsLoginForm
-    const mobile = activeForm.getValues("mobile")
+    const mobile =
+      mode === "forgot"
+        ? smsResetForm.getValues("mobile")
+        : mode === "register"
+          ? smsRegisterForm.getValues("mobile")
+          : smsLoginForm.getValues("mobile")
     if (!mobilePattern.test(mobile)) {
       setStatus({ type: "error", message: "请输入正确的手机号" })
       return
@@ -266,15 +482,23 @@ export function LoginCard({
     }
     setSmsCountdown(60)
     try {
-      if (mode === "register") {
+      if (mode === "register" || mode === "forgot") {
         const exists = await checkMobile(mobile)
-        if (exists) {
+        if (mode === "register" && exists) {
           setSmsCountdown(0)
           setStatus({ type: "error", message: "该手机号已注册，请直接登录" })
           return
         }
+        if (mode === "forgot" && !exists) {
+          setSmsCountdown(0)
+          setStatus({ type: "error", message: "该手机号未注册" })
+          return
+        }
       }
-      await sendSmsCode({ mobile, scene: 1 })
+      await sendSmsCode({
+        mobile,
+        scene: mode === "forgot" ? SMS_SCENE.MEMBER_RESET_PASSWORD : SMS_SCENE.MEMBER_LOGIN,
+      })
       setStatus({ type: "success", message: "验证码已发送" })
     } catch (error) {
       setSmsCountdown(0)
@@ -302,8 +526,8 @@ export function LoginCard({
 
       <div className="auth-card">
         <div className="auth-card-header">
-          <h2>{mode === "register" ? "创建账号" : "欢迎回来"}</h2>
-          <p>{mode === "register" ? "注册后即可开始口语训练" : "登录继续你的学习之旅"}</p>
+          <h2>{headerTitle}</h2>
+          <p>{headerSubtitle}</p>
         </div>
         <div className="mode-switch">
           <button
@@ -330,7 +554,7 @@ export function LoginCard({
           }}
         >
           {mode === "login" && channel === "email" ? (
-            <>
+            <Fragment key="email-login">
               <FormInput
                 autoComplete="email"
                 error={emailLoginForm.formState.errors.email?.message}
@@ -348,7 +572,7 @@ export function LoginCard({
                 labelAction={
                   <button
                     className="forgot-link"
-                    onClick={() => switchChannel("sms")}
+                    onClick={() => openForgot("email")}
                     type="button"
                   >
                     忘记密码？
@@ -366,11 +590,11 @@ export function LoginCard({
                 }
                 {...emailLoginForm.register("password")}
               />
-            </>
+            </Fragment>
           ) : null}
 
           {mode === "register" && channel === "email" ? (
-            <>
+            <Fragment key="email-register">
               <FormInput
                 autoComplete="email"
                 error={emailRegisterForm.formState.errors.email?.message}
@@ -417,11 +641,140 @@ export function LoginCard({
                 }
                 {...emailRegisterForm.register("password")}
               />
-            </>
+            </Fragment>
           ) : null}
 
-          {channel === "sms" ? (
-            <>
+          {mode === "login" && channel === "sms" && smsLoginType === "password" ? (
+            <Fragment key="sms-password-login">
+              <FormInput
+                autoComplete="tel"
+                inputMode="numeric"
+                maxLength={11}
+                error={mobilePasswordForm.formState.errors.mobile?.message}
+                label="手机号"
+                placeholder="请输入中国大陆手机号"
+                type="tel"
+                labelAction={
+                  <button className="forgot-link" onClick={toggleSmsLoginType} type="button">
+                    验证码登录
+                  </button>
+                }
+                {...mobilePasswordForm.register("mobile")}
+              />
+              <FormInput
+                autoComplete="current-password"
+                error={mobilePasswordForm.formState.errors.password?.message}
+                label="密码"
+                placeholder="请输入密码"
+                type={showPassword["sms-login"] ? "text" : "password"}
+                labelAction={
+                  <button className="forgot-link" onClick={() => openForgot("sms")} type="button">
+                    忘记密码？
+                  </button>
+                }
+                action={
+                  <button
+                    className="password-toggle"
+                    aria-label="显示或隐藏密码"
+                    onClick={() => togglePassword("sms-login")}
+                    type="button"
+                  >
+                    {showPassword["sms-login"] ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                }
+                {...mobilePasswordForm.register("password")}
+              />
+            </Fragment>
+          ) : null}
+
+          {isForgot && channel === "email" ? (
+            <Fragment key="email-reset">
+              <FormInput
+                autoComplete="email"
+                error={emailResetForm.formState.errors.email?.message}
+                label="注册邮箱"
+                placeholder="you@example.com"
+                type="email"
+                {...emailResetForm.register("email")}
+              />
+              <FormInput
+                autoComplete="one-time-code"
+                inputMode="numeric"
+                maxLength={8}
+                error={emailResetForm.formState.errors.code?.message}
+                label="验证码"
+                placeholder="请输入邮箱验证码"
+                type="text"
+                action={
+                  <button
+                    className="code-btn"
+                    disabled={emailCountdown > 0}
+                    onClick={onSendEmailCode}
+                    type="button"
+                  >
+                    {emailCountdown > 0 ? `${emailCountdown}s` : "发送"}
+                  </button>
+                }
+                {...emailResetForm.register("code")}
+              />
+              <PasswordPair
+                confirmError={emailResetForm.formState.errors.confirmPassword?.message}
+                confirmField={emailResetForm.register("confirmPassword")}
+                passwordError={emailResetForm.formState.errors.password?.message}
+                passwordField={emailResetForm.register("password")}
+                placeholder="6-32 位"
+                show={!!showPassword["email-reset"]}
+                onToggle={() => togglePassword("email-reset")}
+              />
+            </Fragment>
+          ) : null}
+
+          {isForgot && channel === "sms" ? (
+            <Fragment key="sms-reset">
+              <FormInput
+                autoComplete="tel"
+                inputMode="numeric"
+                maxLength={11}
+                error={smsResetForm.formState.errors.mobile?.message}
+                label="手机号"
+                placeholder="请输入注册手机号"
+                type="tel"
+                {...smsResetForm.register("mobile")}
+              />
+              <FormInput
+                autoComplete="one-time-code"
+                inputMode="numeric"
+                maxLength={6}
+                error={smsResetForm.formState.errors.code?.message}
+                label="验证码"
+                placeholder="请输入短信验证码"
+                type="text"
+                action={
+                  <button
+                    className="code-btn"
+                    disabled={smsCountdown > 0}
+                    onClick={onSendSmsCode}
+                    type="button"
+                  >
+                    {smsCountdown > 0 ? `${smsCountdown}s` : "发送"}
+                  </button>
+                }
+                {...smsResetForm.register("code")}
+              />
+              <PasswordPair
+                confirmError={smsResetForm.formState.errors.confirmPassword?.message}
+                confirmField={smsResetForm.register("confirmPassword")}
+                passwordError={smsResetForm.formState.errors.password?.message}
+                passwordField={smsResetForm.register("password")}
+                placeholder="6-16 位"
+                show={!!showPassword["sms-reset"]}
+                onToggle={() => togglePassword("sms-reset")}
+              />
+            </Fragment>
+          ) : null}
+
+          {channel === "sms" && !isForgot && !(mode === "login" && smsLoginType === "password") ? (
+            <Fragment key={`sms-code-${mode}`}>
               <FormInput
                 autoComplete="tel"
                 inputMode="numeric"
@@ -434,6 +787,13 @@ export function LoginCard({
                 label="手机号"
                 placeholder="请输入中国大陆手机号"
                 type="tel"
+                labelAction={
+                  mode === "login" ? (
+                    <button className="forgot-link" onClick={toggleSmsLoginType} type="button">
+                      密码登录
+                    </button>
+                  ) : undefined
+                }
                 {...(mode === "login"
                   ? smsLoginForm.register("mobile")
                   : smsRegisterForm.register("mobile"))}
@@ -464,7 +824,7 @@ export function LoginCard({
                   ? smsLoginForm.register("code")
                   : smsRegisterForm.register("code"))}
               />
-            </>
+            </Fragment>
           ) : null}
 
           {status ? (
@@ -477,7 +837,12 @@ export function LoginCard({
             </p>
           ) : null}
 
-          <div className={mode === "login" ? "form-aux" : "form-aux form-aux-end"}>
+          <div className={mode === "register" ? "form-aux form-aux-end" : "form-aux"}>
+            {isForgot ? (
+              <button className="channel-link" onClick={backToLogin} type="button">
+                返回登录
+              </button>
+            ) : null}
             {mode === "login" ? (
               <label className="remember-login">
                 <input
@@ -523,9 +888,13 @@ export function LoginCard({
             type="submit"
           >
             {submitting ? <Loader2 className="size-4 animate-spin" /> : null}
-            {mode === "register" ? "注册并开始学习" : "登录并继续学习"}
+            {submitText}
           </button>
         </form>
+
+        <p className="auth-contact">
+          遇到问题？<a href="/contact">联系我们</a>
+        </p>
       </div>
     </section>
   )

@@ -12,12 +12,12 @@ import {
   XCircle,
 } from "lucide-react"
 import {
-  ensureSynonymAudio,
   fetchSynonymQueue,
   submitSynonymAnswer,
   type SynonymPoint,
   type SynonymPracticeMode,
 } from "@/lib/api/synonym"
+import { playWord, stopWord } from "@/lib/vocab/audio"
 
 type PracticeTab = "all" | SynonymPracticeMode | "wrong"
 type AnswerState = "idle" | "correct" | "wrong"
@@ -191,23 +191,18 @@ export function SynonymPractice() {
     nextQuestion()
   }
 
+  // 与考试页同一条 TTS 通道：浏览器 -> Next /py/tts -> Python Edge-TTS（流式，不落文件）。
+  // 之前走 Java /english/synonym/audio -> Python /py/vocab/tts，Java 端访问自签名 HTTPS 会失败，
+  // 且非词库短语每次点击都会生成新文件，播放失败时也没有任何提示。
+  useEffect(() => () => stopWord(), [])
+
   async function playText(text: string, accent: "uk" | "us") {
     if (!text || audioBusy) return
     const key = `${accent}:${text}`
     setAudioBusy(key)
+    setError("")
     try {
-      const url = await ensureSynonymAudio(text, accent)
-      await new Promise<void>((resolve) => {
-        const audio = new Audio(url)
-        const done = () => {
-          audio.removeEventListener("ended", done)
-          audio.removeEventListener("error", done)
-          resolve()
-        }
-        audio.addEventListener("ended", done, { once: true })
-        audio.addEventListener("error", done, { once: true })
-        audio.play().catch(done)
-      })
+      await playWord(text, {}, accent)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "语音播放失败")
     } finally {

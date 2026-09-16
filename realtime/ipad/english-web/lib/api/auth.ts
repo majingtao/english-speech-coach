@@ -21,8 +21,21 @@ function toLoginResult(data: YudaoAuthResp): LoginResult {
   }
 }
 
+/** 对应后端 SmsSceneEnum */
+export const SMS_SCENE = {
+  MEMBER_LOGIN: 1,
+  MEMBER_UPDATE_MOBILE: 2,
+  MEMBER_UPDATE_PASSWORD: 3,
+  MEMBER_RESET_PASSWORD: 4,
+} as const
+
 export async function loginBySms(params: { mobile: string; code: string }) {
   const data = await apiClient.post("/app-api/member/auth/sms-login", params) as unknown as YudaoAuthResp
+  return toLoginResult(data)
+}
+
+export async function loginByMobilePassword(params: { mobile: string; password: string }) {
+  const data = await apiClient.post("/app-api/member/auth/login", params) as unknown as YudaoAuthResp
   return toLoginResult(data)
 }
 
@@ -53,8 +66,16 @@ export async function sendSmsCode(params: { mobile: string; scene?: number }) {
   })
 }
 
-export async function sendEmailCode(params: { email: string; scene: string }) {
+export async function sendEmailCode(params: { email: string; scene: "register" | "login" | "reset" }) {
   await apiClient.post("/app-api/member/email-auth/send-email-code", params)
+}
+
+export async function resetPasswordByEmail(params: { email: string; code: string; password: string }) {
+  await apiClient.post("/app-api/member/email-auth/reset-password-by-email", params)
+}
+
+export async function resetPasswordByMobile(params: { mobile: string; code: string; password: string }) {
+  await apiClient.post("/app-api/member/email-auth/reset-password-by-mobile", params)
 }
 
 export async function checkEmail(email: string) {

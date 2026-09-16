@@ -26,7 +26,8 @@ import {
   type ExpressionDialogueTask,
 } from "@/lib/api/expression"
 import { AiSettingsPanel } from "@/components/ai/ai-settings-panel"
-import { AsrRecorder } from "@/lib/exam/asr"
+import { useSpeechRecorder } from "@/lib/exam/use-speech-recorder"
+import { RecordingFeedback } from "@/components/speech/recording-feedback"
 import { useAiConfig } from "@/lib/exam/use-ai-config"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 
@@ -44,7 +45,6 @@ export function ExpressionDialoguePractice() {
   const taskId = Number(searchParams.get("task"))
   const validTaskId = Number.isFinite(taskId) && taskId > 0
   const config = useAiConfig()
-  const recorderRef = useRef<AsrRecorder | null>(null)
   const chatEndRef = useRef<HTMLDivElement | null>(null)
 
   const [task, setTask] = useState<ExpressionDialogueTask | null>(null)
@@ -53,9 +53,13 @@ export function ExpressionDialoguePractice() {
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const speech = useSpeechRecorder({
+    modelId: config.currentAsr?.id || config.selectedAsrId,
+    onText: (text) => setInput(text),
+    onError: setError,
+  })
+  const { recording, seconds: recordSeconds } = speech
   const [aiThinking, setAiThinking] = useState(false)
-  const [recording, setRecording] = useState(false)
-  const [recordSeconds, setRecordSeconds] = useState(0)
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [grading, setGrading] = useState(false)
@@ -76,7 +80,6 @@ export function ExpressionDialoguePractice() {
       .finally(() => active && setLoading(false))
     return () => {
       active = false
-      recorderRef.current?.release()
       stopTts()
     }
   }, [taskId, validTaskId])
@@ -128,6 +131,7 @@ export function ExpressionDialoguePractice() {
   }
 
   async function chooseRole(role: DialogueRole) {
+    speech.reset()
     setLearnerRole(role)
     setTurns([])
     setInput("")
@@ -145,6 +149,7 @@ export function ExpressionDialoguePractice() {
 
   async function sendTurn() {
     if (!task || !learnerRole || !input.trim() || aiThinking || grade) return
+    speech.reset()
     const learnerTurn: DialogueTurn = { role: learnerRole, text: input.trim() }
     const next = [...turns, learnerTurn]
     setTurns(next)
@@ -152,24 +157,7 @@ export function ExpressionDialoguePractice() {
     if (next.length < task.configJson.maxTotalTurns) await askPartner(learnerRole, next)
   }
 
-  async function toggleRecording() {
-    setError("")
-    if (!recorderRef.current) recorderRef.current = new AsrRecorder()
-    if (!recording) {
-      setRecordSeconds(0)
-      const started = await recorderRef.current.startRecording(setRecordSeconds)
-      if (!started) {
-        setError(recorderRef.current.lastError || "无法使用麦克风，请检查浏览器权限")
-        return
-      }
-      setRecording(true)
-      return
-    }
-    setRecording(false)
-    const result = await recorderRef.current.stopAndRecognize(config.currentAsr?.id || config.selectedAsrId)
-    if ("error" in result) setError(result.error)
-    else setInput(result.text)
-  }
+  const toggleRecording = speech.toggle
 
   async function finish() {
     if (!task || !learnerRole || !canFinish) return
@@ -218,7 +206,7 @@ export function ExpressionDialoguePractice() {
         </div>
         <div className="expression-header-actions">
           {learnerRole && <button type="button" className="expression-icon-btn" onClick={switchRole} title="切换 A/B 角色"><RefreshCw className="size-4" /></button>}
-          <button type="button" className="expression-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="AI 设置"><Settings className="size-5" /></button>
+          <button type="button" className="expression-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="练习设置"><Settings className="size-5" /></button>
         </div>
       </header>
 
@@ -276,10 +264,10 @@ export function ExpressionDialoguePractice() {
               </div>
               <label><span>你的下一句话</span><textarea rows={3} value={input} onChange={(event) => setInput(event.target.value)} placeholder="Respond and ask your partner..." /></label>
               <div className="expression-composer-actions">
-                <button type="button" className={`expression-record-small ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={aiThinking} title={recording ? "停止录音" : "语音输入"}>
-                  {recording ? <Square className="size-4" /> : <Mic className="size-5" />}{recording && <span>{recordSeconds}s</span>}
+                <button type="button" className={`expression-record-small ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={aiThinking || speech.busy} title={recording ? "停止录音" : "语音输入"}>
+                  {recording ? <Square className="size-4" /> : <Mic className="size-5" />}<span>{recording ? `${recordSeconds}s 停止录音` : "开始录音"}</span>
                 </button>
-                <button type="button" className="expression-primary" onClick={sendTurn} disabled={!input.trim() || aiThinking || recording}><Send className="size-4" />发送</button>
+                <button type="button" className="expression-primary" onClick={sendTurn} disabled={!input.trim() || aiThinking || recording || speech.busy}><Send className="size-4" />发送</button>
               </div>
               <div className="expression-dialogue-finish">
                 <span>已完成 {learnerTurns} / {task.configJson.minLearnerTurns} 次发言</span>
@@ -291,6 +279,7 @@ export function ExpressionDialoguePractice() {
           )}
 
           {grade && <DialogueFeedback result={grade} onRestart={() => chooseRole(learnerRole)} />}
+          <RecordingFeedback recorder={speech} />
           {error && <p className="expression-inline-error">{error}</p>}
         </>
       )}

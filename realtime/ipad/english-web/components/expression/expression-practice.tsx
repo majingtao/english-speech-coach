@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
   ArrowLeft,
@@ -25,7 +25,8 @@ import {
   type ExpressionGradeResult,
   type ExpressionItem,
 } from "@/lib/api/expression"
-import { AsrRecorder } from "@/lib/exam/asr"
+import { useSpeechRecorder } from "@/lib/exam/use-speech-recorder"
+import { RecordingFeedback } from "@/components/speech/recording-feedback"
 import { useAiConfig } from "@/lib/exam/use-ai-config"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 import { AiSettingsPanel } from "@/components/ai/ai-settings-panel"
@@ -40,8 +41,6 @@ const answerLevelLabels: Record<AnswerLevelKey, string> = {
   challenge: "进阶回答",
 }
 
-const MIC_HINT_STORAGE_KEY = "expression-mic-hint-seen"
-
 function buildPattern(pattern: string, values: string[]) {
   let index = 0
   return pattern.replace(/___/g, () => values[index++] || "___")
@@ -51,7 +50,6 @@ export function ExpressionPractice() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const themeCode = searchParams.get("theme") || "food-drink"
-  const recorderRef = useRef<AsrRecorder | null>(null)
   const config = useAiConfig()
 
   const [items, setItems] = useState<ExpressionItem[]>([])
@@ -59,16 +57,18 @@ export function ExpressionPractice() {
   const [index, setIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const speech = useSpeechRecorder({
+    modelId: config.currentAsr?.id || config.selectedAsrId,
+    onText: (text) => { setResponseText(text); setGrade(null) },
+    onError: setError,
+  })
+  const { recording, seconds: recordSeconds } = speech
   const [stage, setStage] = useState<Stage>("model")
   const [answerLevel, setAnswerLevel] = useState<AnswerLevelKey>("expanded")
   const [mode, setMode] = useState<PracticeMode>("speaking")
   const [responseText, setResponseText] = useState("")
   const [grade, setGrade] = useState<ExpressionGradeResult | null>(null)
   const [grading, setGrading] = useState(false)
-  const [recording, setRecording] = useState(false)
-  const [recordSeconds, setRecordSeconds] = useState(0)
-  const [showMicHint, setShowMicHint] = useState(false)
-  const micHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [slotIndexes, setSlotIndexes] = useState<number[]>([])
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [ttsLoading, setTtsLoading] = useState(false)
@@ -98,16 +98,9 @@ export function ExpressionPractice() {
       .finally(() => active && setLoading(false))
     return () => {
       active = false
-      recorderRef.current?.release()
       stopTts()
     }
   }, [themeCode])
-
-  useEffect(() => {
-    return () => {
-      if (micHintTimerRef.current) clearTimeout(micHintTimerRef.current)
-    }
-  }, [])
 
   async function speak(text: string) {
     if (!config.ttsEnabled || !text.trim()) return
@@ -132,6 +125,7 @@ export function ExpressionPractice() {
   }
 
   function resetForItem(nextItem: ExpressionItem) {
+    speech.reset()
     setStage("model")
     setAnswerLevel("expanded")
     setMode(nextItem.practiceMode === "writing" ? "writing" : "speaking")
@@ -141,38 +135,7 @@ export function ExpressionPractice() {
     setError("")
   }
 
-  function dismissMicHint() {
-    setShowMicHint(false)
-    if (micHintTimerRef.current) {
-      clearTimeout(micHintTimerRef.current)
-      micHintTimerRef.current = null
-    }
-  }
-
-  async function toggleRecording() {
-    setError("")
-    if (!recorderRef.current) recorderRef.current = new AsrRecorder()
-    if (!recording) {
-      setRecordSeconds(0)
-      const started = await recorderRef.current.startRecording(setRecordSeconds)
-      if (!started) {
-        setError(recorderRef.current.lastError || "无法使用麦克风，请检查浏览器权限")
-        return
-      }
-      setRecording(true)
-      if (typeof window !== "undefined" && !window.localStorage.getItem(MIC_HINT_STORAGE_KEY)) {
-        window.localStorage.setItem(MIC_HINT_STORAGE_KEY, "1")
-        setShowMicHint(true)
-        micHintTimerRef.current = setTimeout(() => setShowMicHint(false), 5000)
-      }
-      return
-    }
-    dismissMicHint()
-    setRecording(false)
-    const result = await recorderRef.current.stopAndRecognize(config.currentAsr?.id || config.selectedAsrId)
-    if ("error" in result) setError(result.error)
-    else setResponseText(result.text)
-  }
+  const toggleRecording = speech.toggle
 
   async function submit() {
     if (!item || !responseText.trim()) return
@@ -230,15 +193,15 @@ export function ExpressionPractice() {
         </div>
         <div className="expression-header-actions">
           <span className="expression-score-badge">{item.bestSpeakingScore ?? item.bestWritingScore ?? "新题"}</span>
-          <button type="button" className="expression-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="AI 设置" aria-expanded={settingsOpen}>
+          <button type="button" className="expression-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="练习设置" aria-expanded={settingsOpen}>
             <Settings className="size-5" />
           </button>
         </div>
       </header>
       {settingsOpen && (
-        <section className="expression-ai-settings" aria-label="AI 设置">
+        <section className="expression-ai-settings" aria-label="练习设置">
           <div className="expression-ai-settings-head">
-            <strong>AI 设置</strong>
+            <strong>练习设置</strong>
             {(ttsLoading || ttsSpeaking) && <button type="button" onClick={stopTts}>停止播放</button>}
           </div>
           <AiSettingsPanel config={config} />
@@ -329,23 +292,19 @@ export function ExpressionPractice() {
         <section className="expression-workspace">
           {item.practiceMode === "both" && (
             <div className="expression-mode-switch">
-              <button type="button" className={mode === "speaking" ? "active" : ""} onClick={() => { setMode("speaking"); setGrade(null) }}><Mic className="size-4" />口语</button>
-              <button type="button" className={mode === "writing" ? "active" : ""} onClick={() => { setMode("writing"); setGrade(null) }}><PenLine className="size-4" />写作</button>
+              <button type="button" className={mode === "speaking" ? "active" : ""} onClick={() => { speech.reset(); setMode("speaking"); setGrade(null) }}><Mic className="size-4" />口语</button>
+              <button type="button" className={mode === "writing" ? "active" : ""} onClick={() => { speech.reset(); setMode("writing"); setGrade(null) }}><PenLine className="size-4" />写作</button>
             </div>
           )}
 
           {mode === "speaking" && (
             <div className="expression-record-wrap">
-              <button type="button" className={`expression-record ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={grading}>
+              <button type="button" className={`expression-record ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={grading || speech.busy}>
                 {recording ? <Square className="size-6" /> : <Mic className="size-7" />}
-                <strong>{recording ? `${recordSeconds}s 点击停止` : "点击开始回答"}</strong>
+                <strong>{recording ? `${recordSeconds}s 停止录音` : "开始录音"}</strong>
                 <span>录音完成后会自动转成文字</span>
               </button>
-              {showMicHint && (
-                <p className="expression-mic-hint" role="status">
-                  说完后再次点击麦克风结束录音
-                </p>
-              )}
+              <RecordingFeedback recorder={speech} />
             </div>
           )}
 
@@ -356,7 +315,7 @@ export function ExpressionPractice() {
 
           {error && <p className="expression-inline-error">{error}</p>}
           {!grade ? (
-            <button type="button" className="expression-primary" disabled={grading || !responseText.trim() || recording} onClick={submit}>
+            <button type="button" className="expression-primary" disabled={grading || !responseText.trim() || recording || speech.busy} onClick={submit}>
               {grading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />}
               {grading ? "AI 正在分析" : "提交并查看反馈"}
             </button>
@@ -370,7 +329,7 @@ export function ExpressionPractice() {
       )}
 
       <div className="expression-skip-actions">
-        <button type="button" className="expression-primary" disabled={grading || recording} onClick={nextItem}>
+        <button type="button" className="expression-primary" disabled={grading || recording || speech.busy} onClick={nextItem}>
           {index < items.length - 1 ? "下一题" : "完成练习"}<ArrowRight className="size-4" />
         </button>
       </div>

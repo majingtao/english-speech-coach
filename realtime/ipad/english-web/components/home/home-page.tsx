@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   BookOpen,
@@ -11,6 +11,7 @@ import {
   Loader2,
   LogOut,
   MessageCircle,
+  Headset,
   Mic,
   Puzzle,
   PenLine,
@@ -20,11 +21,14 @@ import {
   Sparkles,
   User,
   Zap,
+  X,
 } from "lucide-react"
 import type { QuotaMe } from "@/lib/types/quota"
 import { fetchMyQuota } from "@/lib/api/quota"
 import { logout } from "@/lib/api/auth"
 import { useAuthStore } from "@/lib/stores/auth-store"
+
+import { Dialog } from "radix-ui"
 
 interface AppItem {
   key: string
@@ -43,6 +47,15 @@ interface AppSection {
 }
 
 const sections: AppSection[] = [
+  {
+    key: "speaking-coach",
+    title: "今日口语成长",
+    subtitle: "薄弱项练习 · 重说与新题验证 · 录音和发音反馈",
+    icon: <Headphones className="size-5" />,
+    items: [
+      { key: "ket-coach", label: "KET 口语成长", icon: <Mic className="size-5" />, enabled: true, href: "/speaking-coach" },
+    ],
+  },
   {
     key: "speaking",
     title: "口语模拟考试",
@@ -108,6 +121,7 @@ const sections: AppSection[] = [
     icon: <BookOpen className="size-5" />,
     items: [
       { key: "vocab-ket", label: "KET 词汇", icon: <Sparkles className="size-5" />, enabled: true, href: "/vocab" },
+      { key: "vocab-ket-wordlist", label: "KET 词表", icon: <BookOpenText className="size-5" />, enabled: true, href: "/vocab/wordlist" },
       { key: "synonyms-ket", label: "同义词练习", icon: <BookOpenCheck className="size-5" />, enabled: true, href: "/synonyms" },
       { key: "vocab-flyers", label: "Flyers 词汇", icon: <BookOpen className="size-5" />, enabled: false },
       { key: "vocab-pet", label: "PET 词汇", icon: <BookOpen className="size-5" />, enabled: false },
@@ -119,7 +133,7 @@ const visibleSections = sections.filter((section) => section.key !== "free-chat"
 
 function QuotaBar({ label, used, total, unit }: { label: string; used: number; total: number; unit: string }) {
   const pct = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0
-  const remaining = total - used
+  const remaining = Math.max(0, total - used)
   const critical = pct >= 90
 
   return (
@@ -149,6 +163,7 @@ export function HomePage() {
 
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [quotaOpen, setQuotaOpen] = useState(false)
+  const quotaButtonRef = useRef<HTMLButtonElement>(null)
   const [quota, setQuota] = useState<QuotaMe | null>(null)
   const [quotaLoading, setQuotaLoading] = useState(false)
   const [quotaError, setQuotaError] = useState("")
@@ -185,9 +200,9 @@ export function HomePage() {
   const quotaRows = useMemo(() => {
     if (!quota) return []
     return [
-      { key: "llm", label: "对话 (LLM)", used: quota.llmUsed, total: quota.llmDaily, remaining: quota.llmRemaining, unit: "次" },
-      { key: "asr", label: "语音识别 (ASR)", used: quota.asrUsedSec, total: quota.asrDailySec, remaining: quota.asrRemainingSec, unit: "秒" },
-      { key: "tts", label: "语音合成 (TTS)", used: quota.ttsUsedChars, total: quota.ttsDailyChars, remaining: quota.ttsRemainingChars, unit: "字符" },
+      { key: "llm", label: "今日对话次数", used: quota.llmUsed, total: quota.llmDaily, remaining: quota.llmRemaining, unit: "次" },
+      { key: "asr", label: "语音识别时长", used: quota.asrUsedSec, total: quota.asrDailySec, remaining: quota.asrRemainingSec, unit: "秒" },
+      { key: "tts", label: "朗读额度", used: quota.ttsUsedChars, total: quota.ttsDailyChars, remaining: quota.ttsRemainingChars, unit: "字符" },
     ]
   }, [quota])
 
@@ -202,6 +217,7 @@ export function HomePage() {
               type="button"
               className="home-icon-btn"
               onClick={() => { setQuotaOpen(true); if (!quota) loadQuota() }}
+              ref={quotaButtonRef}
               title="今日额度"
             >
               <Zap className="size-[18px]" />
@@ -226,6 +242,9 @@ export function HomePage() {
                     </button>
                     <button type="button" className="home-menu-item" onClick={() => { setUserMenuOpen(false) }}>
                       <Settings className="size-4" /> 设置
+                    </button>
+                    <button type="button" className="home-menu-item" onClick={() => { setUserMenuOpen(false); router.push("/contact") }}>
+                      <Headset className="size-4" /> 联系我们
                     </button>
                     <div className="home-menu-divider" />
                     <button type="button" className="home-menu-item home-menu-danger" onClick={() => { setUserMenuOpen(false); onLogout() }}>
@@ -286,14 +305,22 @@ export function HomePage() {
         ))}
       </div>
 
+      <footer className="home-footer">
+        <button type="button" className="home-footer-link" onClick={() => router.push("/contact")}>
+          <Headset className="size-4" />
+          联系我们
+        </button>
+      </footer>
+
       {/* Quota Sheet */}
-      {quotaOpen && (
-        <>
-          <div className="home-overlay" onClick={() => setQuotaOpen(false)} />
-          <div className="home-sheet">
+      <Dialog.Root open={quotaOpen} onOpenChange={setQuotaOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="home-overlay" />
+          <Dialog.Content className="home-sheet" onCloseAutoFocus={(event) => { event.preventDefault(); quotaButtonRef.current?.focus() }}>
             <div className="home-sheet-handle" />
             <div className="home-sheet-header">
-              <h3 className="text-lg font-bold text-slate-800">今日额度</h3>
+              <Dialog.Title className="text-lg font-bold text-slate-800">今日额度</Dialog.Title>
+              <div className="home-sheet-actions">
               <button
                 type="button"
                 className="home-sheet-refresh"
@@ -303,7 +330,10 @@ export function HomePage() {
                 <RefreshCw className={`size-3.5 ${quotaLoading ? "animate-spin" : ""}`} />
                 {quotaLoading ? "加载中" : "刷新"}
               </button>
+              <Dialog.Close className="home-sheet-close" aria-label="关闭今日额度"><X className="size-5" /></Dialog.Close>
+              </div>
             </div>
+            <Dialog.Description className="home-sheet-description">查看今天的使用情况与剩余额度。</Dialog.Description>
             {quota && quota.enabled === false ? (
               <p className="text-red-500 text-sm text-center py-4">账号已被冻结，请联系管理员</p>
             ) : quotaError ? (
@@ -319,9 +349,9 @@ export function HomePage() {
                 <Loader2 className="size-4 animate-spin" /> 加载中...
               </div>
             )}
-          </div>
-        </>
-      )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </main>
   )
 }

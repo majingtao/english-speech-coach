@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_BUILD_DIR || ".next",
   output: "standalone",
   allowedDevOrigins: ["192.168.0.7"],
   async rewrites() {

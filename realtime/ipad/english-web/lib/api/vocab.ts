@@ -70,6 +70,11 @@ export interface VocabListItem {
   difficulty?: number
   progressStatus?: VocabProgressStatus
   repetitions?: number
+  /** 仅词表接口返回 */
+  definitionCn?: string
+  ipa?: string
+  /** 1=三会 2=四会（需会拼写） */
+  masteryLevel?: number
 }
 
 export interface VocabTheme {
@@ -211,6 +216,27 @@ export async function fetchVocabList(
   return apiClient.get(`${BASE}/list`, {
     params: query,
   }) as unknown as VocabPage
+}
+
+export interface WordListQuery {
+  level?: string
+  themeCode?: string
+  keyword?: string
+  pageNo?: number
+  pageSize?: number
+}
+
+/** 词表：按级别分页列出全部已发布单词（字母序），可按主题 + 单词前缀筛选 */
+export async function fetchWordList(query: WordListQuery): Promise<VocabPage> {
+  const params: Record<string, string | number> = {
+    level: query.level ?? "ket",
+    pageNo: query.pageNo ?? 1,
+    pageSize: query.pageSize ?? 30,
+  }
+  if (query.themeCode) params.themeCode = query.themeCode
+  if (query.keyword?.trim()) params.keyword = query.keyword.trim()
+  const data = (await apiClient.get(`${BASE}/word-list`, { params })) as unknown as VocabPage | null
+  return { list: data?.list ?? [], total: Number(data?.total ?? 0) }
 }
 
 export interface GradeSentenceResult {

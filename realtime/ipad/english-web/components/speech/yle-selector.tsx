@@ -15,8 +15,6 @@ interface YleLevel {
 }
 
 const levels: YleLevel[] = [
-  { key: "starters", title: "Pre A1 Starters", shortTitle: "Starters" },
-  { key: "movers", title: "A1 Movers", shortTitle: "Movers" },
   { key: "flyers", title: "A2 Flyers", shortTitle: "Flyers" },
 ]
 

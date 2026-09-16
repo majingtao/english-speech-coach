@@ -5,6 +5,8 @@ import { TOKEN_COOKIE_KEY } from "@/lib/auth/constants"
 function isPublicPath(pathname: string) {
   if (pathname === "/login") return true
   if (pathname === "/login-clean") return true
+  // 联系我们：未登录也能看（也可作为 App Store 的 Support URL）
+  if (pathname === "/contact") return true
   if (pathname.startsWith("/_next")) return true
   if (pathname.startsWith("/favicon")) return true
   return false

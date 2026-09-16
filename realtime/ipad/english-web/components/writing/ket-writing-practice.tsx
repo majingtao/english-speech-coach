@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   BookOpenText,
   CheckCircle2,
+  ChevronDown,
   ClipboardList,
   ImagePlus,
   Loader2,
@@ -30,6 +31,8 @@ import {
 import { AiSettingsPanel } from "@/components/ai/ai-settings-panel"
 import { useAiConfig } from "@/lib/exam/use-ai-config"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
+
+import { useWritingDraft } from "@/lib/writing/use-writing-draft"
 
 type PracticeMode = "guided" | "imitate" | "free"
 
@@ -84,22 +87,25 @@ export function KetWritingPractice() {
   const [taskLoadError, setTaskLoadError] = useState("")
   const [taskIndex, setTaskIndex] = useState(0)
   const [taskPage, setTaskPage] = useState(1)
-  const [mode, setMode] = useState<PracticeMode>("guided")
-  const [answer, setAnswer] = useState("")
   const [grade, setGrade] = useState<KetWritingGradeResult | null>(null)
   const [grading, setGrading] = useState(false)
   const [error, setError] = useState("")
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [ttsLoading, setTtsLoading] = useState(false)
   const [ttsSpeaking, setTtsSpeaking] = useState(false)
-  const [draftInfo, setDraftInfo] = useState<Record<string, string>>({})
   const [draftLoading, setDraftLoading] = useState(false)
   const [draftResult, setDraftResult] = useState<KetWritingDraftResult | null>(null)
   const [latestAttempt, setLatestAttempt] = useState<KetWritingAttempt | null>(null)
   const [attemptCount, setAttemptCount] = useState(0)
   const [attemptLoading, setAttemptLoading] = useState(true)
 
+  const [tasksOpen, setTasksOpen] = useState(false)
+  const [materialsOpen, setMaterialsOpen] = useState(false)
   const task = taskList[taskIndex] || taskList[0]
+  const draft = useWritingDraft(task.id, task.part === 7 ? "imitate" : "guided")
+  const { answer, mode, draftInfo } = draft.value
+  const setAnswer = (value: string) => draft.update({ answer: value })
+  const setMode = (value: PracticeMode) => draft.update({ mode: value })
   const wordCount = useMemo(() => countWords(answer), [answer])
   const filteredTasks = taskList
   const totalTaskPages = Math.max(1, Math.ceil(filteredTasks.length / TASKS_PER_PAGE))
@@ -117,15 +123,7 @@ export function KetWritingPractice() {
       .then((data) => {
         if (!active || data.length === 0) return
         setTaskList(data)
-        setTaskIndex(0)
-        setTaskPage(1)
-        setAnswer("")
-        setGrade(null)
-        setMode(data[0]?.part === 7 ? "imitate" : "guided")
-        setDraftInfo({})
-        setDraftResult(null)
         setTaskLoadError("")
-        setAttemptLoading(true)
       })
       .catch(() => {
         if (active) setTaskLoadError("题库接口暂时不可用，当前使用本地题库。")
@@ -157,26 +155,31 @@ export function KetWritingPractice() {
   }, [task.id])
 
   function selectTask(nextIndex: number) {
+    if (grading || draftLoading || !draft.canLeave()) return
+    stopTts()
+    setTasksOpen(false)
+    if (nextIndex === taskIndex) return
     setTaskIndex(nextIndex)
     setTaskPage(Math.floor(nextIndex / TASKS_PER_PAGE) + 1)
-    setAnswer("")
     setGrade(null)
     setError("")
-    setMode(taskList[nextIndex]?.part === 7 ? "imitate" : "guided")
-    setDraftInfo({})
     setDraftResult(null)
     setAttemptLoading(true)
   }
 
   function restoreLatestAttempt() {
-    if (!latestAttempt) return
-    setMode(latestAttempt.practiceMode)
-    setAnswer(latestAttempt.responseText)
+    if (!latestAttempt || !confirmReplace()) return
+    draft.update({ mode: latestAttempt.practiceMode, answer: latestAttempt.responseText })
     setGrade(latestAttempt.feedback || null)
     setError("")
   }
 
+  function confirmReplace() {
+    return !answer.trim() || window.confirm("这会替换当前作文，是否继续？")
+  }
+
   function applyFrame() {
+    if (!confirmReplace()) return
     setAnswer(starterFromFrame(task))
     setGrade(null)
   }
@@ -266,7 +269,7 @@ export function KetWritingPractice() {
   }
 
   function useDraft() {
-    if (!draftResult?.draft) return
+    if (!draftResult?.draft || !confirmReplace()) return
     setAnswer(draftResult.draft)
     setGrade(null)
   }
@@ -274,234 +277,255 @@ export function KetWritingPractice() {
   return (
     <main className="ket-writing-shell">
       <header className="ket-writing-header">
-        <button type="button" className="expression-icon-btn" onClick={() => router.push("/")} title="返回首页">
+        <button type="button" className="expression-icon-btn" onClick={() => { if (draft.canLeave()) router.push("/") }} title="返回首页">
           <ArrowLeft className="size-5" />
         </button>
         <div>
           <h1>KET写作练习</h1>
           <p>范文模仿 + AI老师纠错</p>
         </div>
-        <button type="button" className="expression-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="AI 设置">
+        <button type="button" className="expression-icon-btn" onClick={() => setSettingsOpen((open) => !open)} title="练习设置">
           <Settings className="size-5" />
         </button>
       </header>
 
       {settingsOpen && (
-        <section className="expression-ai-settings" aria-label="AI 设置">
+        <section className="expression-ai-settings" aria-label="练习设置">
           <div className="expression-ai-settings-head">
-            <strong>AI 设置</strong>
+            <strong>练习设置</strong>
           </div>
           <AiSettingsPanel config={config} />
         </section>
       )}
 
       <section className="ket-writing-layout">
-        <aside className="ket-writing-sidebar">
-          <div className="ket-writing-filter">
-            <strong>题库</strong>
-            <span>{filteredTasks.length} 题</span>
-          </div>
-          {taskLoadError && <p className="ket-writing-bank-warning">{taskLoadError}</p>}
-          <div className="ket-writing-task-list">
-            {pagedTasks.map((item, index) => {
-              const realIndex = taskPageStart + index
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={realIndex === taskIndex ? "active" : ""}
-                  onClick={() => selectTask(realIndex)}
-                >
-                  <span>{item.part === 6 ? "邮件" : "故事"}</span>
-                  <strong>{item.title}</strong>
-                  <small>{item.sourceUnit ? `Unit ${item.sourceUnit}` : `Page ${item.sourcePage || ""}`.trim()} · {item.targetWords} words</small>
-                </button>
-              )
-            })}
-          </div>
-          {filteredTasks.length > TASKS_PER_PAGE && (
-            <div className="ket-writing-pagination" aria-label="题库分页">
-              <button
-                type="button"
-                disabled={safeTaskPage <= 1}
-                onClick={() => setTaskPage((page) => Math.max(1, page - 1))}
-              >
-                上一页
-              </button>
-              <span>
-                {taskPageStart + 1}-{taskPageEnd} / {filteredTasks.length}
-                <b>{safeTaskPage}/{totalTaskPages}</b>
-              </span>
-              <button
-                type="button"
-                disabled={safeTaskPage >= totalTaskPages}
-                onClick={() => setTaskPage((page) => Math.min(totalTaskPages, page + 1))}
-              >
-                下一页
-              </button>
+        <aside className={`ket-writing-sidebar ${tasksOpen ? "is-open" : ""}`}>
+          <button type="button" className="ket-writing-task-toggle" aria-expanded={tasksOpen} aria-controls="writing-task-picker" onClick={() => setTasksOpen((value) => !value)}>
+            <span>当前题目：{task.title}</span><ChevronDown className="size-4" />
+          </button>
+          <div id="writing-task-picker" className="ket-writing-task-picker">
+            <div className="ket-writing-filter">
+              <strong>题库</strong>
+              <span>{filteredTasks.length} 题</span>
             </div>
-          )}
+            {taskLoadError && <p className="ket-writing-bank-warning">{taskLoadError}</p>}
+            <div className="ket-writing-task-list">
+              {pagedTasks.map((item, index) => {
+                const realIndex = taskPageStart + index
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={realIndex === taskIndex ? "active" : ""}
+                    disabled={grading || draftLoading || !draft.ready}
+                    onClick={() => selectTask(realIndex)}
+                  >
+                    <span>{item.part === 6 ? "邮件" : "故事"}</span>
+                    <strong>{item.title}</strong>
+                    <small>{item.sourceUnit ? `Unit ${item.sourceUnit}` : `Page ${item.sourcePage || ""}`.trim()} · {item.targetWords} words</small>
+                  </button>
+                )
+              })}
+            </div>
+            {filteredTasks.length > TASKS_PER_PAGE && (
+              <div className="ket-writing-pagination" aria-label="题库分页">
+                <button
+                  type="button"
+                  disabled={safeTaskPage <= 1}
+                  onClick={() => setTaskPage((page) => Math.max(1, page - 1))}
+                >
+                  上一页
+                </button>
+                <span>
+                  {taskPageStart + 1}-{taskPageEnd} / {filteredTasks.length}
+                  <b>{safeTaskPage}/{totalTaskPages}</b>
+                </span>
+                <button
+                  type="button"
+                  disabled={safeTaskPage >= totalTaskPages}
+                  onClick={() => setTaskPage((page) => Math.min(totalTaskPages, page + 1))}
+                >
+                  下一页
+                </button>
+              </div>
+            )}
+          </div>
         </aside>
 
         <section className="ket-writing-main">
-          <div className="ket-writing-task-card">
-            <div className="ket-writing-task-meta">
-              <span>{partLabel}</span>
-              <span>{sourceLabel}</span>
-              <span>{task.targetWords} words</span>
-              {task.status === "needs_image" && <span>待补图</span>}
+          <div className="ket-writing-context">
+            <div className="ket-writing-task-card">
+              <div className="ket-writing-task-meta">
+                <span>{partLabel}</span>
+                <span>{sourceLabel}</span>
+                <span>{task.targetWords} words</span>
+                {task.status === "needs_image" && <span>待补图</span>}
+              </div>
+              <h2>{task.title}</h2>
+              <p>{task.promptEn}</p>
+              {task.promptCn && <small>{task.promptCn}</small>}
+              <ul className="ket-writing-requirements">
+                {task.requirements.map((item) => <li key={item}>{item}</li>)}
+              </ul>
             </div>
-            <h2>{task.title}</h2>
-            <p>{task.promptEn}</p>
-            {task.promptCn && <small>{task.promptCn}</small>}
-            <ul className="ket-writing-requirements">
-              {task.requirements.map((item) => <li key={item}>{item}</li>)}
-            </ul>
+
+            {task.part === 7 && (
+              <section className="ket-writing-pictures">
+                {task.imageUrls.length > 0 ? task.imageUrls.map((url, index) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img key={url} src={url} alt={`Story picture ${index + 1}`} />
+                )) : task.imageSlots.map((slot) => (
+                  <div key={slot.slot}>
+                    <ImagePlus className="size-5" />
+                    <span>图片 {slot.slot}</span>
+                    <small>后续手动补图</small>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {task.picturePrompts.length > 0 && (
+              <section className="ket-writing-prompts">
+                {task.picturePrompts.map((item) => <p key={item}>{item}</p>)}
+              </section>
+            )}
+
           </div>
-
-          {task.part === 7 && (
-            <section className="ket-writing-pictures">
-              {task.imageUrls.length > 0 ? task.imageUrls.map((url, index) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={url} src={url} alt={`Story picture ${index + 1}`} />
-              )) : task.imageSlots.map((slot) => (
-                <div key={slot.slot}>
-                  <ImagePlus className="size-5" />
-                  <span>图片 {slot.slot}</span>
-                  <small>后续手动补图</small>
-                </div>
+          <div className="ket-writing-workspace">
+            <nav className="ket-writing-mode" aria-label="写作模式">
+              {(Object.keys(modeLabels) as PracticeMode[]).map((key) => (
+                <button key={key} type="button" className={mode === key ? "active" : ""} disabled={!draft.ready || grading} onClick={() => setMode(key)}>
+                  {modeLabels[key]}
+                </button>
               ))}
-            </section>
-          )}
+            </nav>
 
-          {task.picturePrompts.length > 0 && (
-            <section className="ket-writing-prompts">
-              {task.picturePrompts.map((item) => <p key={item}>{item}</p>)}
-            </section>
-          )}
-
-          <nav className="ket-writing-mode" aria-label="写作模式">
-            {(Object.keys(modeLabels) as PracticeMode[]).map((key) => (
-              <button key={key} type="button" className={mode === key ? "active" : ""} onClick={() => setMode(key)}>
-                {modeLabels[key]}
-              </button>
-            ))}
-          </nav>
-
-          {(attemptLoading || latestAttempt || attemptCount > 0) && (
-            <section className="ket-writing-last-attempt">
-              {attemptLoading ? (
-                <span>正在读取上次提交...</span>
-              ) : latestAttempt ? (
-                <>
-                  <div>
-                    <strong>上次提交</strong>
-                    <span>
-                      {modeLabels[latestAttempt.practiceMode]} · {latestAttempt.wordCount} words · 共 {attemptCount} 次
-                      {latestAttempt.createTime ? ` · ${formatAttemptTime(latestAttempt.createTime)}` : ""}
-                    </span>
-                  </div>
-                  <button type="button" className="expression-secondary" onClick={restoreLatestAttempt}>
-                    继续修改
-                  </button>
-                </>
-              ) : (
-                <span>这道题还没有提交记录</span>
-              )}
-            </section>
-          )}
-
-          <section className="ket-writing-study-grid">
-            {mode !== "free" && task.sampleAnswer.trim() && (
-              <div className="ket-writing-study-card">
-                <div className="ket-writing-card-head">
-                  <BookOpenText className="size-4" />
-                  <strong>范文</strong>
-                  <button type="button" onClick={speakSample} disabled={ttsLoading} title={ttsSpeaking ? "停止播放" : "播放范文"}>
-                    {ttsLoading ? <Loader2 className="size-4 animate-spin" /> : <Volume2 className="size-4" />}
-                    {ttsSpeaking ? "停止" : "播放"}
-                  </button>
-                </div>
-                <pre>{task.sampleAnswer}</pre>
-              </div>
-            )}
-            {mode === "guided" && (
-              <div className="ket-writing-study-card">
-                <div className="ket-writing-card-head">
-                  <ClipboardList className="size-4" />
-                  <strong>跟写框架</strong>
-                  <button type="button" onClick={applyFrame}>填入</button>
-                </div>
-                <pre>{task.writingFrame.join("\n")}</pre>
-              </div>
-            )}
-            {mode === "imitate" && (
-              <div className="ket-writing-study-card ket-writing-ai-card">
-                <div className="ket-writing-card-head">
-                  <Sparkles className="size-4" />
-                  <strong>AI仿写助手</strong>
-                  <button type="button" onClick={generateDraft} disabled={draftLoading}>
-                    {draftLoading ? <Loader2 className="size-4 animate-spin" /> : null}
-                    生成
-                  </button>
-                </div>
-                <div className="ket-writing-ai-fields">
-                  {draftFields.map((field) => (
-                    <label key={field.key}>
-                      <span>{field.label}</span>
-                      <input
-                        value={draftInfo[field.key] || ""}
-                        placeholder={field.placeholder}
-                        onChange={(event) => {
-                          setDraftInfo((current) => ({ ...current, [field.key]: event.target.value }))
-                          setDraftResult(null)
-                        }}
-                      />
-                    </label>
-                  ))}
-                </div>
-                {draftResult && (
-                  <div className="ket-writing-ai-result">
-                    <pre>{draftResult.draft}</pre>
-                    {draftResult.tips_cn.length > 0 && (
-                      <ul>{draftResult.tips_cn.map((tip) => <li key={tip}>{tip}</li>)}</ul>
-                    )}
-                    <button type="button" className="expression-secondary" onClick={useDraft}>
-                      填入作文框
+            {(attemptLoading || latestAttempt || attemptCount > 0) && (
+              <section className="ket-writing-last-attempt">
+                {attemptLoading ? (
+                  <span>正在读取上次提交...</span>
+                ) : latestAttempt ? (
+                  <>
+                    <div>
+                      <strong>上次提交</strong>
+                      <span>
+                        {modeLabels[latestAttempt.practiceMode]} · {latestAttempt.wordCount} words · 共 {attemptCount} 次
+                        {latestAttempt.createTime ? ` · ${formatAttemptTime(latestAttempt.createTime)}` : ""}
+                      </span>
+                    </div>
+                    <button type="button" className="expression-secondary" disabled={!draft.ready || grading} onClick={restoreLatestAttempt}>
+                      继续修改
                     </button>
-                  </div>
+                  </>
+                ) : (
+                  <span>这道题还没有提交记录</span>
                 )}
-              </div>
+              </section>
             )}
-          </section>
 
-          <section className="ket-writing-support">
-            {task.supportPhrases.map((item) => <span key={item}>{item}</span>)}
-          </section>
+            <section className={`ket-writing-materials ${materialsOpen ? "is-open" : ""}`}>
+              <button type="button" className="ket-writing-material-toggle" aria-expanded={materialsOpen} aria-controls="writing-study-materials" onClick={() => setMaterialsOpen((value) => !value)}>
+                {materialsOpen ? "收起学习参考" : "查看范文、写作框架与常用表达"}<ChevronDown className="size-4" />
+              </button>
+              <div id="writing-study-materials" className="ket-writing-material-content">
+                <section className="ket-writing-study-grid">
+                  {mode !== "free" && task.sampleAnswer.trim() && (
+                    <div className="ket-writing-study-card">
+                      <div className="ket-writing-card-head">
+                        <BookOpenText className="size-4" />
+                        <strong>范文</strong>
+                        <button type="button" onClick={speakSample} disabled={ttsLoading} title={ttsSpeaking ? "停止播放" : "播放范文"}>
+                          {ttsLoading ? <Loader2 className="size-4 animate-spin" /> : <Volume2 className="size-4" />}
+                          {ttsSpeaking ? "停止" : "播放"}
+                        </button>
+                      </div>
+                      <pre>{task.sampleAnswer}</pre>
+                    </div>
+                  )}
+                  {mode === "guided" && (
+                    <div className="ket-writing-study-card">
+                      <div className="ket-writing-card-head">
+                        <ClipboardList className="size-4" />
+                        <strong>跟写框架</strong>
+                        <button type="button" disabled={!draft.ready || grading} onClick={applyFrame}>填入</button>
+                      </div>
+                      <pre>{task.writingFrame.join("\n")}</pre>
+                    </div>
+                  )}
+                  {mode === "imitate" && (
+                    <div className="ket-writing-study-card ket-writing-ai-card">
+                      <div className="ket-writing-card-head">
+                        <Sparkles className="size-4" />
+                        <strong>AI仿写助手</strong>
+                        <button type="button" onClick={generateDraft} disabled={draftLoading}>
+                          {draftLoading ? <Loader2 className="size-4 animate-spin" /> : null}
+                          生成
+                        </button>
+                      </div>
+                      <div className="ket-writing-ai-fields">
+                        {draftFields.map((field) => (
+                          <label key={field.key}>
+                            <span>{field.label}</span>
+                            <input
+                              disabled={!draft.ready || grading}
+                              value={draftInfo[field.key] || ""}
+                              placeholder={field.placeholder}
+                              onChange={(event) => {
+                                draft.update({ draftInfo: { ...draftInfo, [field.key]: event.target.value } })
+                                setDraftResult(null)
+                              }}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                      {draftResult && (
+                        <div className="ket-writing-ai-result">
+                          <pre>{draftResult.draft}</pre>
+                          {draftResult.tips_cn.length > 0 && (
+                            <ul>{draftResult.tips_cn.map((tip) => <li key={tip}>{tip}</li>)}</ul>
+                          )}
+                          <button type="button" className="expression-secondary" disabled={!draft.ready || grading} onClick={useDraft}>
+                            填入作文框
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </section>
 
-          <label className="ket-writing-editor">
-            <span>
-              <PenLine className="size-4" />
-              我的作文
-              <b>{wordCount} words</b>
-            </span>
-            <textarea
-              value={answer}
-              onChange={(event) => { setAnswer(event.target.value); setGrade(null) }}
-              rows={9}
-              placeholder="Write your answer in English..."
-            />
-          </label>
+                <section className="ket-writing-support">
+                  {task.supportPhrases.map((item) => <span key={item}>{item}</span>)}
+                </section>
 
-          {error && <p className="expression-inline-error">{error}</p>}
-          {!grade ? (
-            <button type="button" className="expression-primary" disabled={grading || !answer.trim()} onClick={submit}>
-              {grading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />}
-              {grading ? "AI老师正在批改" : "提交给AI老师纠错"}
-            </button>
-          ) : (
-            <WritingFeedback result={grade} onReset={() => { setGrade(null); setAnswer("") }} />
-          )}
+              </div>
+            </section>
+
+            <label className="ket-writing-editor">
+              <span>
+                <PenLine className="size-4" />
+                我的作文
+                <b>{wordCount} words</b>
+              </span>
+              <textarea
+                value={answer}
+                onChange={(event) => { setAnswer(event.target.value); setGrade(null) }}
+                disabled={!draft.ready || grading}
+                rows={9}
+                placeholder="Write your answer in English..."
+              />
+            </label>
+
+            <p className="ket-writing-draft-status" role="status">{draft.notice}</p>
+            {error && <p className="expression-inline-error">{error}</p>}
+            {!grade ? (
+              <button type="button" className="expression-primary" disabled={!draft.ready || grading || !answer.trim()} onClick={submit}>
+                {grading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle2 className="size-4" />}
+                {grading ? "AI老师正在批改" : "提交给AI老师纠错"}
+              </button>
+            ) : (
+              <WritingFeedback result={grade} onReset={() => { if (confirmReplace()) { setGrade(null); setAnswer("") } }} />
+            )}
+          </div>
         </section>
       </section>
     </main>

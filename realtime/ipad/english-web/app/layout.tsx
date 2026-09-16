@@ -1,15 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const dmSans = DM_Sans({
+// 字体文件随项目打包（来自 @fontsource-variable，OFL-1.1），
+// 构建时不再访问 fonts.googleapis.com，内网/离线环境也能 next build。
+const dmSans = localFont({
+  src: "./fonts/DMSans-Variable-latin.woff2",
   variable: "--font-body",
-  subsets: ["latin"],
+  weight: "100 1000",
+  style: "normal",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+const spaceGrotesk = localFont({
+  src: "./fonts/SpaceGrotesk-Variable-latin.woff2",
   variable: "--font-heading",
-  subsets: ["latin"],
+  weight: "300 700",
+  style: "normal",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {

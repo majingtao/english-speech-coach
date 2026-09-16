@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
@@ -26,7 +26,8 @@ import {
   type PersonalPracticeGrade,
   type PersonalPracticeType,
 } from "@/lib/api/personal-practice"
-import { AsrRecorder } from "@/lib/exam/asr"
+import { useSpeechRecorder } from "@/lib/exam/use-speech-recorder"
+import { RecordingFeedback } from "@/components/speech/recording-feedback"
 import { useAiConfig } from "@/lib/exam/use-ai-config"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 
@@ -39,18 +40,21 @@ function makeResponseLines(practice: PersonalPractice) {
 export function PersonalPracticePage({ type }: { type: PersonalPracticeType }) {
   const router = useRouter()
   const config = useAiConfig()
-  const recorderRef = useRef<AsrRecorder | null>(null)
   const [items, setItems] = useState<PersonalPractice[]>([])
   const [index, setIndex] = useState(0)
   const [stage, setStage] = useState<Stage>("learn")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const speech = useSpeechRecorder({
+    modelId: config.currentAsr?.id || config.selectedAsrId,
+    onText: (text) => setResponseLines([text]),
+    onError: setError,
+  })
+  const { recording, seconds: recordSeconds } = speech
   const [showChinese, setShowChinese] = useState(true)
   const [responseLines, setResponseLines] = useState<string[]>([""])
   const [grade, setGrade] = useState<PersonalPracticeGrade | null>(null)
   const [grading, setGrading] = useState(false)
-  const [recording, setRecording] = useState(false)
-  const [recordSeconds, setRecordSeconds] = useState(0)
   const [ttsLoading, setTtsLoading] = useState(false)
   const [ttsSpeaking, setTtsSpeaking] = useState(false)
   const item = items[index]
@@ -70,7 +74,6 @@ export function PersonalPracticePage({ type }: { type: PersonalPracticeType }) {
       .finally(() => active && setLoading(false))
     return () => {
       active = false
-      recorderRef.current?.release()
       stopTts()
     }
   }, [type])
@@ -80,8 +83,7 @@ export function PersonalPracticePage({ type }: { type: PersonalPracticeType }) {
     setResponseLines(makeResponseLines(next))
     setGrade(null)
     setError("")
-    setRecordSeconds(0)
-    setRecording(false)
+    speech.reset()
     stopTts()
   }
 
@@ -112,24 +114,7 @@ export function PersonalPracticePage({ type }: { type: PersonalPracticeType }) {
     await speak([item.promptEn, ...item.referenceLines.map((line) => line.en)].join("\n"))
   }
 
-  async function toggleRecording() {
-    setError("")
-    if (!recorderRef.current) recorderRef.current = new AsrRecorder()
-    if (!recording) {
-      setRecordSeconds(0)
-      const started = await recorderRef.current.startRecording(setRecordSeconds)
-      if (!started) {
-        setError(recorderRef.current.lastError || "无法使用麦克风")
-        return
-      }
-      setRecording(true)
-      return
-    }
-    setRecording(false)
-    const result = await recorderRef.current.stopAndRecognize(config.currentAsr?.id || config.selectedAsrId)
-    if ("error" in result) setError(result.error)
-    else setResponseLines([result.text])
-  }
+  const toggleRecording = speech.toggle
 
   async function submit() {
     if (!item || !responseText) return
@@ -232,9 +217,10 @@ export function PersonalPracticePage({ type }: { type: PersonalPracticeType }) {
           <div className="personal-panel-head"><div>{isSpeaking ? <Mic /> : <PenLine />}<span>{isSpeaking ? "录下你的回答" : "一句一句写下来"}</span></div></div>
           {isSpeaking ? (
             <>
-              <button type="button" className={`personal-record ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={grading}>
-                {recording ? <Square /> : <Mic />}<strong>{recording ? `${recordSeconds}s 点击停止` : "点击开始回答"}</strong>
+              <button type="button" className={`personal-record ${recording ? "recording" : ""}`} onClick={toggleRecording} disabled={grading || speech.busy}>
+                {recording ? <Square /> : <Mic />}<strong>{recording ? `${recordSeconds}s 停止录音` : "开始录音"}</strong>
               </button>
+              <RecordingFeedback recorder={speech} />
               <label className="personal-input"><span>识别结果</span><textarea rows={5} value={responseLines[0] || ""} onChange={(event) => setResponseLines([event.target.value])} placeholder="录音后也可以在这里修改识别结果" /></label>
             </>
           ) : (
@@ -248,7 +234,7 @@ export function PersonalPracticePage({ type }: { type: PersonalPracticeType }) {
           {error && <p className="personal-error-text">{error}</p>}
           <div className="personal-actions">
             <button type="button" className="personal-secondary" onClick={() => setStage("learn")}><ChevronLeft />查看参考</button>
-            <button type="button" className="personal-primary" disabled={!responseText || grading || recording} onClick={submit}>
+            <button type="button" className="personal-primary" disabled={!responseText || grading || recording || speech.busy} onClick={submit}>
               {grading ? <Loader2 className="animate-spin" /> : <Sparkles />}AI 评分
             </button>
           </div>

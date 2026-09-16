@@ -27,7 +27,8 @@ import type { AvatarState } from "./exam-avatar"
 import { useExamConfig } from "@/lib/exam/use-exam-config"
 import { buildSteps } from "@/lib/exam/build-steps"
 import { callJudge } from "@/lib/exam/judge"
-import { AsrRecorder } from "@/lib/exam/asr"
+import { useSpeechRecorder } from "@/lib/exam/use-speech-recorder"
+import { RecordingFeedback } from "./recording-feedback"
 import { speakWithServer, speakWithSystem, stopTts, unlockAudio } from "@/lib/exam/tts"
 import { ExamAvatar } from "./exam-avatar"
 import { AiSettingsPanel } from "@/components/ai/ai-settings-panel"
@@ -41,8 +42,6 @@ const ALL_PART_OPTIONS = [
 ]
 
 let msgIdCounter = 0
-
-const MIC_HINT_STORAGE_KEY = "exam-mic-hint-seen"
 
 export function ExamPage() {
   const router = useRouter()
@@ -72,8 +71,6 @@ export function ExamPage() {
   const [sendDisabled, setSendDisabled] = useState(true)
   const [recordDisabled, setRecordDisabled] = useState(true)
   const [startDisabled, setStartDisabled] = useState(false)
-  const [recording, setRecording] = useState(false)
-  const [showMicHint, setShowMicHint] = useState(false)
   const [ttsLoading, setTtsLoading] = useState(false)
   const [ttsSpeaking, setTtsSpeaking] = useState(false)
   const [avatarState, setAvatarState] = useState<AvatarState>("idle")
@@ -92,8 +89,15 @@ export function ExamPage() {
   })
 
   const chatRef = useRef<HTMLDivElement>(null)
-  const asrRef = useRef(new AsrRecorder())
-  const micHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const shellRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const viewport = window.visualViewport
+    if (!viewport) return
+    const resize = () => shellRef.current?.style.setProperty("--exam-viewport-height", `${viewport.height}px`)
+    resize()
+    viewport.addEventListener("resize", resize)
+    return () => viewport.removeEventListener("resize", resize)
+  }, [])
 
   const stepsRef = useRef<ExamStep[]>([])
   const stepIdxRef = useRef(0)
@@ -109,12 +113,6 @@ export function ExamPage() {
       label: test.label || id,
     }))
   }, [config.questionBank])
-
-  useEffect(() => {
-    return () => {
-      if (micHintTimerRef.current) clearTimeout(micHintTimerRef.current)
-    }
-  }, [])
 
   useEffect(() => {
     if (testOptions.length > 0 && !selectedTest) {
@@ -455,6 +453,7 @@ export function ExamPage() {
     requireRepeatRef.current = null
     scoreRef.current = { correct: 0, retry: 0, showAnswer: 0 }
     setStartDisabled(true)
+    speech.reset()
     setInputVisible(true)
     setSendDisabled(true)
     setRecordDisabled(true)
@@ -466,61 +465,28 @@ export function ExamPage() {
 
   function sendAnswer() {
     const text = inputText.trim()
-    if (!text) return
+    if (!text || speech.busy || recording) return
+    speech.reset()
     submitAnswer(text)
     setInputText("")
   }
 
-  function dismissMicHint() {
-    setShowMicHint(false)
-    if (micHintTimerRef.current) {
-      clearTimeout(micHintTimerRef.current)
-      micHintTimerRef.current = null
-    }
-  }
-
-  async function toggleRecording() {
-    const asr = asrRef.current
-    if (recording) {
-      dismissMicHint()
-      setRecording(false)
-      setRecordDisabled(true)
-      setStatus("识别中...")
-      const result = await asr.stopAndRecognize(config.currentAsr?.id || "sensevoice-small")
-      if ("error" in result) {
-        setStatus(result.error, "error")
-        if (waitingRef.current) setRecordDisabled(false)
-      } else {
-        if (config.voiceOnly) {
-          submitAnswer(result.text)
-        } else {
-          setInputText(result.text)
-          setStatus("识别完成，可编辑后发送", "success")
-          setSendDisabled(false)
-          if (waitingRef.current) setRecordDisabled(false)
-        }
+  const speech = useSpeechRecorder({
+    modelId: config.currentAsr?.id || "sensevoice-small",
+    onText: (text) => {
+      if (!waitingRef.current) return
+      if (config.voiceOnly) void submitAnswer(text)
+      else {
+        setInputText(text)
+        setStatus("识别完成，可编辑后发送", "success")
+        setSendDisabled(false)
       }
-    } else {
-      unlockAudio()
-      setRecording(true)
-      const ok = await asr.startRecording((sec) => setStatus(`录音中 ${sec}s · 说完请再次点击麦克风`, "success"))
-      if (!ok) {
-        setRecording(false)
-        setStatus(asr.lastError || "麦克风未授权", "error")
-      } else if (typeof window !== "undefined" && !window.localStorage.getItem(MIC_HINT_STORAGE_KEY)) {
-        window.localStorage.setItem(MIC_HINT_STORAGE_KEY, "1")
-        setShowMicHint(true)
-        micHintTimerRef.current = setTimeout(() => setShowMicHint(false), 5000)
-      }
-    }
-  }
+    },
+    onError: (message) => { if (message) setStatus(message, "error") },
+  })
+  const { recording } = speech
 
-  useEffect(() => {
-    return () => {
-      asrRef.current.release()
-      stopTts()
-    }
-  }, [])
+  useEffect(() => () => stopTts(), [])
 
   const statusColor = examStatusType === "success" ? "text-emerald-600 bg-emerald-50 border-emerald-200"
     : examStatusType === "error" ? "text-red-600 bg-red-50 border-red-200"
@@ -612,7 +578,7 @@ export function ExamPage() {
     .slice(-2)
 
   return (
-    <div className="exam-shell">
+    <div className="exam-shell" ref={shellRef}>
       {/* Header */}
       <header className="exam-header">
         <button
@@ -627,7 +593,7 @@ export function ExamPage() {
           <h1 className="exam-header-title">{seriesName || levelName}</h1>
           {examProgress && <span className="exam-header-progress">{examProgress}</span>}
         </div>
-        <button type="button" className="home-icon-btn" onClick={() => setSettingsOpen((v) => !v)}>
+        <button type="button" className="home-icon-btn" aria-label={settingsOpen ? "收起考试设置" : "展开考试设置"} aria-expanded={settingsOpen} disabled={speech.busy || recording} onClick={() => setSettingsOpen((v) => !v)}>
           <Settings className="size-[18px]" />
         </button>
       </header>
@@ -709,22 +675,20 @@ export function ExamPage() {
                   <span className="exam-toggle-thumb" />
                 </button>
               </div>
-              <div className="exam-setting-row">
+              <AiSettingsPanel config={config}>
+                <div className="exam-setting-row">
                 <span className="exam-setting-label">测试模式</span>
                 <button type="button" className={`exam-toggle ${testMode ? "exam-toggle-on" : ""}`} onClick={() => setTestMode(!testMode)}>
                   <span className="exam-toggle-thumb" />
                 </button>
               </div>
-
-              <AiSettingsPanel config={config} />
+              </AiSettingsPanel>
             </div>
           )}
 
           {/* Start Button */}
           <div className="exam-start-area">
-            <div className={`exam-status-badge ${statusColor}`}>
-              {examStatus}
-            </div>
+            <span className={`exam-status-badge ${statusColor}`} role="status">{examStatus}</span>
             <div className="exam-action-row">
               <button type="button" className="exam-start-btn" disabled={startDisabled || !selectedTest} onClick={startExam}>
                 {startDisabled ? <Loader2 className="size-4 animate-spin" /> : <Play className="size-4" />}
@@ -742,6 +706,10 @@ export function ExamPage() {
 
         {/* Right Panel - Chat / Avatar */}
         <main className="exam-right">
+          {!settingsOpen && <div className="exam-live-status">
+            <span className={`exam-status-badge ${statusColor}`} role="status">{examStatus}</span>
+            {ttsSpeaking && <button type="button" className="exam-stop-tts" onClick={stopTts}><Square className="size-4" />停止播报</button>}
+          </div>}
           {!isKet && currentImages.length > 0 && (
             <div className={`exam-images ${currentImages.length === 1 ? "exam-images-single" : "exam-images-pair"}`}>
               {currentImages.map((src, i) => (
@@ -854,6 +822,7 @@ export function ExamPage() {
             </div>
           )}
 
+          <RecordingFeedback recorder={speech} />
           {/* Input Bar */}
           {inputVisible && (
             <div className="exam-input-bar">
@@ -862,28 +831,25 @@ export function ExamPage() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="点右侧麦克风录音或停止录音"
-                onKeyDown={(e) => { if (e.key === "Enter" && !sendDisabled) sendAnswer() }}
+                onKeyDown={(e) => { if (e.key === "Enter" && !sendDisabled && !speech.busy && !recording) sendAnswer() }}
                 disabled={sendDisabled && !waitingRef.current}
               />
               <div className="exam-mic-wrap">
-                {showMicHint && (
-                  <div className="exam-mic-hint" role="status">
-                    说完后再次点击麦克风结束录音
-                  </div>
-                )}
                 <button
                   type="button"
                   className={`exam-mic-btn ${recording ? "exam-mic-recording" : ""}`}
-                  disabled={recordDisabled && !recording}
-                  onClick={toggleRecording}
+                  disabled={speech.busy || (recordDisabled && !recording)}
+                  aria-label={recording ? "停止录音" : "开始录音"}
+                  onClick={speech.toggle}
                 >
-                  {recording ? <MicOff className="size-[18px]" /> : <Mic className="size-[18px]" />}
+                  {recording ? <MicOff className="size-[18px]" /> : <Mic className="size-[18px]" />}<span>{recording ? "停止录音" : "开始录音"}</span>
                 </button>
               </div>
               <button
                 type="button"
                 className="exam-send-btn"
-                disabled={sendDisabled || !inputText.trim()}
+                disabled={sendDisabled || !inputText.trim() || speech.busy || recording}
+                aria-label="发送回答"
                 onClick={sendAnswer}
               >
                 <Send className="size-[18px]" />
