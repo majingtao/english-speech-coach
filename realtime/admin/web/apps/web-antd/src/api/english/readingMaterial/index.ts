@@ -23,6 +23,7 @@ export namespace EnglishReadingMaterialApi {
     wordFormsJson?: string;
     mustKnow?: number;
     highFrequency?: number;
+    mustSpell?: number;
     sort?: number;
     status?: number;
     createTime?: string;

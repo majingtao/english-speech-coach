@@ -128,6 +128,7 @@ const [Modal, modalApi] = useVbenModal({
         wordFormsJson: '{}',
         mustKnow: 0,
         highFrequency: 0,
+        mustSpell: 0,
         sort: 0,
         status: 1,
       });

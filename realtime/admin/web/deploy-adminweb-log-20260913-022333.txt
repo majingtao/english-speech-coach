@@ -1,0 +1,37 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260913022333
+用户名: MAJINGTAO\majingtao
+RunAs 用户: MAJINGTAO\majingtao
+配置名称: 
+计算机: MAJINGTAO (Microsoft Windows NT 10.0.19045.0)
+主机应用程序: powershell -NoProfile -ExecutionPolicy Bypass -File E:\project\englishAi\realtime\admin\web\deploy-adminweb.ps1
+进程 ID: 34912
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Log file: E:\project\englishAi\realtime\admin\web\deploy-adminweb-log-20260913-022333.txt
+Working dir: E:\project\englishAi\realtime\admin\web
+
+==> 1/7 pnpm install
+PS>TerminatingError():“程序“node.exe”无法运行: 索引超出了数组界限。所在位置 D:\nvm\nodejs\pnpm.ps1:16 字符: 5
++     & "$basedir/node$exe"  "$basedir/node_modules/corepack/dist/pnpm. ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~。”
+>> TerminatingError():“程序“node.exe”无法运行: 索引超出了数组界限。所在位置 D:\nvm\nodejs\pnpm.ps1:16 字符: 5
++     & "$basedir/node$exe"  "$basedir/node_modules/corepack/dist/pnpm. ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~。”
+
+[FAIL] Unhandled error: 索引超出了数组界限。
+At: 所在位置 D:\nvm\nodejs\pnpm.ps1:16 字符: 5
++     & "$basedir/node$exe"  "$basedir/node_modules/corepack/dist/pnpm. ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260913022345
+**********************

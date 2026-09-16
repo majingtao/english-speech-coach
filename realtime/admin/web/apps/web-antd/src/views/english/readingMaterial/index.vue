@@ -119,6 +119,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #priority="{ row }">
         <Tag v-if="row.mustKnow === 1" color="red">必会</Tag>
         <Tag v-if="row.highFrequency === 1" color="gold">高频</Tag>
+        <Tag v-if="row.mustSpell === 1" color="magenta">必默</Tag>
       </template>
       <template #status="{ row }">
         <Tag v-if="row.status === 0">草稿</Tag>

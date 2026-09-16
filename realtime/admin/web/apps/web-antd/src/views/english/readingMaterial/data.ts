@@ -21,6 +21,7 @@ export const partOfSpeechOptions = [
 export const priorityOptions = [
   { label: '必会', value: 'mustKnow' },
   { label: '高频', value: 'highFrequency' },
+  { label: '必默', value: 'mustSpell' },
 ];
 
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -167,6 +168,20 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'highFrequency',
       label: '高频',
+      component: 'RadioGroup',
+      defaultValue: 0,
+      componentProps: {
+        optionType: 'button',
+        buttonStyle: 'solid',
+        options: [
+          { label: '否', value: 0 },
+          { label: '是', value: 1 },
+        ],
+      },
+    },
+    {
+      fieldName: 'mustSpell',
+      label: '必默',
       component: 'RadioGroup',
       defaultValue: 0,
       componentProps: {
