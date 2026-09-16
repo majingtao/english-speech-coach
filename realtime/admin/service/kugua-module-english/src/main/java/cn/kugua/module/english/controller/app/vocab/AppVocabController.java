@@ -11,6 +11,8 @@ import cn.kugua.module.english.service.vocab.PyVocabClient;
 import cn.kugua.module.english.service.vocab.UserVocabProgressService;
 import cn.kugua.module.english.service.vocab.VocabService;
 import cn.kugua.module.english.service.vocab.VocabThemeService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -211,6 +213,57 @@ public class AppVocabController {
         result.setList(list);
         result.setTotal(page.getTotal());
         return success(result);
+    }
+
+    @GetMapping("/word-list")
+    @Operation(summary = "词表：按级别分页列出全部已发布单词（字母序，可按主题筛选 + 前缀搜索）")
+    public CommonResult<PageResult<AppVocabListItemVO>> wordList(
+            @RequestParam(value = "level", defaultValue = "ket") String level,
+            @RequestParam(value = "themeCode", required = false) String themeCode,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize) {
+        Long userId = SecurityFrameworkUtils.getLoginUserId();
+        PageResult<VocabDO> page = vocabService.getPublishedWordPage(level, themeCode, keyword,
+                pageNo == null ? 1 : pageNo, pageSize == null ? 30 : pageSize);
+        List<Long> ids = page.getList().stream().map(VocabDO::getId).toList();
+        Map<Long, UserVocabProgressDO> progressMap = progressService.getProgressMap(userId, ids);
+        List<AppVocabListItemVO> list = new ArrayList<>(page.getList().size());
+        for (VocabDO v : page.getList()) {
+            AppVocabListItemVO item = toListItem(v, progressMap.get(v.getId()));
+            item.setMasteryLevel(v.getMasteryLevel());
+            fillSummary(item, v.getContentJson());
+            list.add(item);
+        }
+        return success(new PageResult<>(list, page.getTotal()));
+    }
+
+    private static final ObjectMapper JSON = new ObjectMapper();
+
+    /** 从 content_json 里取中文释义 + 音标；兼容顶层 definition_cn 和 entries[].definitions[] 两种结构 */
+    private static void fillSummary(AppVocabListItemVO item, String contentJson) {
+        if (contentJson == null || contentJson.isBlank()) return;
+        try {
+            JsonNode root = JSON.readTree(contentJson);
+            String ipa = root.path("ipa").asText("");
+            if (!ipa.isBlank()) item.setIpa(ipa);
+            String cn = root.path("definition_cn").asText("");
+            if (cn.isBlank()) {
+                List<String> parts = new ArrayList<>();
+                for (JsonNode entry : root.path("entries")) {
+                    for (JsonNode def : entry.path("definitions")) {
+                        String d = def.path("definition_cn").asText("");
+                        if (!d.isBlank() && !parts.contains(d)) parts.add(d);
+                        if (parts.size() >= 3) break;
+                    }
+                    if (parts.size() >= 3) break;
+                }
+                cn = String.join("；", parts);
+            }
+            if (!cn.isBlank()) item.setDefinitionCn(cn);
+        } catch (Exception ignored) {
+            // content_json 异常时列表照常返回，只是不带释义
+        }
     }
 
     @PostMapping("/{id}/practice-sentence")

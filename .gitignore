@@ -92,3 +92,5 @@ realtime/admin/service/sql/
 *.old
 *~
 realtime/admin-new
+realtime/admin/service/kugua-module-english/src/main/resources/db/migration/kg_english_coach_all_service.sql
+realtime/admin/service/yudao-server/src/main/resources/application-pro.yaml

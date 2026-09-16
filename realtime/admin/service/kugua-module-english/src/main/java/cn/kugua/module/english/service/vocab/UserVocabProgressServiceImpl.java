@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,6 +96,17 @@ public class UserVocabProgressServiceImpl implements UserVocabProgressService {
     @Override
     public UserVocabProgressDO getProgress(Long userId, Long vocabId) {
         return progressMapper.selectByUserAndVocab(userId, vocabId);
+    }
+
+    @Override
+    public Map<Long, UserVocabProgressDO> getProgressMap(Long userId, Collection<Long> vocabIds) {
+        if (userId == null || vocabIds == null || vocabIds.isEmpty()) return Collections.emptyMap();
+        List<UserVocabProgressDO> list = progressMapper.selectList(new LambdaQueryWrapperX<UserVocabProgressDO>()
+                .eq(UserVocabProgressDO::getUserId, userId)
+                .in(UserVocabProgressDO::getVocabId, vocabIds));
+        Map<Long, UserVocabProgressDO> map = new HashMap<>(list.size() * 2);
+        for (UserVocabProgressDO p : list) map.put(p.getVocabId(), p);
+        return map;
     }
 
     @Override

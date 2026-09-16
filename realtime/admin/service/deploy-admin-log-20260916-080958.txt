@@ -1,0 +1,115 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260916080958
+用户名: MAJINGTAO\majingtao
+RunAs 用户: MAJINGTAO\majingtao
+配置名称: 
+计算机: MAJINGTAO (Microsoft Windows NT 10.0.19045.0)
+主机应用程序: powershell -NoProfile -ExecutionPolicy Bypass -File E:\project\englishAi\realtime\admin\service\deploy-admin.ps1
+进程 ID: 42924
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Log file: E:\project\englishAi\realtime\admin\service\deploy-admin-log-20260916-080958.txt
+    JAVA_HOME = E:\java
+Working dir: E:\project\englishAi\realtime\admin\service
+
+==> 0/7 Toolchain
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: D:\soft\apache-maven-3.9.9
+Java version: 17.0.16, vendor: Eclipse Adoptium, runtime: E:\java
+Default locale: zh_CN, platform encoding: GBK
+OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+
+==> 1/7 mvn clean package -DskipTests
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO]
+[INFO] yudao-dependencies                                                 [pom]
+[INFO] yudao                                                              [pom]
+[INFO] yudao-framework                                                    [pom]
+[INFO] yudao-common                                                       [jar]
+[INFO] yudao-spring-boot-starter-web                                      [jar]
+[INFO] yudao-spring-boot-starter-security                                 [jar]
+[INFO] yudao-spring-boot-starter-mybatis                                  [jar]
+[INFO] yudao-spring-boot-starter-redis                                    [jar]
+[INFO] yudao-spring-boot-starter-mq                                       [jar]
+[INFO] yudao-spring-boot-starter-job                                      [jar]
+[INFO] yudao-spring-boot-starter-test                                     [jar]
+[INFO] yudao-spring-boot-starter-biz-tenant                               [jar]
+[INFO] yudao-spring-boot-starter-websocket                                [jar]
+[INFO] yudao-spring-boot-starter-monitor                                  [jar]
+[INFO] yudao-spring-boot-starter-protection                               [jar]
+[INFO] yudao-spring-boot-starter-biz-ip                                   [jar]
+[INFO] yudao-spring-boot-starter-excel                                    [jar]
+[INFO] yudao-spring-boot-starter-biz-data-permission                      [jar]
+[INFO] yudao-module-infra                                                 [jar]
+[INFO] yudao-module-system                                                [jar]
+[INFO] yudao-module-member                                                [jar]
+[INFO] kugua-module-english                                               [jar]
+[INFO] yudao-module-pay                                                   [jar]
+[INFO] yudao-server                                                       [jar]
+[INFO]
+[INFO] -----------------< cn.iocoder.boot:yudao-dependencies >-----------------
+[INFO] Building yudao-dependencies 2026.01-SNAPSHOT                      [1/24]
+[INFO]   from yudao-dependencies\pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-dependencies ---
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-dependencies ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-dependencies\.flattened-pom.xml
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for yudao 2026.01-SNAPSHOT:
+[INFO]
+[INFO] yudao-dependencies ................................. FAILURE [  0.794 s]
+[INFO] yudao .............................................. SKIPPED
+[INFO] yudao-framework .................................... SKIPPED
+[INFO] yudao-common ....................................... SKIPPED
+[INFO] yudao-spring-boot-starter-web ...................... SKIPPED
+[INFO] yudao-spring-boot-starter-security ................. SKIPPED
+[INFO] yudao-spring-boot-starter-mybatis .................. SKIPPED
+[INFO] yudao-spring-boot-starter-redis .................... SKIPPED
+[INFO] yudao-spring-boot-starter-mq ....................... SKIPPED
+[INFO] yudao-spring-boot-starter-job ...................... SKIPPED
+[INFO] yudao-spring-boot-starter-test ..................... SKIPPED
+[INFO] yudao-spring-boot-starter-biz-tenant ............... SKIPPED
+[INFO] yudao-spring-boot-starter-websocket ................ SKIPPED
+[INFO] yudao-spring-boot-starter-monitor .................. SKIPPED
+[INFO] yudao-spring-boot-starter-protection ............... SKIPPED
+[INFO] yudao-spring-boot-starter-biz-ip ................... SKIPPED
+[INFO] yudao-spring-boot-starter-excel .................... SKIPPED
+[INFO] yudao-spring-boot-starter-biz-data-permission ...... SKIPPED
+[INFO] yudao-module-infra ................................. SKIPPED
+[INFO] yudao-module-system ................................ SKIPPED
+[INFO] yudao-module-member ................................ SKIPPED
+[INFO] kugua-module-english ............................... SKIPPED
+[INFO] yudao-module-pay ................................... SKIPPED
+[INFO] yudao-server ....................................... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.654 s
+[INFO] Finished at: 2026-09-16T08:10:05+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.codehaus.mojo:flatten-maven-plugin:1.7.2:clean (flatten.clean) on project yudao-depen
+dencies: Could not delete E:\project\englishAi\realtime\admin\service\yudao-dependencies\.flattened-pom.xml -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+[FAIL] Maven build failed - see output above.
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260916081006
+**********************

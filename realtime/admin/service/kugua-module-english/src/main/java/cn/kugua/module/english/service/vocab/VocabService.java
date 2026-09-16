@@ -46,6 +46,13 @@ public interface VocabService {
     /** 按级别 + 主题（可选）+ 难度（可选）分页浏览 */
     PageResult<VocabDO> getVocabBrowsePage(String levelCode, String themeCode, Integer difficulty, int pageNo, int pageSize);
 
+    /**
+     * 学员端词表：按级别分页列出已发布（status=1）词条，按单词字母序排列。
+     * @param themeCode 可选，主题/场景 code；不存在时返回空页
+     * @param keyword   可选，单词前缀
+     */
+    PageResult<VocabDO> getPublishedWordPage(String levelCode, String themeCode, String keyword, int pageNo, int pageSize);
+
     /** 返回词条关联的主题ID列表 */
     List<Long> getThemeIdsByVocabId(Long vocabId);
 

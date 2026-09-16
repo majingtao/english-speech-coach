@@ -90,6 +90,10 @@ public class AppReadingMaterialController {
         if (!"correct".equals(result) && !"wrong".equals(result)) {
             throw exception(READING_MATERIAL_SELF_CHECK_INVALID);
         }
+        String mode = reqVO.getMode();
+        if (!"read".equals(mode) && !"spell".equals(mode)) {
+            throw exception(READING_MATERIAL_SELF_CHECK_INVALID);
+        }
         UserReadingMaterialProgressDO progress = progressMapper.selectByUserAndMaterial(userId, id);
         if (progress == null) {
             progress = new UserReadingMaterialProgressDO();
@@ -97,21 +101,19 @@ public class AppReadingMaterialController {
             progress.setMaterialId(id);
             progress.setCorrectCount(0);
             progress.setWrongCount(0);
+            progress.setReadCorrectCount(0);
+            progress.setReadWrongCount(0);
+            progress.setSpellCorrectCount(0);
+            progress.setSpellWrongCount(0);
             progress.setLastResult(result);
+            progress.setLastMode(mode);
             progress.setLastPracticeAt(LocalDateTime.now());
-            if ("correct".equals(result)) {
-                progress.setCorrectCount(1);
-            } else {
-                progress.setWrongCount(1);
-            }
+            applyProgressResult(progress, mode, result);
             progressMapper.insert(progress);
         } else {
-            if ("correct".equals(result)) {
-                progress.setCorrectCount(safeCount(progress.getCorrectCount()) + 1);
-            } else {
-                progress.setWrongCount(safeCount(progress.getWrongCount()) + 1);
-            }
+            applyProgressResult(progress, mode, result);
             progress.setLastResult(result);
+            progress.setLastMode(mode);
             progress.setLastPracticeAt(LocalDateTime.now());
             progressMapper.updateById(progress);
         }
@@ -160,16 +162,22 @@ public class AppReadingMaterialController {
             fillEmptyProgress(material);
             return;
         }
-        material.setCorrectCount(safeCount(progress.getCorrectCount()));
-        material.setWrongCount(safeCount(progress.getWrongCount()));
+        material.setReadCorrectCount(safeCount(progress.getReadCorrectCount()));
+        material.setReadWrongCount(safeCount(progress.getReadWrongCount()));
+        material.setSpellCorrectCount(safeCount(progress.getSpellCorrectCount()));
+        material.setSpellWrongCount(safeCount(progress.getSpellWrongCount()));
+        material.setLastMode(progress.getLastMode());
         material.setLastResult(progress.getLastResult());
         material.setLastPracticeAt(progress.getLastPracticeAt() == null ? "" : progress.getLastPracticeAt().toString());
     }
 
     private void fillEmptyProgress(ReadingMaterialDO material) {
         if (material == null) return;
-        material.setCorrectCount(0);
-        material.setWrongCount(0);
+        material.setReadCorrectCount(0);
+        material.setReadWrongCount(0);
+        material.setSpellCorrectCount(0);
+        material.setSpellWrongCount(0);
+        material.setLastMode("");
         material.setLastResult("");
         material.setLastPracticeAt("");
     }
@@ -177,11 +185,30 @@ public class AppReadingMaterialController {
     private AppReadingMaterialProgressRespVO toProgressResp(UserReadingMaterialProgressDO progress) {
         AppReadingMaterialProgressRespVO resp = new AppReadingMaterialProgressRespVO();
         resp.setMaterialId(progress.getMaterialId());
-        resp.setCorrectCount(safeCount(progress.getCorrectCount()));
-        resp.setWrongCount(safeCount(progress.getWrongCount()));
+        resp.setReadCorrectCount(safeCount(progress.getReadCorrectCount()));
+        resp.setReadWrongCount(safeCount(progress.getReadWrongCount()));
+        resp.setSpellCorrectCount(safeCount(progress.getSpellCorrectCount()));
+        resp.setSpellWrongCount(safeCount(progress.getSpellWrongCount()));
+        resp.setLastMode(progress.getLastMode());
         resp.setLastResult(progress.getLastResult());
         resp.setLastPracticeAt(progress.getLastPracticeAt() == null ? "" : progress.getLastPracticeAt().toString());
         return resp;
+    }
+
+    private void applyProgressResult(UserReadingMaterialProgressDO progress, String mode, String result) {
+        if ("spell".equals(mode)) {
+            if ("correct".equals(result)) {
+                progress.setSpellCorrectCount(safeCount(progress.getSpellCorrectCount()) + 1);
+            } else {
+                progress.setSpellWrongCount(safeCount(progress.getSpellWrongCount()) + 1);
+            }
+            return;
+        }
+        if ("correct".equals(result)) {
+            progress.setReadCorrectCount(safeCount(progress.getReadCorrectCount()) + 1);
+        } else {
+            progress.setReadWrongCount(safeCount(progress.getReadWrongCount()) + 1);
+        }
     }
 
     private int safeCount(Integer value) {

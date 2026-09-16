@@ -26,6 +26,7 @@ public class ReadingMaterialDO extends TenantBaseDO {
     private String wordFormsJson;
     private Integer mustKnow;
     private Integer highFrequency;
+    private Integer mustSpell;
     private Integer sort;
     private Integer status;
 
@@ -38,9 +39,15 @@ public class ReadingMaterialDO extends TenantBaseDO {
     @TableField(exist = false)
     private String audioUsUrl;
     @TableField(exist = false)
-    private Integer correctCount;
+    private Integer readCorrectCount;
     @TableField(exist = false)
-    private Integer wrongCount;
+    private Integer readWrongCount;
+    @TableField(exist = false)
+    private Integer spellCorrectCount;
+    @TableField(exist = false)
+    private Integer spellWrongCount;
+    @TableField(exist = false)
+    private String lastMode;
     @TableField(exist = false)
     private String lastResult;
     @TableField(exist = false)

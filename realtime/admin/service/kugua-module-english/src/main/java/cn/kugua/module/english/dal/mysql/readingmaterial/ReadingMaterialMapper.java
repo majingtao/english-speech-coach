@@ -58,6 +58,8 @@ public interface ReadingMaterialMapper extends BaseMapperX<ReadingMaterialDO> {
             wrapper.eq(ReadingMaterialDO::getMustKnow, 1);
         } else if ("highFrequency".equals(priority)) {
             wrapper.eq(ReadingMaterialDO::getHighFrequency, 1);
+        } else if ("mustSpell".equals(priority)) {
+            wrapper.eq(ReadingMaterialDO::getMustSpell, 1);
         }
     }
 }

@@ -1,5 +1,8 @@
 package cn.kugua.module.english.service.vocab;
 
+import java.util.Map;
+import java.util.Collection;
+
 import cn.kugua.module.english.dal.dataobject.vocab.UserVocabProgressDO;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public interface UserVocabProgressService {
     UserVocabProgressDO submitReview(Long userId, Long vocabId, boolean remembered);
 
     UserVocabProgressDO getProgress(Long userId, Long vocabId);
+
+    /** 批量查询用户对一组词的进度，key = vocabId；没有进度的词不在 map 中 */
+    Map<Long, UserVocabProgressDO> getProgressMap(Long userId, Collection<Long> vocabIds);
 
     /**
      * 从已发布词库（status=1）挑 limit 个用户尚未学过的词加入 SRS 复习队列。

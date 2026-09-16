@@ -18,6 +18,7 @@ public class ReadingMaterialSaveReqVO {
     private String wordFormsJson;
     private Integer mustKnow;
     private Integer highFrequency;
+    private Integer mustSpell;
     private Integer sort;
     private Integer status;
 }

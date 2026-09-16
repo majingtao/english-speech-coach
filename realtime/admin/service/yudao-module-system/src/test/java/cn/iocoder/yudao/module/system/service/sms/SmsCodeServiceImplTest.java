@@ -1,6 +1,5 @@
 package cn.iocoder.yudao.module.system.service.sms;
 
-import cn.hutool.core.map.MapUtil;
 import cn.iocoder.yudao.framework.test.core.ut.BaseDbUnitTest;
 import cn.iocoder.yudao.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import cn.iocoder.yudao.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
@@ -17,6 +16,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static cn.hutool.core.util.RandomUtil.randomEle;
 import static cn.iocoder.yudao.framework.test.core.util.AssertUtils.assertPojoEquals;
@@ -69,8 +70,11 @@ public class SmsCodeServiceImplTest extends BaseDbUnitTest {
         assertEquals(1, smsCodeDO.getTodayIndex());
         assertFalse(smsCodeDO.getUsed());
         // 断言调用
+        Map<String, Object> templateParams = new HashMap<>();
+        templateParams.put("code", "9999");
+        templateParams.put("expireMinutes", 5L);
         verify(smsSendService).sendSingleSms(eq(reqDTO.getMobile()), isNull(), isNull(),
-                eq("user-sms-login"), eq(MapUtil.of("code", "9999")));
+                eq("user-sms-login"), eq(templateParams));
     }
 
     @Test

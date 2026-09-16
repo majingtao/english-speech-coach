@@ -87,11 +87,18 @@ public interface ErrorCodeConstants {
     ErrorCode EXPRESSION_ITEM_NOT_EXISTS      = new ErrorCode(1_040_080_010, "表达练习项不存在");
     ErrorCode EXPRESSION_ITEM_DUPLICATE       = new ErrorCode(1_040_080_011, "表达练习项编码已存在");
     ErrorCode EXPRESSION_MODE_INVALID         = new ErrorCode(1_040_080_012, "练习模式必须为 speaking 或 writing");
+    ErrorCode EXPRESSION_DIALOGUE_TASK_NOT_EXISTS = new ErrorCode(1_040_080_020, "双人互动题不存在");
+    ErrorCode EXPRESSION_DIALOGUE_ROLE_INVALID = new ErrorCode(1_040_080_021, "互动角色必须为 student_a 或 student_b");
+
+    // ========== 专属练习 1-040-085-000 ==========
+    ErrorCode PERSONAL_PRACTICE_NOT_EXISTS      = new ErrorCode(1_040_085_000, "专属练习不存在");
+    ErrorCode PERSONAL_PRACTICE_TYPE_INVALID    = new ErrorCode(1_040_085_001, "专属练习类型必须为 speaking 或 writing");
+    ErrorCode PERSONAL_PRACTICE_CONFIG_INVALID  = new ErrorCode(1_040_085_002, "专属练习配置格式不正确");
 
     // ========== 自由跟读 1-040-090-000 ==========
     ErrorCode READING_MATERIAL_NOT_EXISTS     = new ErrorCode(1_040_090_000, "自由跟读素材不存在");
     ErrorCode READING_MATERIAL_DUPLICATE      = new ErrorCode(1_040_090_001, "该级别下已有相同英文素材");
-    ErrorCode READING_MATERIAL_SELF_CHECK_INVALID = new ErrorCode(1_040_090_002, "自评结果只能是 correct 或 wrong");
+    ErrorCode READING_MATERIAL_SELF_CHECK_INVALID = new ErrorCode(1_040_090_002, "自评参数非法");
 
     // ========== 配额（LLM/ASR/TTS）1-040-060-000 ==========
     ErrorCode ESC_QUOTA_DEFAULT_NOT_EXISTS = new ErrorCode(1_040_060_000, "默认配额记录不存在");
@@ -111,5 +118,7 @@ public interface ErrorCodeConstants {
     ErrorCode AUTH_EMAIL_NOT_REGISTERED   = new ErrorCode(1_040_050_005, "该邮箱未注册");
     ErrorCode AUTH_BAD_CREDENTIALS        = new ErrorCode(1_040_050_006, "账号或密码错误");
     ErrorCode AUTH_ACCOUNT_DISABLED       = new ErrorCode(1_040_050_007, "账号已停用");
+    ErrorCode AUTH_MOBILE_NOT_REGISTERED  = new ErrorCode(1_040_050_008, "该手机号未注册");
+    ErrorCode EMAIL_CODE_SCENE_INVALID    = new ErrorCode(1_040_050_009, "验证码场景不正确");
 
 }

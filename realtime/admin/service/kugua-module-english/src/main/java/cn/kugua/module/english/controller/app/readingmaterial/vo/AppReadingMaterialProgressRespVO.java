@@ -5,8 +5,11 @@ import lombok.Data;
 @Data
 public class AppReadingMaterialProgressRespVO {
     private Long materialId;
-    private Integer correctCount;
-    private Integer wrongCount;
+    private Integer readCorrectCount;
+    private Integer readWrongCount;
+    private Integer spellCorrectCount;
+    private Integer spellWrongCount;
+    private String lastMode;
     private String lastResult;
     private String lastPracticeAt;
 }

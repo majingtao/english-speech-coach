@@ -90,6 +90,7 @@ public class ReadingMaterialServiceImpl implements ReadingMaterialService {
         if (isBlank(material.getWordFormsJson())) material.setWordFormsJson("{}");
         if (material.getMustKnow() == null) material.setMustKnow(0);
         if (material.getHighFrequency() == null) material.setHighFrequency(0);
+        if (material.getMustSpell() == null) material.setMustSpell(0);
         if (material.getSort() == null) material.setSort(0);
         if (material.getStatus() == null) material.setStatus(0);
         material.setTextEn(material.getTextEn().trim());

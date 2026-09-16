@@ -1,0 +1,27 @@
+package cn.kugua.module.english.dal.dataobject.personalpractice;
+
+import cn.iocoder.yudao.framework.tenant.core.db.TenantBaseDO;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@TableName("esc_personal_practice")
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class PersonalPracticeDO extends TenantBaseDO {
+
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    private String practiceType;
+    private String title;
+    private String promptEn;
+    private String promptCn;
+    private String referenceJson;
+    private String contentPointsJson;
+    private Integer minSentences;
+    private Integer minWords;
+    private Integer sort;
+    private Integer status;
+}

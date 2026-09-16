@@ -3,7 +3,6 @@ package cn.kugua.module.english.controller.app.auth;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.kugua.module.english.controller.app.auth.vo.*;
 import cn.kugua.module.english.service.auth.AppEmailAuthService;
-import cn.kugua.module.english.service.auth.EmailCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +22,6 @@ public class AppEmailAuthController {
 
     @Resource
     private AppEmailAuthService authService;
-
-    @Resource
-    private EmailCodeService emailCodeService;
 
     // ========== 唯一性检查 ==========
 
@@ -59,7 +55,25 @@ public class AppEmailAuthController {
     @Operation(summary = "发送邮箱验证码")
     @PermitAll
     public CommonResult<Boolean> sendEmailCode(@RequestBody @Valid AppEmailCodeSendReqVO reqVO) {
-        emailCodeService.sendCode(reqVO.getEmail(), reqVO.getScene());
+        authService.sendEmailCode(reqVO);
+        return success(true);
+    }
+
+    // ========== 忘记密码 ==========
+
+    @PostMapping("/reset-password-by-email")
+    @Operation(summary = "忘记密码 - 邮箱验证码重置", description = "先调用 send-email-code，scene=reset")
+    @PermitAll
+    public CommonResult<Boolean> resetPasswordByEmail(@RequestBody @Valid AppEmailResetPasswordReqVO reqVO) {
+        authService.resetPasswordByEmail(reqVO);
+        return success(true);
+    }
+
+    @PostMapping("/reset-password-by-mobile")
+    @Operation(summary = "忘记密码 - 手机验证码重置", description = "先调用 /member/auth/send-sms-code，scene=4")
+    @PermitAll
+    public CommonResult<Boolean> resetPasswordByMobile(@RequestBody @Valid AppMobileResetPasswordReqVO reqVO) {
+        authService.resetPasswordByMobile(reqVO);
         return success(true);
     }
 

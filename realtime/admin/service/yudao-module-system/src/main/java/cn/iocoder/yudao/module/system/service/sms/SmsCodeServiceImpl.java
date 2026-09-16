@@ -2,7 +2,6 @@ package cn.iocoder.yudao.module.system.service.sms;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.map.MapUtil;
 import cn.iocoder.yudao.module.system.api.sms.dto.code.SmsCodeSendReqDTO;
 import cn.iocoder.yudao.module.system.api.sms.dto.code.SmsCodeUseReqDTO;
 import cn.iocoder.yudao.module.system.api.sms.dto.code.SmsCodeValidateReqDTO;
@@ -15,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static cn.hutool.core.util.RandomUtil.randomInt;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -46,8 +47,11 @@ public class SmsCodeServiceImpl implements SmsCodeService {
         // 创建验证码
         String code = createSmsCode(reqDTO.getMobile(), reqDTO.getScene(), reqDTO.getCreateIp());
         // 发送验证码
+        Map<String, Object> templateParams = new HashMap<>();
+        templateParams.put("code", code);
+        templateParams.put("expireMinutes", smsCodeProperties.getExpireTimes().toMinutes());
         smsSendService.sendSingleSms(reqDTO.getMobile(), null, null,
-                sceneEnum.getTemplateCode(), MapUtil.of("code", code));
+                sceneEnum.getTemplateCode(), templateParams);
     }
 
     private String createSmsCode(String mobile, Integer scene, String ip) {

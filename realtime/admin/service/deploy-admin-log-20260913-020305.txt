@@ -1,0 +1,1331 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260913020305
+用户名: MAJINGTAO\majingtao
+RunAs 用户: MAJINGTAO\majingtao
+配置名称: 
+计算机: MAJINGTAO (Microsoft Windows NT 10.0.19045.0)
+主机应用程序: powershell -NoProfile -ExecutionPolicy Bypass -File E:\project\englishAi\realtime\admin\service\deploy-admin.ps1
+进程 ID: 30176
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Log file: E:\project\englishAi\realtime\admin\service\deploy-admin-log-20260913-020305.txt
+    JAVA_HOME = E:\java
+Working dir: E:\project\englishAi\realtime\admin\service
+
+==> 0/7 Toolchain
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: D:\soft\apache-maven-3.9.9
+Java version: 17.0.16, vendor: Eclipse Adoptium, runtime: E:\java
+Default locale: zh_CN, platform encoding: GBK
+OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+
+==> 1/7 mvn clean package -DskipTests
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO]
+[INFO] yudao-dependencies                                                 [pom]
+[INFO] yudao                                                              [pom]
+[INFO] yudao-framework                                                    [pom]
+[INFO] yudao-common                                                       [jar]
+[INFO] yudao-spring-boot-starter-web                                      [jar]
+[INFO] yudao-spring-boot-starter-security                                 [jar]
+[INFO] yudao-spring-boot-starter-mybatis                                  [jar]
+[INFO] yudao-spring-boot-starter-redis                                    [jar]
+[INFO] yudao-spring-boot-starter-mq                                       [jar]
+[INFO] yudao-spring-boot-starter-job                                      [jar]
+[INFO] yudao-spring-boot-starter-test                                     [jar]
+[INFO] yudao-spring-boot-starter-biz-tenant                               [jar]
+[INFO] yudao-spring-boot-starter-websocket                                [jar]
+[INFO] yudao-spring-boot-starter-monitor                                  [jar]
+[INFO] yudao-spring-boot-starter-protection                               [jar]
+[INFO] yudao-spring-boot-starter-biz-ip                                   [jar]
+[INFO] yudao-spring-boot-starter-excel                                    [jar]
+[INFO] yudao-spring-boot-starter-biz-data-permission                      [jar]
+[INFO] yudao-module-infra                                                 [jar]
+[INFO] yudao-module-system                                                [jar]
+[INFO] yudao-module-member                                                [jar]
+[INFO] kugua-module-english                                               [jar]
+[INFO] yudao-module-pay                                                   [jar]
+[INFO] yudao-server                                                       [jar]
+[INFO]
+[INFO] -----------------< cn.iocoder.boot:yudao-dependencies >-----------------
+[INFO] Building yudao-dependencies 2026.01-SNAPSHOT                      [1/24]
+[INFO]   from yudao-dependencies\pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-dependencies ---
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-dependencies ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-dependencies\.flattened-pom.xml
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-dependencies ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-dependencies:pom:2026.01-SNAPSHOT...
+[INFO]
+[INFO] -----------------------< cn.iocoder.boot:yudao >------------------------
+[INFO] Building yudao 2026.01-SNAPSHOT                                   [2/24]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao ---
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\.flattened-pom.xml
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao:pom:2026.01-SNAPSHOT...
+[INFO]
+[INFO] ------------------< cn.iocoder.boot:yudao-framework >-------------------
+[INFO] Building yudao-framework 2026.01-SNAPSHOT                         [3/24]
+[INFO]   from yudao-framework\pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-framework ---
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-framework ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\.flattened-pom.xml
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-framework ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-framework:pom:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --------------------< cn.iocoder.boot:yudao-common >--------------------
+[INFO] Building yudao-common 2026.01-SNAPSHOT                            [4/24]
+[INFO]   from yudao-framework\yudao-common\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-common ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-common\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-common ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-common\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-common ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-common\src\
+main\resources
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-common ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-common:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-common ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 73 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-common ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-common\src\
+test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-common ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-common ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-common ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-common\target\yudao-common-2026.0
+1-SNAPSHOT.jar
+[INFO]
+[INFO] -----------< cn.iocoder.boot:yudao-spring-boot-starter-web >------------
+[INFO] Building yudao-spring-boot-starter-web 2026.01-SNAPSHOT           [5/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-web\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-web ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-web\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-web ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-web\.flattened-pom
+.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-web ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-web ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-web:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-web ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 67 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-web ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-web\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-web ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 4 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-web ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-web ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-web\target\yu
+dao-spring-boot-starter-web-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ---------< cn.iocoder.boot:yudao-spring-boot-starter-security >---------
+[INFO] Building yudao-spring-boot-starter-security 2026.01-SNAPSHOT      [6/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-security\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-security ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-security\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-security ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-security\.flattene
+d-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-security ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-security ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-security:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-security ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 17 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-security ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-security\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-security ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-security ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-security ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-security\targ
+et\yudao-spring-boot-starter-security-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ---------< cn.iocoder.boot:yudao-spring-boot-starter-mybatis >----------
+[INFO] Building yudao-spring-boot-starter-mybatis 2026.01-SNAPSHOT       [7/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-mybatis\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-mybatis\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-mybatis\.flattened
+-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-mybatis:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 24 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-mybatis ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-mybatis\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-mybatis ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-mybatis ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-mybatis\targe
+t\yudao-spring-boot-starter-mybatis-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ----------< cn.iocoder.boot:yudao-spring-boot-starter-redis >-----------
+[INFO] Building yudao-spring-boot-starter-redis 2026.01-SNAPSHOT         [8/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-redis\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-redis ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-redis\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-redis ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-redis\.flattened-p
+om.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-redis ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-redis ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-redis:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-redis ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 5 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-redis ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-redis\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-redis ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-redis ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-redis ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-redis\target\
+yudao-spring-boot-starter-redis-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ------------< cn.iocoder.boot:yudao-spring-boot-starter-mq >------------
+[INFO] Building yudao-spring-boot-starter-mq 2026.01-SNAPSHOT            [9/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-mq\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] 1 problem was encountered while building the effective model for org.javassist:javassist:jar:3.21.0-GA during
+dependency collection step for project (use -X to see details)
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-mq ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-mq\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-mq ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-mq\.flattened-pom.
+xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-mq ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-mq ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-mq:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-mq ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 16 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-mq ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-mq\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-mq ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-mq ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-mq ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-mq\target\yud
+ao-spring-boot-starter-mq-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] -----------< cn.iocoder.boot:yudao-spring-boot-starter-job >------------
+[INFO] Building yudao-spring-boot-starter-job 2026.01-SNAPSHOT          [10/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-job\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-job ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-job\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-job ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-job\.flattened-pom
+.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-job ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-job ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-job:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-job ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 9 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-job ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-job\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-job ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-job ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-job ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-job\target\yu
+dao-spring-boot-starter-job-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] -----------< cn.iocoder.boot:yudao-spring-boot-starter-test >-----------
+[INFO] Building yudao-spring-boot-starter-test 2026.01-SNAPSHOT         [11/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-test\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-test ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-test\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-test ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-test\.flattened-po
+m.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-test ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-test\src\main\resources
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-test ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-test:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-test ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 10 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-test ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-test\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-test ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-test ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-test ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-test\target\y
+udao-spring-boot-starter-test-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] --------< cn.iocoder.boot:yudao-spring-boot-starter-biz-tenant >--------
+[INFO] Building yudao-spring-boot-starter-biz-tenant 2026.01-SNAPSHOT   [12/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-biz-tenant\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-tenant\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-tenant\.flatte
+ned-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-biz-tenant:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 26 source files with javac [target 17] to target\classes
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/c
+n/iocoder/yudao/framework/tenant/core/mq/rocketmq/TenantRocketMQInitializer.java: E:\project\englishAi\realtime\admin\se
+rvice\yudao-framework\yudao-spring-boot-starter-biz-tenant\src\main\java\cn\iocoder\yudao\framework\tenant\core\mq\rocke
+tmq\TenantRocketMQInitializer.java使 用 或 覆 盖 了 已 过 时 的  API。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/c
+n/iocoder/yudao/framework/tenant/core/mq/rocketmq/TenantRocketMQInitializer.java: 有 关 详 细 信 息 , 请 使 用  -Xlint:deprecatio
+n 重 新 编 译 。 
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-biz-tenant\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-biz-tenant ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-tenant\ta
+rget\yudao-spring-boot-starter-biz-tenant-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] --------< cn.iocoder.boot:yudao-spring-boot-starter-websocket >---------
+[INFO] Building yudao-spring-boot-starter-websocket 2026.01-SNAPSHOT    [13/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-websocket\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-websocket ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-websocket\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-websocket ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-websocket\.flatten
+ed-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-websocket ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-websocket ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-websocket:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-websocket ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 27 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-websocket ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-websocket\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-websocket ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-websocket ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-websocket ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-websocket\tar
+get\yudao-spring-boot-starter-websocket-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ---------< cn.iocoder.boot:yudao-spring-boot-starter-monitor >----------
+[INFO] Building yudao-spring-boot-starter-monitor 2026.01-SNAPSHOT      [14/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-monitor\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-monitor ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-monitor\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-monitor ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-monitor\.flattened
+-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-monitor ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-monitor ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-monitor:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-monitor ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 8 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-monitor ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-monitor\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-monitor ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-monitor ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-monitor ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-monitor\targe
+t\yudao-spring-boot-starter-monitor-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] --------< cn.iocoder.boot:yudao-spring-boot-starter-protection >--------
+[INFO] Building yudao-spring-boot-starter-protection 2026.01-SNAPSHOT   [15/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-protection\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-protection ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-protection\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-protection ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-protection\.flatte
+ned-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-protection ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-protection ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-protection:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-protection ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 29 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-protection ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-protection\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-protection ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-protection ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-protection ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-protection\ta
+rget\yudao-spring-boot-starter-protection-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ----------< cn.iocoder.boot:yudao-spring-boot-starter-biz-ip >----------
+[INFO] Building yudao-spring-boot-starter-biz-ip 2026.01-SNAPSHOT       [16/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-biz-ip\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-ip\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-ip\.flattened-
+pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-biz-ip:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 5 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-biz-ip\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-biz-ip ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-ip\target
+\yudao-spring-boot-starter-biz-ip-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ----------< cn.iocoder.boot:yudao-spring-boot-starter-excel >-----------
+[INFO] Building yudao-spring-boot-starter-excel 2026.01-SNAPSHOT        [17/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-excel\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-excel ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-excel\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-excel ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-excel\.flattened-p
+om.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-excel ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-excel ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-excel:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-excel ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 17 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-excel ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-excel\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-excel ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-excel ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-excel ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-excel\target\
+yudao-spring-boot-starter-excel-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] ---< cn.iocoder.boot:yudao-spring-boot-starter-biz-data-permission >----
+[INFO] Building yudao-spring-boot-starter-biz-data-permission 2026.01-SNAPSHOT [18/24]
+[INFO]   from yudao-framework\yudao-spring-boot-starter-biz-data-permission\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-data-permissio
+n\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-data-permissio
+n\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-spring-boot-starter-biz-data-permission:jar:2026.01-SNA
+PSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 15 source files with javac [target 17] to target\classes
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-data-permission/src/ma
+in/java/cn/iocoder/yudao/framework/datapermission/core/rule/dept/DeptDataPermissionRule.java: E:\project\englishAi\realt
+ime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-data-permission\src\main\java\cn\iocoder\yudao\framework
+\datapermission\core\rule\dept\DeptDataPermissionRule.java使 用 了 未 经 检 查 或 不 安 全 的 操 作 。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-data-permission/src/ma
+in/java/cn/iocoder/yudao/framework/datapermission/core/rule/dept/DeptDataPermissionRule.java: 有 关 详 细 信 息 , 请 使 用  -Xlin
+t:unchecked 重 新 编 译 。 
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot
+-starter-biz-data-permission\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 6 source files with javac [target 17] to target\test-classes
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-data-permission/src/te
+st/java/cn/iocoder/yudao/framework/datapermission/core/aop/DataPermissionAnnotationInterceptorTest.java: E:\project\engl
+ishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-data-permission\src\test\java\cn\iocoder\yuda
+o\framework\datapermission\core\aop\DataPermissionAnnotationInterceptorTest.java使 用 或 覆 盖 了 已 过 时 的  API。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-data-permission/src/te
+st/java/cn/iocoder/yudao/framework/datapermission/core/aop/DataPermissionAnnotationInterceptorTest.java: 有 关 详 细 信 息 ,
+请 使 用  -Xlint:deprecation 重 新 编 译 。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-data-permission/src/te
+st/java/cn/iocoder/yudao/framework/datapermission/core/db/DataPermissionRuleHandlerTest.java: E:\project\englishAi\realt
+ime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-data-permission\src\test\java\cn\iocoder\yudao\framework
+\datapermission\core\db\DataPermissionRuleHandlerTest.java使 用 了 未 经 检 查 或 不 安 全 的 操 作 。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-framework/yudao-spring-boot-starter-biz-data-permission/src/te
+st/java/cn/iocoder/yudao/framework/datapermission/core/db/DataPermissionRuleHandlerTest.java: 有 关 详 细 信 息 , 请 使 用  -Xlin
+t:unchecked 重 新 编 译 。 
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-spring-boot-starter-biz-data-permission ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-framework\yudao-spring-boot-starter-biz-data-perm
+ission\target\yudao-spring-boot-starter-biz-data-permission-2026.01-SNAPSHOT.jar
+[INFO]
+[INFO] -----------------< cn.iocoder.boot:yudao-module-infra >-----------------
+[INFO] Building yudao-module-infra 2026.01-SNAPSHOT                     [19/24]
+[INFO]   from yudao-module-infra\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-module-infra ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-infra\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-module-infra ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-infra\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-module-infra ---
+[INFO] Copying 76 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-module-infra ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-module-infra:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-module-infra ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 204 source files with javac [target 17] to target\classes
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-infra/src/main/java/cn/iocoder/yudao/module/infra/co
+nvert/codegen/CodegenConvert.java:[34,20] Unmapped target properties: "createTime, updateTime, creator, updater, deleted
+, id, dataSourceConfigId, scene, remark, moduleName, businessName, className, classComment, author, templateType, frontT
+ype, parentMenuId, masterTableId, subJoinColumnId, subJoinMany, treeParentColumnId, treeNameColumnId, transMap".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-infra/src/main/java/cn/iocoder/yudao/module/infra/co
+nvert/codegen/CodegenConvert.java:[47,21] Unmapped target properties: "createTime, updateTime, creator, updater, deleted
+, id, tableId, ordinalPosition, dictType, example, createOperation, updateOperation, listOperation, listOperationConditi
+on, listOperationResult, htmlType, transMap".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-infra/src/main/java/cn/iocoder/yudao/module/infra/co
+nvert/file/FileConfigConvert.java:[20,18] Unmapped target property: "master".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-infra/src/main/java/cn/iocoder/yudao/module/infra/co
+nvert/config/ConfigConvert.java:[26,14] Unmapped target properties: "createTime, updateTime, creator, updater, deleted,
+type, transMap".
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-module-infra ---
+[INFO] Copying 222 resources from src\test\resources to target\test-classes
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-module-infra ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 19 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-module-infra ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-module-infra ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-module-infra\target\yudao-module-infra-2026.01-SN
+APSHOT.jar
+[INFO]
+[INFO] ----------------< cn.iocoder.boot:yudao-module-system >-----------------
+[INFO] Building yudao-module-system 2026.01-SNAPSHOT                    [20/24]
+[INFO]   from yudao-module-system\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from aliyun: https://maven.aliyun.com/nexus/content/groups/public/org/bouncycastle/bcutil-jdk18on/maven-meta
+data.xml
+Downloading from spring-milestones: https://repo.spring.io/milestone/org/bouncycastle/bcutil-jdk18on/maven-metadata.xml
+Downloading from huaweicloud: https://mirrors.huaweicloud.com/repository/maven/org/bouncycastle/bcutil-jdk18on/maven-met
+adata.xml
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/bouncycastle/bcutil-jdk18on/maven-metadata.
+xml
+Downloaded from huaweicloud: https://mirrors.huaweicloud.com/repository/maven/org/bouncycastle/bcutil-jdk18on/maven-meta
+data.xml (959 B at 2.4 kB/s)
+Downloading from spring-snapshots: https://repo.spring.io/snapshot/org/bouncycastle/bcutil-jdk18on/maven-metadata.xml
+[WARNING] Could not validate integrity of download from https://maven.aliyun.com/nexus/content/groups/public/org/bouncyc
+astle/bcutil-jdk18on/maven-metadata.xml
+org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available
+    at org.eclipse.aether.internal.impl.AbstractChecksumPolicy.onNoMoreChecksums (AbstractChecksumPolicy.java:63)
+    at org.eclipse.aether.connector.basic.ChecksumValidator.validate (ChecksumValidator.java:112)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$GetTaskRunner.runTask (BasicRepositoryConnector.java:
+484)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run (BasicRepositoryConnector.java:414)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector.get (BasicRepositoryConnector.java:215)
+    at org.eclipse.aether.internal.impl.DefaultMetadataResolver$ResolveTask.run (DefaultMetadataResolver.java:556)
+    at org.eclipse.aether.util.concurrency.RunnableErrorForwarder.lambda$wrap$0 (RunnableErrorForwarder.java:66)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1136)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:635)
+    at java.lang.Thread.run (Thread.java:840)
+[WARNING] Could not validate integrity of download from https://maven.aliyun.com/repository/public/org/bouncycastle/bcut
+il-jdk18on/maven-metadata.xml
+org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available
+[WARNING] Checksum validation failed, no checksums available from aliyun for https://maven.aliyun.com/nexus/content/grou
+ps/public/org/bouncycastle/bcutil-jdk18on/maven-metadata.xml
+    Downloaded from aliyun: https://maven.aliyun.com/nexus/content/groups/public/org/bouncycastle/bcutil-jdk18on/maven-m
+etadata.xml (913 B at 1.6 kB/s)
+at org.eclipse.aether.internal.impl.AbstractChecksumPolicy.onNoMoreChecksums (AbstractChecksumPolicy.java:63)
+    at org.eclipse.aether.connector.basic.ChecksumValidator.validate (ChecksumValidator.java:112)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$GetTaskRunner.runTask (BasicRepositoryConnector.java:
+484)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run (BasicRepositoryConnector.java:414)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector.get (BasicRepositoryConnector.java:215)
+    at org.eclipse.aether.internal.impl.DefaultMetadataResolver$ResolveTask.run (DefaultMetadataResolver.java:556)
+    at org.eclipse.aether.util.concurrency.RunnableErrorForwarder.lambda$wrap$0 (RunnableErrorForwarder.java:66)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1136)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:635)
+    at java.lang.Thread.run (Thread.java:840)
+[WARNING] Checksum validation failed, no checksums available from aliyunmaven for https://maven.aliyun.com/repository/pu
+blic/org/bouncycastle/bcutil-jdk18on/maven-metadata.xml
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/bouncycastle/bcutil-jdk18on/maven-metadata.x
+ml (913 B at 1.6 kB/s)
+Downloading from spring-milestones: https://repo.spring.io/milestone/org/bouncycastle/bcprov-jdk18on/maven-metadata.xml
+Downloading from aliyunmaven: https://maven.aliyun.com/repository/public/org/bouncycastle/bcprov-jdk18on/maven-metadata.
+xml
+Downloading from huaweicloud: https://mirrors.huaweicloud.com/repository/maven/org/bouncycastle/bcprov-jdk18on/maven-met
+adata.xml
+Downloading from aliyun: https://maven.aliyun.com/nexus/content/groups/public/org/bouncycastle/bcprov-jdk18on/maven-meta
+data.xml
+Downloaded from huaweicloud: https://mirrors.huaweicloud.com/repository/maven/org/bouncycastle/bcprov-jdk18on/maven-meta
+data.xml (991 B at 15 kB/s)
+Downloading from spring-snapshots: https://repo.spring.io/snapshot/org/bouncycastle/bcprov-jdk18on/maven-metadata.xml
+[WARNING] Could not validate integrity of download from https://maven.aliyun.com/nexus/content/groups/public/org/bouncyc
+astle/bcprov-jdk18on/maven-metadata.xml
+org.eclipse.aether.transfer.ChecksumFailureException: Checksum validation failed, no checksums available
+    at org.eclipse.aether.internal.impl.AbstractChecksumPolicy.onNoMoreChecksums (AbstractChecksumPolicy.java:63)
+    at org.eclipse.aether.connector.basic.ChecksumValidator.validate (ChecksumValidator.java:112)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$GetTaskRunner.runTask (BasicRepositoryConnector.java:
+484)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run (BasicRepositoryConnector.java:414)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector.get (BasicRepositoryConnector.java:215)
+    at org.eclipse.aether.internal.impl.DefaultMetadataResolver$ResolveTask.run (DefaultMetadataResolver.java:556)
+    at org.eclipse.aether.util.concurrency.RunnableErrorForwarder.lambda$wrap$0 (RunnableErrorForwarder.java:66)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1136)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:635)
+    at java.lang.Thread.run (Thread.java:840)
+[WARNING] Could not validate integrity of download from https://maven.aliyun.com/repository/public/org/bouncycastle/bcpr
+ov-jdk18on/maven-metadata.xml
+org.eclipse.aether.transfer.ChecksumFailureException: [WARNING] Checksum validation failed, no checksums available from
+aliyun for https://maven.aliyun.com/nexus/content/groups/public/org/bouncycastle/bcprov-jdk18on/maven-metadata.xml
+Checksum validation failed, no checksums available
+    Downloaded from aliyun: https://maven.aliyun.com/nexus/content/groups/public/org/bouncycastle/bcprov-jdk18on/maven-m
+etadata.xml (945 B at 4.1 kB/s)
+at org.eclipse.aether.internal.impl.AbstractChecksumPolicy.onNoMoreChecksums (AbstractChecksumPolicy.java:63)
+    at org.eclipse.aether.connector.basic.ChecksumValidator.validate (ChecksumValidator.java:112)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$GetTaskRunner.runTask (BasicRepositoryConnector.java:
+484)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run (BasicRepositoryConnector.java:414)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector.get (BasicRepositoryConnector.java:215)
+    at org.eclipse.aether.internal.impl.DefaultMetadataResolver$ResolveTask.run (DefaultMetadataResolver.java:556)
+    at org.eclipse.aether.util.concurrency.RunnableErrorForwarder.lambda$wrap$0 (RunnableErrorForwarder.java:66)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1136)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:635)
+    at java.lang.Thread.run (Thread.java:840)
+[WARNING] Checksum validation failed, no checksums available from aliyunmaven for https://maven.aliyun.com/repository/pu
+blic/org/bouncycastle/bcprov-jdk18on/maven-metadata.xml
+Downloaded from aliyunmaven: https://maven.aliyun.com/repository/public/org/bouncycastle/bcprov-jdk18on/maven-metadata.x
+ml (945 B at 3.9 kB/s)
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-module-system ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-system\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-module-system ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-system\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-module-system ---
+[INFO] Copying 37 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-module-system ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-module-system:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-module-system ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 411 source files with javac [target 17] to target\classes
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-system/src/main/java/cn/iocoder/yudao/module/system/
+convert/auth/AuthConvert.java:[82,26] Unmapped target property: "socialType".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-system/src/main/java/cn/iocoder/yudao/module/system/
+convert/auth/AuthConvert.java:[84,23] Unmapped target property: "createIp".
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-module-system/src/main/java/cn/iocoder/yudao/module/system/fra
+mework/justauth/core/AuthRequestFactory.java: E:\project\englishAi\realtime\admin\service\yudao-module-system\src\main\j
+ava\cn\iocoder\yudao\module\system\framework\justauth\core\AuthRequestFactory.java使 用 或 覆 盖 了 已 过 时 的  API。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-module-system/src/main/java/cn/iocoder/yudao/module/system/fra
+mework/justauth/core/AuthRequestFactory.java: 有 关 详 细 信 息 , 请 使 用  -Xlint:deprecation 重 新 编 译 。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-module-system/src/main/java/cn/iocoder/yudao/module/system/con
+troller/admin/oauth2/OAuth2OpenController.java: E:\project\englishAi\realtime\admin\service\yudao-module-system\src\main
+\java\cn\iocoder\yudao\module\system\controller\admin\oauth2\OAuth2OpenController.java使 用 了 未 经 检 查 或 不 安 全 的 操 作 。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-module-system/src/main/java/cn/iocoder/yudao/module/system/con
+troller/admin/oauth2/OAuth2OpenController.java: 有 关 详 细 信 息 , 请 使 用  -Xlint:unchecked 重 新 编 译 。 
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-module-system ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-module-system ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 39 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-module-system ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-module-system ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-module-system\target\yudao-module-system-2026.01-
+SNAPSHOT.jar
+[INFO]
+[INFO] ----------------< cn.iocoder.boot:yudao-module-member >-----------------
+[INFO] Building yudao-module-member 2026.01-SNAPSHOT                    [21/24]
+[INFO]   from yudao-module-member\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-module-member ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-member\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-module-member ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-member\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-module-member ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-module-member\src\main\reso
+urces
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-module-member ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-module-member:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-module-member ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 185 source files with javac [target 17] to target\classes
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/config/MemberConfigConvert.java:[22,20] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/auth/AuthConvert.java:[22,26] Unmapped target property: "socialType".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/auth/AuthConvert.java:[23,28] Unmapped target property: "socialType".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/auth/AuthConvert.java:[25,23] Unmapped target property: "createIp".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/level/MemberLevelConvert.java:[25,19] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/group/MemberGroupConvert.java:[24,19] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/level/MemberExperienceRecordConvert.java:[28,30] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/user/MemberUserConvert.java:[29,29] Unmapped target properties: "level, brokerageEnabled".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/user/MemberUserConvert.java:[37,29] Unmapped target property: "brokerageEnabled".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/user/MemberUserConvert.java:[43,18] Unmapped target properties: "password, registerIp, registerTerminal, loginIp
+, loginDate, point, experience".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/user/MemberUserConvert.java:[48,22] Unmapped target properties: "totalPoint, tagNames, levelName, groupName".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/signin/MemberSignInConfigConvert.java:[23,26] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/address/AddressConvert.java:[27,21] Unmapped target properties: "id, userId".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/address/AddressConvert.java:[29,21] Unmapped target property: "userId".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/signin/MemberSignInRecordConvert.java:[41,42] Unmapped target property: "nickname". Mapping from Collection elem
+ent "MemberSignInRecordDO list" to "MemberSignInRecordRespVO list".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/point/MemberPointRecordConvert.java:[35,41] Unmapped target property: "nickname". Mapping from Collection elemen
+t "MemberPointRecordDO list" to "MemberPointRecordRespVO list".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-member/src/main/java/cn/iocoder/yudao/module/member/
+convert/tag/MemberTagConvert.java:[23,17] Unmapped target property: "id".
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-module-member ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-module-member ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 6 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-module-member ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-module-member ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-module-member\target\yudao-module-member-2026.01-
+SNAPSHOT.jar
+[INFO]
+[INFO] ----------------< cn.iocoder.boot:kugua-module-english >----------------
+[INFO] Building kugua-module-english 2026.01-SNAPSHOT                   [22/24]
+[INFO]   from kugua-module-english\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ kugua-module-english ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\kugua-module-english\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ kugua-module-english ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\kugua-module-english\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ kugua-module-english ---
+[INFO] Copying 49 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ kugua-module-english ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:kugua-module-english:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ kugua-module-english ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 388 source files with javac [target 17] to target\classes
+[INFO] /E:/project/englishAi/realtime/admin/service/kugua-module-english/src/main/java/cn/kugua/module/english/service/d
+ictation/DictationWordServiceImpl.java: 某 些 输 入 文 件 使 用 或 覆 盖 了 已 过 时 的  API。 
+[INFO] /E:/project/englishAi/realtime/admin/service/kugua-module-english/src/main/java/cn/kugua/module/english/service/d
+ictation/DictationWordServiceImpl.java: 有 关 详 细 信 息 , 请 使 用  -Xlint:deprecation 重 新 编 译 。 
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ kugua-module-english ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\kugua-module-english\src\test\res
+ources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ kugua-module-english ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ kugua-module-english ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ kugua-module-english ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\kugua-module-english\target\kugua-module-english-2026.0
+1-SNAPSHOT.jar
+[INFO]
+[INFO] ------------------< cn.iocoder.boot:yudao-module-pay >------------------
+[INFO] Building yudao-module-pay 2026.01-SNAPSHOT                       [23/24]
+[INFO]   from yudao-module-pay\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-module-pay ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-pay\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-module-pay ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-module-pay\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-module-pay ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-module-pay\src\main\resourc
+es
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-module-pay ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-module-pay:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-module-pay ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 223 source files with javac [target 17] to target\classes
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/wallet/PayWalletRechargeConvert.java:[26,25] Unmapped target properties: "createTime, updateTime, creator, updater, de
+leted, id, payStatus, payOrderId, payChannelCode, payTime, payRefundId, refundTotalPrice, refundPayPrice, refundBonusPri
+ce, refundTime, refundStatus, transMap".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/wallet/PayWalletTransactionConvert.java:[18,28] Unmapped target properties: "createTime, updateTime, creator, updater,
+ deleted, id, no, transMap".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/wallet/PayWalletRechargePackageConvert.java:[19,32] Unmapped target properties: "createTime, updateTime, creator, upda
+ter, deleted, id, transMap".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/wallet/PayWalletRechargePackageConvert.java:[21,32] Unmapped target properties: "createTime, updateTime, creator, upda
+ter, deleted, transMap".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/app/PayAppConvert.java:[29,26] Unmapped target property: "channelCodes".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/app/PayAppConvert.java:[31,14] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/order/PayOrderConvert.java:[42,27] Unmapped target properties: "appName, extension".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/order/PayOrderConvert.java:[50,40] Unmapped target property: "appName". Mapping from Collection element "PayOrderDO li
+st" to "PayOrderPageItemRespVO list".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/order/PayOrderConvert.java:[59,21] Unmapped target property: "appName".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/order/PayOrderConvert.java:[61,16] Unmapped target properties: "id, appId, channelId, channelCode, notifyUrl, channelF
+eeRate, channelFeePrice, status, successTime, extensionId, no, refundPrice, channelUserId, channelOrderNo".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/order/PayOrderConvert.java:[64,25] Unmapped target properties: "no, orderId, channelId, status, channelErrorCode, chan
+nelErrorMsg, channelNotifyData".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/order/PayOrderConvert.java:[66,27] Unmapped target properties: "outTradeNo, subject, body, notifyUrl, price, expireTim
+e".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/channel/PayChannelConvert.java:[18,18] Unmapped target property: "id".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/channel/PayChannelConvert.java:[21,18] Unmapped target property: "code".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/refund/PayRefundConvert.java:[32,28] Unmapped target properties: "appName, order".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/refund/PayRefundConvert.java:[40,41] Unmapped target property: "appName". Mapping from Collection element "PayRefundDO
+ list" to "PayRefundPageItemRespVO list".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/refund/PayRefundConvert.java:[42,17] Unmapped target properties: "id, no, appId, channelId, channelCode, orderId, orde
+rNo, notifyUrl, status, payPrice, refundPrice, channelOrderNo, channelRefundNo, successTime, channelErrorCode, channelEr
+rorMsg, channelNotifyData".
+[WARNING] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/conver
+t/refund/PayRefundConvert.java:[51,22] Unmapped target property: "appName".
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/controlle
+r/admin/notify/PayNotifyController.java: E:\project\englishAi\realtime\admin\service\yudao-module-pay\src\main\java\cn\i
+ocoder\yudao\module\pay\controller\admin\notify\PayNotifyController.java使 用 了 未 经 检 查 或 不 安 全 的 操 作 。 
+[INFO] /E:/project/englishAi/realtime/admin/service/yudao-module-pay/src/main/java/cn/iocoder/yudao/module/pay/controlle
+r/admin/notify/PayNotifyController.java: 有 关 详 细 信 息 , 请 使 用  -Xlint:unchecked 重 新 编 译 。 
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-module-pay ---
+[INFO] Copying 4 resources from src\test\resources to target\test-classes
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-module-pay ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 13 source files with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-module-pay ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-module-pay ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-module-pay\target\yudao-module-pay-2026.01-SNAPSH
+OT.jar
+[INFO]
+[INFO] --------------------< cn.iocoder.boot:yudao-server >--------------------
+[INFO] Building yudao-server 2026.01-SNAPSHOT                           [24/24]
+[INFO]   from yudao-server\pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- clean:3.2.0:clean (default-clean) @ yudao-server ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-server\target
+[INFO]
+[INFO] --- flatten:1.7.2:clean (flatten.clean) @ yudao-server ---
+[INFO] Deleting E:\project\englishAi\realtime\admin\service\yudao-server\.flattened-pom.xml
+[INFO]
+[INFO] --- resources:3.3.1:resources (default-resources) @ yudao-server ---
+[INFO] Copying 5 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- flatten:1.7.2:flatten (flatten) @ yudao-server ---
+[INFO] Generating flattened POM of project cn.iocoder.boot:yudao-server:jar:2026.01-SNAPSHOT...
+[INFO]
+[INFO] --- compiler:3.14.0:compile (default-compile) @ yudao-server ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [target 17] to target\classes
+[INFO]
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ yudao-server ---
+[INFO] skip non existing resourceDirectory E:\project\englishAi\realtime\admin\service\yudao-server\src\test\resources
+[INFO]
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ yudao-server ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [target 17] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.3:test (default-test) @ yudao-server ---
+[INFO] Tests are skipped.
+[INFO]
+[INFO] --- jar:3.4.1:jar (default-jar) @ yudao-server ---
+[INFO] Building jar: E:\project\englishAi\realtime\admin\service\yudao-server\target\yudao-server.jar
+[INFO]
+[INFO] --- spring-boot:3.5.9:repackage (default) @ yudao-server ---
+[INFO] Replacing main artifact E:\project\englishAi\realtime\admin\service\yudao-server\target\yudao-server.jar with rep
+ackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to E:\project\englishAi\realtime\admin\service\yudao-server\target\yudao-s
+erver.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for yudao 2026.01-SNAPSHOT:
+[INFO]
+[INFO] yudao-dependencies ................................. SUCCESS [  0.786 s]
+[INFO] yudao .............................................. SUCCESS [  0.151 s]
+[INFO] yudao-framework .................................... SUCCESS [  0.130 s]
+[INFO] yudao-common ....................................... SUCCESS [ 12.126 s]
+[INFO] yudao-spring-boot-starter-web ...................... SUCCESS [  5.495 s]
+[INFO] yudao-spring-boot-starter-security ................. SUCCESS [  2.953 s]
+[INFO] yudao-spring-boot-starter-mybatis .................. SUCCESS [ 10.357 s]
+[INFO] yudao-spring-boot-starter-redis .................... SUCCESS [  2.446 s]
+[INFO] yudao-spring-boot-starter-mq ....................... SUCCESS [  4.891 s]
+[INFO] yudao-spring-boot-starter-job ...................... SUCCESS [  1.238 s]
+[INFO] yudao-spring-boot-starter-test ..................... SUCCESS [  2.370 s]
+[INFO] yudao-spring-boot-starter-biz-tenant ............... SUCCESS [  3.180 s]
+[INFO] yudao-spring-boot-starter-websocket ................ SUCCESS [  3.049 s]
+[INFO] yudao-spring-boot-starter-monitor .................. SUCCESS [  2.390 s]
+[INFO] yudao-spring-boot-starter-protection ............... SUCCESS [  3.987 s]
+[INFO] yudao-spring-boot-starter-biz-ip ................... SUCCESS [  2.826 s]
+[INFO] yudao-spring-boot-starter-excel .................... SUCCESS [  3.901 s]
+[INFO] yudao-spring-boot-starter-biz-data-permission ...... SUCCESS [  3.840 s]
+[INFO] yudao-module-infra ................................. SUCCESS [ 15.787 s]
+[INFO] yudao-module-system ................................ SUCCESS [ 22.727 s]
+[INFO] yudao-module-member ................................ SUCCESS [  9.780 s]
+[INFO] kugua-module-english ............................... SUCCESS [ 20.147 s]
+[INFO] yudao-module-pay ................................... SUCCESS [ 14.280 s]
+[INFO] yudao-server ....................................... SUCCESS [  6.154 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:36 min
+[INFO] Finished at: 2026-09-13T02:05:43+08:00
+[INFO] ------------------------------------------------------------------------
+
+==> 2/7 Locate fat jar
+    yudao-server.jar  (238.4 MB)
+
+==> 3/7 Verify bytecode version (must be <= 61)
+    major=61 (Java 17) - compatible
+
+==> 4/7 Upload
+yudao-server.jar                                                                      100%  238MB   5.1MB/s   00:46
+    Uploaded to /tmp/yudao-server-20260913-020545.jar
+
+==> 5/7 Swap jar and restart
+    backup: yudao-server.jar.bak-20260913-020545
+    started, waiting for port
+
+==> 6/7 Wait for startup (max 180s)
+bash: -c: line 0: syntax error near unexpected token `('
+bash: -c: line 0: `for i in $(seq 1 60); do c=$(curl -s -o /dev/null -m 2 -w '%{http_code}' http://127.0.0.1:48080/ 2>/d
+ev/null); if [ $c != 000 ] && [ -n $c ]; then echo  UP after $((i*3))s (http $c); exit 0; fi; sleep 3; done; echo '    T
+IMEOUT'; exit 1'
+    Service did not come up. Last 60 log lines:
+-- Logs begin at Wed 2026-05-06 13:30:48 CST, end at Sun 2026-09-13 02:06:37 CST. --
+Sep 13 02:05:25 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:05:25.012 [pool-2-thread-24033] DEBUG c.i.y.m.s.dal.my
+sql.tenant.TenantMapper.selectList:135 - ==> Parameters:
+Sep 13 02:05:25 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:05:25.014 [pool-2-thread-24033] DEBUG c.i.y.m.s.dal.my
+sql.tenant.TenantMapper.selectList:135 - <==      Total: 4
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.025 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - ==>  Preparing: SELECT id, no, order_id, channel_id, channel_code,
+ user_ip, status, channel_extras, channel_error_code, channel_error_msg, channel_notify_data, create_time, update_time,
+creator, updater, deleted FROM pay_order_extension WHERE deleted = 0 AND (status = ? AND create_time >= ?) AND tenant_id
+ = 164
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.025 [schedulerName_Worker-22] DEBUG c.i.y.m.p.d.
+m.o.PayOrderExtensionMapper.selectList:135 - ==>  Preparing: SELECT id, no, order_id, channel_id, channel_code, user_ip,
+ status, channel_extras, channel_error_code, channel_error_msg, channel_notify_data, create_time, update_time, creator,
+updater, deleted FROM pay_order_extension WHERE deleted = 0 AND (status = ? AND create_time >= ?) AND tenant_id = 122
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.026 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T01:56:00.022787259(LocalDat
+eTime)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.026 [schedulerName_Worker-22] DEBUG c.i.y.m.p.d.
+m.o.PayOrderExtensionMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T01:56:00.022558133(LocalDateTime)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.027 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.027 [schedulerName_Worker-22] DEBUG c.i.y.m.p.d.
+m.o.PayOrderExtensionMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.027 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - ==>  Preparing: SELECT id, no, order_id, channel_id, channel_code,
+ user_ip, status, channel_extras, channel_error_code, channel_error_msg, channel_notify_data, create_time, update_time,
+creator, updater, deleted FROM pay_order_extension WHERE deleted = 0 AND (status = ? AND create_time >= ?) AND tenant_id
+ = 121
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.028 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T01:56:00.022573973(LocalDat
+eTime)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.028 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - ==>  Preparing: SELECT id, no, order_id, channel_id, channel_code,
+ user_ip, status, channel_extras, channel_error_code, channel_error_msg, channel_notify_data, create_time, update_time,
+creator, updater, deleted FROM pay_order_extension WHERE deleted = 0 AND (status = ? AND create_time >= ?) AND tenant_id
+ = 1
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.029 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.029 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T01:56:00.022573983(LocalDat
+eTime)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.029 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.m.o.PayOrderExtensionMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.040 [schedulerName_Worker-20] DEBUG c.i.y.m.p.d.
+m.refund.PayRefundMapper.selectList:135 - ==>  Preparing: SELECT id, no, app_id, channel_id, channel_code, order_id, ord
+er_no, user_id, user_type, merchant_order_id, merchant_refund_id, notify_url, status, pay_price, refund_price, reason, u
+ser_ip, channel_order_no, channel_refund_no, success_time, channel_error_code, channel_error_msg, channel_notify_data, c
+reate_time, update_time, creator, updater, deleted FROM pay_refund WHERE deleted = 0 AND (status = ?) AND tenant_id = 12
+2
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.041 [schedulerName_Worker-20] DEBUG c.i.y.m.p.d.
+m.refund.PayRefundMapper.selectList:135 - ==> Parameters: 0(Integer)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.041 [schedulerName_Worker-20] DEBUG c.i.y.m.p.d.
+m.refund.PayRefundMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.042 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - ==>  Preparing: SELECT id, no, app_id, channel_id, channel_code, orde
+r_id, order_no, user_id, user_type, merchant_order_id, merchant_refund_id, notify_url, status, pay_price, refund_price,
+reason, user_ip, channel_order_no, channel_refund_no, success_time, channel_error_code, channel_error_msg, channel_notif
+y_data, create_time, update_time, creator, updater, deleted FROM pay_refund WHERE deleted = 0 AND (status = ?) AND tenan
+t_id = 1
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.042 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - ==> Parameters: 0(Integer)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.042 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - ==>  Preparing: SELECT id, no, app_id, channel_id, channel_code, orde
+r_id, order_no, user_id, user_type, merchant_order_id, merchant_refund_id, notify_url, status, pay_price, refund_price,
+reason, user_ip, channel_order_no, channel_refund_no, success_time, channel_error_code, channel_error_msg, channel_notif
+y_data, create_time, update_time, creator, updater, deleted FROM pay_refund WHERE deleted = 0 AND (status = ?) AND tenan
+t_id = 121
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.042 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - ==> Parameters: 0(Integer)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.043 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.043 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - ==>  Preparing: SELECT id, no, app_id, channel_id, channel_code, orde
+r_id, order_no, user_id, user_type, merchant_order_id, merchant_refund_id, notify_url, status, pay_price, refund_price,
+reason, user_ip, channel_order_no, channel_refund_no, success_time, channel_error_code, channel_error_msg, channel_notif
+y_data, create_time, update_time, creator, updater, deleted FROM pay_refund WHERE deleted = 0 AND (status = ?) AND tenan
+t_id = 164
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.043 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - ==> Parameters: 0(Integer)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.043 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.044 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.m.refund.PayRefundMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.052 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - ==>  Preparing: SELECT id, app_id, channel_id, channel_code, user_i
+d, user_type, merchant_order_id, subject, body, notify_url, price, channel_fee_rate, channel_fee_price, status, user_ip,
+ expire_time, success_time, extension_id, no, refund_price, channel_user_id, channel_order_no, create_time, update_time,
+ creator, updater, deleted FROM pay_order WHERE deleted = 0 AND (status = ? AND expire_time < ?) AND tenant_id = 121
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.052 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T02:06:00.047507876(LocalDate
+Time)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.053 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - ==>  Preparing: SELECT id, app_id, channel_id, channel_code, user_i
+d, user_type, merchant_order_id, subject, body, notify_url, price, channel_fee_rate, channel_fee_price, status, user_ip,
+ expire_time, success_time, extension_id, no, refund_price, channel_user_id, channel_order_no, create_time, update_time,
+ creator, updater, deleted FROM pay_order WHERE deleted = 0 AND (status = ? AND expire_time < ?) AND tenant_id = 1
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.053 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T02:06:00.047534018(LocalDate
+Time)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.054 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - ==>  Preparing: SELECT id, app_id, channel_id, channel_code, user_i
+d, user_type, merchant_order_id, subject, body, notify_url, price, channel_fee_rate, channel_fee_price, status, user_ip,
+ expire_time, success_time, extension_id, no, refund_price, channel_user_id, channel_order_no, create_time, update_time,
+ creator, updater, deleted FROM pay_order WHERE deleted = 0 AND (status = ? AND expire_time < ?) AND tenant_id = 164
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.054 [ForkJoinPool.commonPool-worker-2] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.054 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T02:06:00.047727758(LocalDate
+Time)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.055 [ForkJoinPool.commonPool-worker-3] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.055 [schedulerName_Worker-1] DEBUG c.i.y.m.p.d.m
+ysql.order.PayOrderMapper.selectList:135 - ==>  Preparing: SELECT id, app_id, channel_id, channel_code, user_id, user_ty
+pe, merchant_order_id, subject, body, notify_url, price, channel_fee_rate, channel_fee_price, status, user_ip, expire_ti
+me, success_time, extension_id, no, refund_price, channel_user_id, channel_order_no, create_time, update_time, creator,
+updater, deleted FROM pay_order WHERE deleted = 0 AND (status = ? AND expire_time < ?) AND tenant_id = 122
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.055 [schedulerName_Worker-1] DEBUG c.i.y.m.p.d.m
+ysql.order.PayOrderMapper.selectList:135 - ==> Parameters: 0(Integer), 2026-09-13T02:06:00.047507717(LocalDateTime)
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.057 [schedulerName_Worker-1] DEBUG c.i.y.m.p.d.m
+ysql.order.PayOrderMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:00 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:00.057 [ForkJoinPool.commonPool-worker-1] DEBUG c.i
+.y.m.p.d.mysql.order.PayOrderMapper.selectList:135 - <==      Total: 0
+Sep 13 02:06:26 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:26.012 [pool-2-thread-24034] DEBUG c.i.y.m.s.dal.my
+sql.tenant.TenantMapper.selectList:135 - ==>  Preparing: SELECT id, name, contact_user_id, contact_name, contact_mobile,
+ status, websites, package_id, expire_time, account_count, create_time, update_time, creator, updater, deleted FROM syst
+em_tenant WHERE deleted = 0
+Sep 13 02:06:26 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:26.012 [pool-2-thread-24034] DEBUG c.i.y.m.s.dal.my
+sql.tenant.TenantMapper.selectList:135 - ==> Parameters:
+Sep 13 02:06:26 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:26.013 [pool-2-thread-24034] DEBUG c.i.y.m.s.dal.my
+sql.tenant.TenantMapper.selectList:135 - <==      Total: 4
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az systemd[1]: Stopping EnglishAI Java Admin Service...
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:35.708 [SpringApplicationShutdownHook] INFO  org.qu
+artz.core.QuartzScheduler:576 - Scheduler schedulerName_$_iz8vberddr5fabylxlkh7az1787771088457 paused.
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:35.710 [SpringApplicationShutdownHook] INFO  o.s.bo
+ot.web.embedded.tomcat.GracefulShutdown:54 - Commencing graceful shutdown. Waiting for active requests to complete
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:35.712 [tomcat-shutdown] INFO  o.s.boot.web.embedde
+d.tomcat.GracefulShutdown:76 - Graceful shutdown complete
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:35.728 [SpringApplicationShutdownHook] INFO  o.s.sc
+heduling.quartz.SchedulerFactoryBean:845 - Shutting down Quartz Scheduler
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:35.728 [SpringApplicationShutdownHook] INFO  org.qu
+artz.core.QuartzScheduler:656 - Scheduler schedulerName_$_iz8vberddr5fabylxlkh7az1787771088457 shutting down.
+Sep 13 02:06:35 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:35.729 [SpringApplicationShutdownHook] INFO  org.qu
+artz.core.QuartzScheduler:576 - Scheduler schedulerName_$_iz8vberddr5fabylxlkh7az1787771088457 paused.
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:36.026 [SpringApplicationShutdownHook] INFO  org.qu
+artz.core.QuartzScheduler:728 - Scheduler schedulerName_$_iz8vberddr5fabylxlkh7az1787771088457 shutdown complete.
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:36.080 [SpringApplicationShutdownHook] INFO  c.b.dy
+namic.datasource.DynamicRoutingDataSource:215 - dynamic-datasource start closing ....
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:36.085 [SpringApplicationShutdownHook] INFO  com.al
+ibaba.druid.pool.DruidDataSource:2083 - {dataSource-1} closing ...
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:36.087 [SpringApplicationShutdownHook] INFO  com.al
+ibaba.druid.pool.DruidDataSource:2156 - {dataSource-1} closed
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:36.087 [SpringApplicationShutdownHook] INFO  c.b.d.
+d.destroyer.DefaultDataSourceDestroyer:98 - dynamic-datasource close the datasource named [master] success,
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az java[1773]: 2026-09-13 02:06:36.087 [SpringApplicationShutdownHook] INFO  c.b.dy
+namic.datasource.DynamicRoutingDataSource:219 - dynamic-datasource all closed success,bye
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az systemd[1]: english-admin.service: main process exited, code=exited, status=143/
+n/a
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az systemd[1]: Stopped EnglishAI Java Admin Service.
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az systemd[1]: Unit english-admin.service entered failed state.
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az systemd[1]: english-admin.service failed.
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az systemd[1]: Started EnglishAI Java Admin Service.
+Sep 13 02:06:36 iz8vberddr5fabylxlkh7az systemd[1]: Starting EnglishAI Java Admin Service...
+    Rolling back to yudao-server.jar.bak-20260913-020545 ...
+    rolled back
+
+[FAIL] Deploy failed and was rolled back. The bad jar is kept at /mnt/www/englishAI/admin/api/yudao-server.jar.failed-20260913-020545 for inspection.
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260913020710
+**********************

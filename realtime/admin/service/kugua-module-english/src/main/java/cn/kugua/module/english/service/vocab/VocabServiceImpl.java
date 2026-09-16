@@ -253,6 +253,31 @@ public class VocabServiceImpl implements VocabService {
     }
 
     @Override
+    public PageResult<VocabDO> getPublishedWordPage(String levelCode, String themeCode, String keyword, int pageNo, int pageSize) {
+        List<Long> themeVocabIds = null;
+        if (themeCode != null && !themeCode.isBlank()) {
+            VocabThemeDO theme = themeMapper.selectByCode(themeCode.trim());
+            if (theme == null) return PageResult.empty();
+            themeVocabIds = themeRelMapper.selectListByThemeId(theme.getId()).stream()
+                    .map(VocabThemeRelDO::getVocabId)
+                    .distinct()
+                    .collect(Collectors.toList());
+            if (themeVocabIds.isEmpty()) return PageResult.empty();
+        }
+        VocabPageReqVO page = new VocabPageReqVO();
+        page.setPageNo(Math.max(1, pageNo));
+        page.setPageSize(Math.max(1, Math.min(pageSize, 100)));
+        String kw = keyword == null ? null : keyword.trim();
+        return vocabMapper.selectPage(page, new LambdaQueryWrapperX<VocabDO>()
+                .eq(VocabDO::getStatus, 1)
+                .eqIfPresent(VocabDO::getLevelCode, (levelCode != null && !levelCode.isBlank()) ? levelCode : null)
+                .in(themeVocabIds != null, VocabDO::getId, themeVocabIds)
+                .likeRight(kw != null && !kw.isEmpty(), VocabDO::getWord, kw)
+                .orderByAsc(VocabDO::getWord)
+                .orderByAsc(VocabDO::getId));
+    }
+
+    @Override
     public PageResult<VocabDO> getVocabBrowsePage(String levelCode, String themeCode, Integer difficulty, int pageNo, int pageSize) {
         VocabPageReqVO req = new VocabPageReqVO();
         req.setLevelCode(levelCode);

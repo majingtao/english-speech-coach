@@ -7,4 +7,7 @@ import lombok.Data;
 public class AppReadingMaterialSelfCheckReqVO {
     @NotEmpty(message = "自评结果不能为空")
     private String result;
+
+    @NotEmpty(message = "练习模式不能为空")
+    private String mode;
 }

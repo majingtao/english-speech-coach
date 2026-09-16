@@ -28,4 +28,13 @@ public class AppVocabListItemVO {
     @Schema(description = "连续答对")
     private Integer repetitions;
 
+    @Schema(description = "中文释义（仅词表接口返回；词条内容尚未生成时为空）")
+    private String definitionCn;
+
+    @Schema(description = "音标（仅词表接口返回）")
+    private String ipa;
+
+    @Schema(description = "能力要求：1=三会 2=四会（仅词表接口返回）")
+    private Integer masteryLevel;
+
 }

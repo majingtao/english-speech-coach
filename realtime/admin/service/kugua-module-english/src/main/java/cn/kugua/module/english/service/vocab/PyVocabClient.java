@@ -6,11 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import java.net.Socket;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +39,44 @@ public class PyVocabClient {
 
     @PostConstruct
     public void init() {
-        this.http = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(3))
-                .build();
+        HttpClient.Builder builder = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(3));
+        // Python 服务（realtime/web/server.py）只监听 HTTPS 且使用自签名证书，
+        // JDK 默认信任库不认，调用会抛 PKIX / SSLHandshakeException，所有方法都返回 null。
+        // 仅当 base-url 指向本机回环地址时放开证书校验（与 Next.js /py 代理 rejectUnauthorized=false 一致）。
+        if (isLoopbackHttps(baseUrl)) {
+            try {
+                SSLContext ctx = SSLContext.getInstance("TLS");
+                ctx.init(null, new TrustManager[]{new LoopbackTrustManager()}, new SecureRandom());
+                builder.sslContext(ctx);
+                log.info("[vocab] py client trusts self-signed cert for {}", baseUrl);
+            } catch (Exception e) {
+                log.warn("[vocab] init loopback ssl context failed: {}", e.getMessage());
+            }
+        }
+        this.http = builder.build();
+    }
+
+    private static boolean isLoopbackHttps(String url) {
+        try {
+            URI uri = URI.create(url);
+            String host = uri.getHost();
+            return "https".equalsIgnoreCase(uri.getScheme()) && host != null
+                    && (host.equals("127.0.0.1") || host.equalsIgnoreCase("localhost") || host.equals("::1") || host.equals("[::1]"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /** 仅用于本机回环地址的 Python 服务：不校验证书链和主机名。 */
+    private static final class LoopbackTrustManager extends X509ExtendedTrustManager {
+        @Override public void checkClientTrusted(X509Certificate[] chain, String authType) { }
+        @Override public void checkServerTrusted(X509Certificate[] chain, String authType) { }
+        @Override public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) { }
+        @Override public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) { }
+        @Override public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) { }
+        @Override public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) { }
+        @Override public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
     }
 
     private final ObjectMapper mapper = new ObjectMapper();
